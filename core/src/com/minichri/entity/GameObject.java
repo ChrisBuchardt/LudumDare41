@@ -73,4 +73,7 @@ public class GameObject {
     }
 
 
+    public Body getBody() {
+        return body;
+    }
 }

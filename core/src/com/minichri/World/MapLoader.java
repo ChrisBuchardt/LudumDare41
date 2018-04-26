@@ -4,8 +4,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureData;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.minichri.Elements.Tile;
+import com.minichri.entity.Player;
+import com.minichri.entity.TextureObject;
 import com.minichri.helpers.GameInfo;
 import com.minichri.helpers.TileType;
 
@@ -13,7 +17,8 @@ import java.util.ArrayList;
 
 public class MapLoader {
 
-    private ArrayList<Tile> tilesList;
+    private ArrayList<TextureObject> tilesList;
+    private int playerIndex;
 
     /** Loads an image.
      * @param levelImageLocation a path to a level image.
@@ -39,9 +44,15 @@ public class MapLoader {
                 //Check if color matches a type
                 TileType currentTileType = TileType.getTypeFromColor(color);
 
+                //TODO x og y for tiles!
+
                 //Create an element if color was found
-                if(currentTileType == TileType.WHITE_SPACE){ //Do nothing
+                if(currentTileType == TileType.WHITE_SPACE) { //Do nothing
                     continue;
+                }
+                else if(currentTileType == TileType.PLAYER){
+                    this.tilesList.add(new Player(world, new Vector2(x * GameInfo.TILE_SIZE, (levelPixmap.getHeight() - y) * GameInfo.TILE_SIZE), BodyDef.BodyType.DynamicBody));
+                    this.playerIndex = tilesList.size()-1;
                 }else if(currentTileType != null){ //Add tile based on tileType
 
                     //TileType aboveTileType = ;
@@ -68,7 +79,11 @@ public class MapLoader {
         levelPixmap.dispose();
     }
 
-    public ArrayList<Tile> getTilesList() {
+    public ArrayList<TextureObject> getTilesList() {
         return tilesList;
+    }
+
+    public int getPlayerIndex() {
+        return playerIndex;
     }
 }
