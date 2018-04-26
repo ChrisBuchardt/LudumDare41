@@ -8,10 +8,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.minichri.Elements.Tile;
 import com.minichri.MainGame;
 import com.minichri.World.MapLoader;
+import com.minichri.entity.Player;
 
 import java.util.ArrayList;
 
@@ -24,6 +27,8 @@ public class GameScreen implements Screen {
     private Texture img2;
     private InputProcessor inputProcessor;
     private World world;
+    private Player player;
+    private Box2DDebugRenderer debugRenderer;
 
     private ArrayList<Tile> gameMap; //TODO MIKKEL
 
@@ -36,15 +41,17 @@ public class GameScreen implements Screen {
         img = new Texture("tiles/dirt.png");
         img2 = new Texture("tiles/grass.png");
 
+        //player = new Player(world,new Vector2(1,1), BodyDef.BodyType.StaticBody );
         this.spriteBatch = new SpriteBatch();
 
-        this.camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        this.camera = new OrthographicCamera(Gdx.graphics.getWidth()/4,Gdx.graphics.getHeight()/4);
         spriteBatch.setProjectionMatrix(camera.combined);
 
         //Load map //TODO MIKKEL
         MapLoader ml = new MapLoader();
         ml.loadLevelFromImage("level/testLevel.png", world);
         gameMap = ml.getTilesList();
+        debugRenderer = new Box2DDebugRenderer();
     }
 
 
@@ -56,7 +63,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0f, 1f, 0f, 1);
+        Gdx.gl.glClearColor(0f, 0.5f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
@@ -71,6 +78,7 @@ public class GameScreen implements Screen {
         spriteBatch.end();
 
         spriteBatch.setProjectionMatrix(camera.combined);
+        debugRenderer.render(world,camera.combined);
 
     }
 
