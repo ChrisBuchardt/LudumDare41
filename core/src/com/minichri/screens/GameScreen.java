@@ -28,6 +28,7 @@ public class GameScreen implements Screen {
     private ArrayList<Tile> gameMap; //TODO temp
 
 
+
     public  GameScreen(MainGame game){
         this.game = game;
         this.world = new World(new Vector2(0,-9.8f), true); //Creating the world with gravity
