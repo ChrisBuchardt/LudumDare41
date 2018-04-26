@@ -40,7 +40,7 @@ public class MapLoader {
                     continue;
                 }else if(currentTileType != null){ //Add tile based on tileType
 
-                    this.tilesList.add(new Tile(currentTileType, x, y)); //TODO Add arguments
+                    this.tilesList.add(new Tile(world, currentTileType, x, y)); //TODO Add arguments
                 }
             }
         }

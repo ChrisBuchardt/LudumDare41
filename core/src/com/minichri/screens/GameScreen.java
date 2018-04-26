@@ -7,7 +7,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
+import com.minichri.Elements.Tile;
 import com.minichri.MainGame;
+import com.minichri.World.MapLoader;
+
+import java.util.ArrayList;
 
 public class GameScreen implements Screen {
 
@@ -17,10 +23,14 @@ public class GameScreen implements Screen {
     private Texture img;
     private Texture img2;
     private InputProcessor inputProcessor;
+    private World world;
+
+    private ArrayList<Tile> gameMap; //TODO temp
 
 
     public  GameScreen(MainGame game){
         this.game = game;
+        this.world = new World(new Vector2(0,-9.8f), true); //Creating the world with gravity
         // Temp images for testing screen/camera
         img = new Texture("tiles/dirt.png");
         img2 = new Texture("tiles/grass.png");
@@ -30,6 +40,10 @@ public class GameScreen implements Screen {
         this.camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         spriteBatch.setProjectionMatrix(camera.combined);
 
+        //Load map //TODO TEMP
+        MapLoader ml = new MapLoader();
+        ml.loadLevelFromImage("level/testLevel.png", world);
+        gameMap = ml.getTilesList();
     }
 
 
@@ -46,8 +60,17 @@ public class GameScreen implements Screen {
 
 
         spriteBatch.begin();
-        spriteBatch.draw(img2,0,img.getHeight());
-        spriteBatch.draw(img,0,0);
+        //spriteBatch.draw(img2,0,img.getHeight());
+        //spriteBatch.draw(img,0,0);
+
+        /*
+        for(int i = 0; i < gameMap.size(); i++)
+            spriteBatch.draw(gameMap.get(i));
+        */
+
+        for(Tile tile : gameMap)
+            spriteBatch.draw(tile, tile.getX(), tile.getY());
+
         spriteBatch.end();
 
         spriteBatch.setProjectionMatrix(camera.combined);

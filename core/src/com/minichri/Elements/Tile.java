@@ -1,5 +1,6 @@
 package com.minichri.Elements;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.*;
 import com.minichri.helpers.GameInfo;
@@ -12,9 +13,9 @@ public class Tile extends Sprite {
     private TileType tileType;
 
 
-    public Tile(TileType tileType, float x, float y) {
-        //super(tileType.getTexture());
-        this.world = null; //TODO input argument
+    public Tile(World world, TileType tileType, float x, float y) {
+        super(new Texture("tiles/dirt.png"));
+        this.world = world; //TODO input argument
         this.tileType = tileType;
         setPosition(x, y);
         createBody();
