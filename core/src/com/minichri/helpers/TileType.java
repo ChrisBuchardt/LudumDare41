@@ -40,7 +40,7 @@ public enum TileType {
     }
 
     /** An enum describing the tiles placement related to its surroundings */
-    public enum TilePlacementType{
+    public enum TileTextureDirection {
         LEFT, MIDDEL, RIGHT, UNDER;
     }
 }
