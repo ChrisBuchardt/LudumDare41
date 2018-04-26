@@ -77,8 +77,8 @@ public class GameScreen implements Screen {
 
 
         //TODO MIKKEL
-        //for(Tile tile : gameMap)
-        //    tile.render(spriteBatch);
+        for(Tile tile : gameMap)
+            tile.render(spriteBatch);
 
         spriteBatch.end();
 
