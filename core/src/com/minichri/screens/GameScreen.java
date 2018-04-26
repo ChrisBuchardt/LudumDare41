@@ -14,7 +14,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.minichri.Elements.Tile;
 import com.minichri.MainGame;
 import com.minichri.World.MapLoader;
-import com.minichri.entity.Player;
 
 import java.util.ArrayList;
 
@@ -27,7 +26,6 @@ public class GameScreen implements Screen {
     private Texture img2;
     private InputProcessor inputProcessor;
     private World world;
-    private Player player;
     private Box2DDebugRenderer debugRenderer;
 
     private ArrayList<Tile> gameMap; //TODO MIKKEL
