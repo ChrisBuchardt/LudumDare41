@@ -1,4 +1,4 @@
-package com.minichri.desktop.helpers;
+package com.minichri.helpers;
 
 import com.badlogic.gdx.graphics.Color;
 
