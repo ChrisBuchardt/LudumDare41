@@ -7,6 +7,8 @@ import com.minichri.MainGame;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.height = 800;
+		config.width = 1280;
 		new LwjglApplication(new MainGame(), config);
 	}
 }
