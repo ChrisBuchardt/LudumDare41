@@ -17,6 +17,7 @@ import com.minichri.MainGame;
 import com.minichri.World.MapLoader;
 import com.minichri.entity.Player;
 import com.minichri.helpers.GameInfo;
+import com.minichri.inventory.Inventory;
 
 import java.util.ArrayList;
 

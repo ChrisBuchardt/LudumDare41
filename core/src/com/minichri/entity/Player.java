@@ -8,10 +8,17 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
-
+import com.minichri.inventory.Inventory;
 
 
 public class Player extends TextureObject {
+
+    // Inventory singleton
+    private static Inventory _inventory;
+    public static Inventory getInventory() {
+        if (_inventory == null) _inventory = new Inventory();
+        return _inventory;
+    }
 
     private static TextureRegion playerTexLeft = new TextureRegion(new Texture("player/player_left.png"),0,0,16,16);
 
