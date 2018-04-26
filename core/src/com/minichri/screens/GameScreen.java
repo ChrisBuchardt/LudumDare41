@@ -25,7 +25,7 @@ public class GameScreen implements Screen {
     private InputProcessor inputProcessor;
     private World world;
 
-    private ArrayList<Tile> gameMap; //TODO temp
+    private ArrayList<Tile> gameMap; //TODO MIKKEL
 
 
 
@@ -41,7 +41,7 @@ public class GameScreen implements Screen {
         this.camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         spriteBatch.setProjectionMatrix(camera.combined);
 
-        //Load map //TODO TEMP
+        //Load map //TODO MIKKEL
         MapLoader ml = new MapLoader();
         ml.loadLevelFromImage("level/testLevel.png", world);
         gameMap = ml.getTilesList();
@@ -61,16 +61,12 @@ public class GameScreen implements Screen {
 
 
         spriteBatch.begin();
-        //spriteBatch.draw(img2,0,img.getHeight());
-        //spriteBatch.draw(img,0,0);
+        spriteBatch.draw(img2,0,img.getHeight());
+        spriteBatch.draw(img,0,0);
 
-        /*
-        for(int i = 0; i < gameMap.size(); i++)
-            spriteBatch.draw(gameMap.get(i));
-        */
-
-        for(Tile tile : gameMap)
-            spriteBatch.draw(tile, tile.getX(), tile.getY());
+        //TODO MIKKEL
+        //for(Tile tile : gameMap)
+        //    spriteBatch.draw(tile, tile.getX(), tile.getY());
 
         spriteBatch.end();
 
