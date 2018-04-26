@@ -15,7 +15,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.minichri.Elements.Tile;
 import com.minichri.MainGame;
 import com.minichri.World.MapLoader;
+import com.minichri.entity.GameObject;
 import com.minichri.entity.Player;
+import com.minichri.entity.TextureObject;
 import com.minichri.helpers.GameInfo;
 import com.minichri.inventory.Inventory;
 
@@ -33,7 +35,8 @@ public class GameScreen implements Screen {
     private World world;
     private Box2DDebugRenderer debugRenderer;
 
-    private ArrayList<Tile> gameMap; //TODO MIKKEL
+    private ArrayList<TextureObject> gameMap; //TODO MIKKEL
+    private int playerIndex; //TODO MIKKEL
 
 
 
@@ -45,7 +48,7 @@ public class GameScreen implements Screen {
         img = new Texture("tiles/dirt.png");
         img2 = new Texture("tiles/grass.png");
 
-        player = new Player(world,new Vector2(1,1), BodyDef.BodyType.DynamicBody);
+        //player = new Player(world,new Vector2(1,1), BodyDef.BodyType.DynamicBody);
         this.spriteBatch = new SpriteBatch();
 
         this.camera = new OrthographicCamera(GameInfo.SCREEN_WIDTH, GameInfo.SCREEN_HEIGHT);
@@ -56,8 +59,10 @@ public class GameScreen implements Screen {
 
         //Load map //TODO MIKKEL
         MapLoader ml = new MapLoader();
-        ml.loadLevelFromImage("level/testLevel01.png", world);
+        ml.loadLevelFromImage("level/testLevel03.png", world);
         gameMap = ml.getTilesList();
+        playerIndex = ml.getPlayerIndex();
+
         debugRenderer = new Box2DDebugRenderer();
     }
 
@@ -70,6 +75,11 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+
+        camera.position.x = gameMap.get(playerIndex).getBody().getPosition().x;
+        camera.position.y = gameMap.get(playerIndex).getBody().getPosition().y;
+        camera.update();
+
         world.step(delta,3,3);
         Gdx.gl.glClearColor(0f, 0.5f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -80,10 +90,10 @@ public class GameScreen implements Screen {
         spriteBatch.draw(img,0,0);
 
         //TODO MIKKEL
-        for(Tile tile : gameMap)
-            tile.render(spriteBatch);
+        for(TextureObject textureObject : gameMap)
+            textureObject.render(spriteBatch);
 
-        player.render(spriteBatch);
+        //player.render(spriteBatch);
         spriteBatch.end();
 
         spriteBatch.setProjectionMatrix(camera.combined);
@@ -115,6 +125,5 @@ public class GameScreen implements Screen {
     public void dispose() {
         spriteBatch.dispose();
         img.dispose();
-
     }
 }
