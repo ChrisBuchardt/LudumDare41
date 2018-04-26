@@ -1,0 +1,25 @@
+package com.minichri.entity;
+
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.World;
+
+public class TextureObject extends GameObject {
+
+    protected TextureRegion texture;
+
+    public TextureObject(World world, Vector2 pos, BodyDef.BodyType bodyType, TextureRegion texture) {
+        super(world, pos, bodyType);
+        this.texture = texture;
+    }
+
+    public void render(SpriteBatch batch) {
+        Vector2 pos = body.getPosition();
+        float width = texture.getRegionWidth();
+        float height = texture.getRegionHeight();
+        batch.draw(texture, pos.x, pos.y, width / 2f, height / 2f, width, height, 1, 1, body.getAngle());
+    }
+}
