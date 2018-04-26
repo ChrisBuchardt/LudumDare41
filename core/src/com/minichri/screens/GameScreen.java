@@ -22,8 +22,8 @@ public class GameScreen implements Screen {
     public  GameScreen(MainGame game){
         this.game = game;
         // Temp images for testing screen/camera
-        img = new Texture("dirt.png");
-        img2 = new Texture("grass.png");
+        img = new Texture("tiles/dirt.png");
+        img2 = new Texture("tiles/grass.png");
 
         this.spriteBatch = new SpriteBatch();
 
