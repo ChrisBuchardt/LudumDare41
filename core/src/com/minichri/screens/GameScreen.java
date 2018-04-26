@@ -8,12 +8,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.minichri.Elements.Tile;
 import com.minichri.MainGame;
 import com.minichri.World.MapLoader;
+import com.minichri.helpers.GameInfo;
 
 import java.util.ArrayList;
 
@@ -42,12 +44,15 @@ public class GameScreen implements Screen {
         //player = new Player(world,new Vector2(1,1), BodyDef.BodyType.StaticBody );
         this.spriteBatch = new SpriteBatch();
 
-        this.camera = new OrthographicCamera(Gdx.graphics.getWidth()/4,Gdx.graphics.getHeight()/4);
+        this.camera = new OrthographicCamera(GameInfo.SCREEN_WIDTH, GameInfo.SCREEN_HEIGHT);
+        this.camera.zoom = GameInfo.ZOOM;
+        this.camera.update();
+
         spriteBatch.setProjectionMatrix(camera.combined);
 
         //Load map //TODO MIKKEL
         MapLoader ml = new MapLoader();
-        ml.loadLevelFromImage("level/testLevel.png", world);
+        ml.loadLevelFromImage("level/testLevel01.png", world);
         gameMap = ml.getTilesList();
         debugRenderer = new Box2DDebugRenderer();
     }
@@ -69,9 +74,11 @@ public class GameScreen implements Screen {
         spriteBatch.draw(img2,0,img.getHeight());
         spriteBatch.draw(img,0,0);
 
+
+
         //TODO MIKKEL
         //for(Tile tile : gameMap)
-        //    spriteBatch.draw(tile, tile.getX(), tile.getY());
+        //    tile.render(spriteBatch);
 
         spriteBatch.end();
 
