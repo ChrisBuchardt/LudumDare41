@@ -5,17 +5,20 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class TextureObject extends GameObject {
 
     protected TextureRegion texture;
 
-    public TextureObject(World world, Vector2 pos, BodyDef.BodyType bodyType, TextureRegion texture) {
-        super(world, pos, bodyType);
+    /** An GameObject that always have a textre drawn at the body's position. */
+    public TextureObject(World world, Vector2 pos, BodyDef bodyDef, FixtureDef fixtureDef, TextureRegion texture) {
+        super(world, pos, bodyDef, fixtureDef);
         this.texture = texture;
     }
 
+    /** Render the TextureObjects texture at the body's position. */
     public void render(SpriteBatch batch) {
         Vector2 pos = body.getPosition();
         float width = texture.getRegionWidth();
