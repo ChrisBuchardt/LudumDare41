@@ -56,7 +56,7 @@ public class MapLoader {
                     continue;
                 }
                 else if(currentTileType == TileType.PLAYER){
-                    this.tilesList.add(new Player(world, currentTilePos, BodyDef.BodyType.DynamicBody));
+                    this.tilesList.add(new Player(world, currentTilePos));
                     this.playerIndex = tilesList.size()-1;
                 }else if(currentTileType != null){ //Add tile based on tileType
 

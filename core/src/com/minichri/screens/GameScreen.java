@@ -25,7 +25,6 @@ import java.util.ArrayList;
 public class GameScreen implements Screen {
 
     private MainGame game;
-    private Player player;
     private SpriteBatch spriteBatch;
     private OrthographicCamera camera;
     private Texture img;
@@ -62,7 +61,7 @@ public class GameScreen implements Screen {
         gameMap = ml.getTilesList();
         playerIndex = ml.getPlayerIndex();
 
-        debugRenderer = new Box2DDebugRenderer();
+        debugRenderer = new Box2DDebugRenderer(true,true,true,true,true,true);
     }
 
 
@@ -83,7 +82,6 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0f, 0.5f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-
         spriteBatch.begin();
         spriteBatch.draw(img2,0,img.getHeight());
         spriteBatch.draw(img,0,0);
@@ -92,8 +90,13 @@ public class GameScreen implements Screen {
         for(TextureObject textureObject : gameMap)
             textureObject.render(spriteBatch);
 
-        //player.render(spriteBatch);
+
         spriteBatch.end();
+
+        spriteBatch.begin();
+        gameMap.get(playerIndex).render(spriteBatch);
+        spriteBatch.end();
+
 
         spriteBatch.setProjectionMatrix(camera.combined);
         debugRenderer.render(world,camera.combined);
