@@ -31,7 +31,7 @@ public enum TileType {
 
     /** Color constants. */
     private static class Constants{
-        static final Color WHITE_SPACE_COLOR = Color.valueOf("#"); //TODO
-        static final Color GROUND_COLOR = Color.valueOf("#"); //TODO
+        static final Color WHITE_SPACE_COLOR = Color.valueOf("#FFFFFFFF"); //TODO
+        static final Color GROUND_COLOR = Color.valueOf("#0000FF00"); //TODO
     }
 }
