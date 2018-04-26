@@ -15,6 +15,9 @@ public class MapLoader {
 
     private ArrayList<Tile> tilesList;
 
+    /** Loads an image.
+     * @param levelImageLocation a path to a level image.
+     * @param world the world where the elements will be spawned in. */
     public void loadLevelFromImage(String levelImageLocation, World world){
 
         tilesList = new ArrayList<>();
@@ -41,7 +44,18 @@ public class MapLoader {
                     continue;
                 }else if(currentTileType != null){ //Add tile based on tileType
 
-                    this.tilesList.add(new Tile(world, currentTileType, x * GameInfo.TILE_SIZE, (levelPixmap.getHeight() - y) * GameInfo.TILE_SIZE)); //TODO Add arguments
+                    //TileType aboveTileType = ;
+                    //TileType leftTileType = ;
+                    //TileType rightTileType = ;
+
+
+                    //boolean isTileAboveTheSame = ;//Is the block above the same as this?
+                    //boolean isTileLeftTheSame = ;//Is the block to the left the same?
+                    //boolean isTileRightTheSame = ;//Is the block to the right the same?
+
+
+
+                    this.tilesList.add(new Tile(world, TileType.TilePlacementType.MIDDEL, currentTileType, x * GameInfo.TILE_SIZE, (levelPixmap.getHeight() - y) * GameInfo.TILE_SIZE)); //TODO Add arguments
                     //this.tilesList.add(new Tile(world, currentTileType, x * GameInfo.TILE_SIZE, (levelPixmap.getHeight() - y) * GameInfo.TILE_SIZE - GameInfo.TILE_SIZE)); //TODO Add arguments
 
                 }

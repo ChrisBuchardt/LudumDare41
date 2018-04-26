@@ -3,6 +3,7 @@ package com.minichri.helpers;
 import com.badlogic.gdx.graphics.Color;
 
 public enum TileType {
+    PLAYER(Constants.PLAYER_COLOR),
     WHITE_SPACE(Constants.WHITE_SPACE_COLOR),
     GROUND(Constants.GROUND_COLOR);
 
@@ -21,6 +22,8 @@ public enum TileType {
             return WHITE_SPACE;
         if(color.equals(TileType.GROUND.getColor()))
             return GROUND;
+        if(color.equals(TileType.PLAYER.getColor()))
+            return PLAYER;
         else
             return null;
     }
@@ -31,7 +34,13 @@ public enum TileType {
 
     /** Color constants. */
     private static class Constants{
-        static final Color WHITE_SPACE_COLOR = Color.valueOf("#FFFFFFFF"); //TODO
-        static final Color GROUND_COLOR = Color.valueOf("#0000FF00"); //TODO
+        static final Color PLAYER_COLOR = Color.valueOf("#26ffff00");
+        static final Color WHITE_SPACE_COLOR = Color.valueOf("#FFFFFFFF");
+        static final Color GROUND_COLOR = Color.valueOf("#0000FF00");
+    }
+
+    /** An enum describing the tiles placement related to its surroundings */
+    public enum TilePlacementType{
+        LEFT, MIDDEL, RIGHT, UNDER;
     }
 }
