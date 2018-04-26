@@ -51,7 +51,7 @@ public class MapLoader {
                     continue;
                 }
                 else if(currentTileType == TileType.PLAYER){
-                    this.tilesList.add(new Player(world, new Vector2(x * GameInfo.TILE_SIZE, (levelPixmap.getHeight() - y) * GameInfo.TILE_SIZE), BodyDef.BodyType.DynamicBody));
+                    this.tilesList.add(new Player(world, new Vector2(x * GameInfo.TILE_SIZE, (levelPixmap.getHeight() - y) * GameInfo.TILE_SIZE)));
                     this.playerIndex = tilesList.size()-1;
                 }else if(currentTileType != null){ //Add tile based on tileType
 
