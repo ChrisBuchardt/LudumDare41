@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.minichri.Elements.Tile;
 import com.minichri.MainGame;
 import com.minichri.World.MapLoader;
+import com.minichri.entity.Player;
 import com.minichri.helpers.GameInfo;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 public class GameScreen implements Screen {
 
     private MainGame game;
+    private Player player;
     private SpriteBatch spriteBatch;
     private OrthographicCamera camera;
     private Texture img;
@@ -37,11 +39,12 @@ public class GameScreen implements Screen {
     public  GameScreen(MainGame game){
         this.game = game;
         this.world = new World(new Vector2(0,-9.8f), true); //Creating the world with gravity
+
         // Temp images for testing screen/camera
         img = new Texture("tiles/dirt.png");
         img2 = new Texture("tiles/grass.png");
 
-        //player = new Player(world,new Vector2(1,1), BodyDef.BodyType.StaticBody );
+        player = new Player(world,new Vector2(1,1), BodyDef.BodyType.DynamicBody);
         this.spriteBatch = new SpriteBatch();
 
         this.camera = new OrthographicCamera(GameInfo.SCREEN_WIDTH, GameInfo.SCREEN_HEIGHT);
@@ -66,6 +69,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        world.step(delta,3,3);
         Gdx.gl.glClearColor(0f, 0.5f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -74,12 +78,11 @@ public class GameScreen implements Screen {
         spriteBatch.draw(img2,0,img.getHeight());
         spriteBatch.draw(img,0,0);
 
-
-
         //TODO MIKKEL
         for(Tile tile : gameMap)
             tile.render(spriteBatch);
 
+        player.render(spriteBatch);
         spriteBatch.end();
 
         spriteBatch.setProjectionMatrix(camera.combined);
