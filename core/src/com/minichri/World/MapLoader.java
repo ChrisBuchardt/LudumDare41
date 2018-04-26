@@ -1,18 +1,18 @@
-package com.minichri.desktop.World;
+package com.minichri.World;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.physics.box2d.World;
-import com.minichri.desktop.Elements.GroundTile;
-import com.minichri.desktop.helpers.TileType;
+import com.minichri.Elements.Tile;
+import com.minichri.helpers.TileType;
 
 import java.util.ArrayList;
 
 public class MapLoader {
 
-    private ArrayList<GroundTile> tilesList;
+    private ArrayList<Tile> tilesList;
 
     public void loadLevelFromImage(String levelImageLocation, World world){
 
@@ -33,14 +33,14 @@ public class MapLoader {
                 Color.argb8888ToColor(color, levelPixmap.getPixel(x, y));
 
                 //Check if color matches a type
-                TileType tileType = TileType.getTypeFromColor(color);
+                TileType currentTileType = TileType.getTypeFromColor(color);
 
                 //Create an element if color was found
-                if(tileType == TileType.WHITE_SPACE){ //Do nothing
+                if(currentTileType == TileType.WHITE_SPACE){ //Do nothing
                     continue;
-                }else if(tileType != null){
+                }else if(currentTileType != null){ //Add tile based on tileType
 
-                    this.tilesList.add(new GroundTile()); //TODO Add arguments
+                    this.tilesList.add(new Tile(currentTileType, x, y)); //TODO Add arguments
                 }
             }
         }
@@ -51,7 +51,7 @@ public class MapLoader {
         levelPixmap.dispose();
     }
 
-    public ArrayList<GroundTile> getTilesList() {
+    public ArrayList<Tile> getTilesList() {
         return tilesList;
     }
 }
