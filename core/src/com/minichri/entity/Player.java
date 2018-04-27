@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.minichri.Elements.Tile;
 import com.minichri.KeyboardController;
+import com.minichri.World.GameMap;
 import com.minichri.helpers.TileType;
 import com.minichri.inventory.Inventory;
 import com.minichri.physics.ContactManager;
@@ -52,6 +53,8 @@ public class Player extends TextureObject {
     private boolean isMidAir = false;
     private boolean isCrouched = false;
     private boolean hasJumped = false;
+    private float range = 20;
+    private Vector2 placeVector = new Vector2(0,0);
 
     private Body feet;
 
@@ -77,7 +80,7 @@ public class Player extends TextureObject {
         body.setUserData(this);
     }
 
-    public void render(World world,Vector3 mousePos, KeyboardController controller, SpriteBatch batch, float delta) {
+    public void render(GameMap map, World world, Vector3 mousePos, KeyboardController controller, SpriteBatch batch, float delta) {
 
         //adds Player spawned tiles to the array
         if (queue.size()>0)playerTiles.addAll(queue);
@@ -113,7 +116,18 @@ public class Player extends TextureObject {
 
         //Spawn blocks at the click
         if (controller.leftClick){
-            queue.add( new Tile(world, TileType.PLATFORM_BLUE,new Vector2(mousePos.x,mousePos.y)));
+            if (getInventory().getSelectedItem()!=null){
+                placeVector.x = (int)mousePos.x;
+                placeVector.y = (int)mousePos.y;
+                //System.out.println(placeVector);
+                //if (>range) {
+                    if (!map.isTileOcccipied((int)placeVector.x, (int)placeVector.y)) {
+                        TileType type = getInventory().getSelectedItem().getType();
+                        map.setTile(type, placeVector);
+                        queue.add(new Tile(world, type, placeVector));
+                 //   }
+                }
+            }
         }
 
         // Restrict vel x
