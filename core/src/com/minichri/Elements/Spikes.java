@@ -8,7 +8,6 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.minichri.entity.TextureObject;
-import com.minichri.helpers.TileType;
 
 public class Spikes extends TextureObject {
 
@@ -16,7 +15,7 @@ public class Spikes extends TextureObject {
     private static final FixtureDef FIXTURE_DEF = createFixtureDef();
 
     public Spikes(World world, Vector2 pos) {
-        super(world, pos, BODY_DEF, FIXTURE_DEF, new TextureRegion(new Texture("objects/spikes.png")));
+        super(world, pos, BODY_DEF, FIXTURE_DEF, new TextureRegion(new Texture("tiles/spikes.png")));
     }
 
     /** The BodyDef used for something like tiles */
@@ -37,6 +36,7 @@ public class Spikes extends TextureObject {
         fixtureDef.density = 1;
         fixtureDef.friction = 1;
         fixtureDef.restitution = 0;
+        fixtureDef.isSensor = true;
 
         return fixtureDef;
     }
