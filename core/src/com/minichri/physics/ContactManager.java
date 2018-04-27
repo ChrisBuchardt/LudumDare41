@@ -30,12 +30,7 @@ public class ContactManager implements ContactListener {
 
         //Check for player collison
         if(fa.getBody().getUserData()instanceof Player || fb.getBody().getUserData() instanceof Player){
-            Object other = fa.getUserData() instanceof Player ? fb : fa;
-
-            //Collision with tile
-            if(other instanceof Tile) {
-                playerTouchWall = true;
-            }
+            Object other = (fa.getBody().getUserData() instanceof Player ? fb : fa).getBody().getUserData();
 
             //Collision with resource
             if(other instanceof Resource) {

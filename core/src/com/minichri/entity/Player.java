@@ -79,11 +79,7 @@ public class Player extends TextureObject {
             vel.x = WALK_SPEED * dir;
         } else {
             // Mid air
-            if (ContactManager.playerTouchWall) {
-                ContactManager.playerTouchWall = false;
-            } else {
-                vel.add(AIR_WALK_FORCE * dir, 0);
-            }
+            vel.add(AIR_WALK_FORCE * dir, 0);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)) isCrouched = true;
