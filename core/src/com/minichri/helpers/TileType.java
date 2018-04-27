@@ -4,12 +4,16 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 
 public enum TileType {
+
     PLAYER("0026FFFF", null, false),
     WHITE_SPACE("FFFFFFFF", null, false),
     GROUND("000000FF", "tiles/ground_tiles.png", true),
     PLATFORM_BLUE("00FFFFFF", "tiles/platform_blue.png", false),
     PLATFORM_GREEN("00FF21FF", "tiles/platform_green.png", false),
     PLATFORM_PURPLE("FF00DCFF", "tiles/platform_purple.png", false),
+    RESOURCE_BLUE("FFFFFFFF", "tiles/platform_resource_blue.png", false),
+    RESOURCE_GREEN("FFFFFFFF", "tiles/platform_resource_green.png", false),
+    RESOURCE_PURPLE("FFFFFFFF", "tiles/platform_resource_purple.png", false)
     ;
 
     private Color color;
@@ -29,9 +33,11 @@ public enum TileType {
      *  @param color a color to be matched.
      *  @return a tileType based on the color given. Returns null if non matches. */
     public static TileType getTypeFromColor(Color color){
+
         for (TileType type : TileType.values()) {
             if (type.color.equals(color)) return type;
         }
+
         return null;
     }
 
