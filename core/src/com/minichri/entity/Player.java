@@ -35,7 +35,7 @@ public class Player extends TextureObject {
     }
 
     @Override
-    public void render(SpriteBatch batch) {
+    public void render(SpriteBatch batch, float delta) {
 
         isMidAir = body.getUserData() != "Grounded";
 
@@ -85,7 +85,7 @@ public class Player extends TextureObject {
         else isCrouched = false;
 
         //Draws the texture the size of the player
-        super.render(batch);
+        super.render(batch, delta);
 
 
         //Exits game

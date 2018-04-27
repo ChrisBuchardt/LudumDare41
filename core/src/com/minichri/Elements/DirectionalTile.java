@@ -16,14 +16,9 @@ public class DirectionalTile extends Tile {
 
         this.placementType = placementType;
         setDirectionalTextures();
-        //setDirectionalTextures02();
     }
 
-    private void setDirectionalTextures02(){
-
-
-    }
-
+    /** Set the texture to match the position */
     private void setDirectionalTextures(){
 
         TextureRegion[] regions = new TextureRegion[4];
