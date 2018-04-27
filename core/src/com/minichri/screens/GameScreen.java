@@ -12,6 +12,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.minichri.Elements.Tile;
 import com.minichri.MainGame;
 import com.minichri.World.MapLoader;
@@ -30,6 +32,7 @@ public class GameScreen implements Screen {
     private OrthographicCamera camera;
     private InputProcessor inputProcessor;
     private World world;
+    private Stage stage;
     private Box2DDebugRenderer debugRenderer;
 
     private ArrayList<TextureObject> gameMap;
@@ -46,6 +49,8 @@ public class GameScreen implements Screen {
         this.camera = new OrthographicCamera(GameInfo.SCREEN_WIDTH, GameInfo.SCREEN_HEIGHT);
         this.camera.zoom = GameInfo.ZOOM;
         this.camera.update();
+
+        stage = new IngameStage(new FitViewport(GameInfo.SCREEN_WIDTH, GameInfo.SCREEN_HEIGHT));
 
         spriteBatch.setProjectionMatrix(camera.combined);
 
@@ -75,6 +80,9 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0f, 0.5f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        spriteBatch.setProjectionMatrix(camera.combined);
+        debugRenderer.render(world,camera.combined);
+
         spriteBatch.begin();
 
         //Render map
@@ -85,13 +93,17 @@ public class GameScreen implements Screen {
 
         spriteBatch.end();
 
-        spriteBatch.setProjectionMatrix(camera.combined);
-        debugRenderer.render(world,camera.combined);
+        spriteBatch.setProjectionMatrix(stage.getCamera().combined);
+        spriteBatch.begin();
+        stage.getCamera().update();
+        stage.act(delta);
+        stage.draw();
+        spriteBatch.end();
     }
 
     @Override
     public void resize(int width, int height) {
-
+        stage.getViewport().update(width, height, false);
     }
 
     @Override
