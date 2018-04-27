@@ -2,6 +2,7 @@ package com.minichri.physics;
 
 import com.badlogic.gdx.physics.box2d.*;
 import com.minichri.Elements.Resource;
+import com.minichri.Elements.Spikes;
 import com.minichri.World.GameMap;
 import com.minichri.entity.Player;
 import com.minichri.helpers.TileType;
@@ -10,7 +11,6 @@ import com.minichri.inventory.Item;
 public class ContactManager implements ContactListener {
 
     public static final String FEET = "Feet";
-    public static final String TILE = "Tile";
 
     private World world;
     private GameMap gameMap;
@@ -34,12 +34,25 @@ public class ContactManager implements ContactListener {
 
         //Check for player collison
         if(fa.getBody().getUserData()instanceof Player || fb.getBody().getUserData() instanceof Player){
-            Object other = (fa.getBody().getUserData() instanceof Player ? fb : fa).getBody().getUserData();
+            Player player;
+            Object other;
+            if (fa.getBody().getUserData() instanceof Player) {
+                player = (Player)fa.getBody().getUserData();
+                other = fb.getBody().getUserData();
+            } else {
+                player = (Player)fb.getBody().getUserData();
+                other = fa.getBody().getUserData();
+            }
 
             //Collision with resource
             if(other instanceof Resource) {
                 gameMap.addToRemoveResource((Resource)other);
                 Player.getInventory().add(new Item(TileType.convertFromResourceToPlatform(((Resource) other).getTileType())));
+            }
+
+            // Collision with spikes
+            if (other instanceof Spikes) {
+                player.kill();
             }
         }
     }

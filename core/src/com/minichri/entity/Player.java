@@ -51,6 +51,7 @@ public class Player extends TextureObject {
         return _inventory;
     }
 
+    private World world;
     private boolean isMidAir = false;
     private boolean isCrouched = false;
     private boolean hasJumped = false;
@@ -59,6 +60,8 @@ public class Player extends TextureObject {
     private Vector2 placeVector = new Vector2(0,0);
     private Texture preview;
     private boolean spawning;
+    private boolean isDead = false;
+    private float deathTimer = 0;
 
     private Body feet;
 
@@ -71,6 +74,7 @@ public class Player extends TextureObject {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(FEET_WIDTH/2f, FEET_HEIGHT/2f);
 
+        this.world = world;
         FixtureDef feetDef = new FixtureDef();
         feetDef.shape = shape;
         feetDef.density = 0;
@@ -93,7 +97,38 @@ public class Player extends TextureObject {
         for(RenderableObject renderableObject : playerTiles)
                 renderableObject.render(batch, delta);
 
+        if (!isDead) {
+            movement(map, controller, batch, delta);
+            blockPlacing(batch, map, controller, mousePos);
+        } else {
+            resolveDeath(batch, delta);
+        }
 
+        super.render(batch, delta);
+    }
+
+    private void blockPlacing(SpriteBatch batch, GameMap map, KeyboardController controller, Vector3 mousePos) {
+        //Spawn blocks at the click
+        if (getInventory().getSelectedItem()!=null){
+            placeVector.x = Math.round(mousePos.x);
+            placeVector.y = Math.round(mousePos.y);
+            float distance = new Vector2(placeVector).sub(body.getPosition()).len();
+            if (distance<maxRange && distance>minRange){
+                preview = getInventory().getSelectedItem().getType().getBlockTexture();
+                batch.draw(getInventory().getSelectedItem().getType().getBlockTexture(),placeVector.x-0.5f,placeVector.y-0.5f,1, 1);
+                if (controller.leftClick){
+                    if (!map.isTileOcccipied((int)placeVector.x, (int)placeVector.y)) {
+                        TileType type = getInventory().getSelectedItem().getType();
+                        map.setTile(type, placeVector);
+                        queue.add(new Tile(world, type, placeVector));
+                        getInventory().remove(getInventory().getSelectedSlot());
+                    }
+                }
+            }
+        }
+    }
+
+    private void movement(GameMap map, KeyboardController controller, SpriteBatch batch, float delta) {
         Vector2 vel = body.getLinearVelocity();
 
         isMidAir = !(ContactManager.feetCollisions > 0 && Math.abs(vel.y) <= 1e-2);
@@ -118,25 +153,6 @@ public class Player extends TextureObject {
         if (controller.s) isCrouched = true;
         else isCrouched = false;
 
-        //Spawn blocks at the click
-        if (getInventory().getSelectedItem()!=null){
-            placeVector.x = Math.round(mousePos.x);
-            placeVector.y = Math.round(mousePos.y);
-            float distance = new Vector2(placeVector).sub(body.getPosition()).len();
-                if (distance<maxRange && distance>minRange){
-                    preview = getInventory().getSelectedItem().getType().getBlockTexture();
-                    batch.draw(getInventory().getSelectedItem().getType().getBlockTexture(),placeVector.x-0.5f,placeVector.y-0.5f,1, 1);
-                    if (controller.leftClick){
-                    if (!map.isTileOcccipied((int)placeVector.x, (int)placeVector.y)) {
-                        TileType type = getInventory().getSelectedItem().getType();
-                        map.setTile(type, placeVector);
-                        queue.add(new Tile(world, type, placeVector));
-                        getInventory().remove(getInventory().getSelectedSlot());
-                   }
-                }
-            }
-        }
-
         // Restrict vel x
         float restrictVelX = Math.min(Math.max(-MAX_X_VEL, vel.x), MAX_X_VEL);
         vel.x = restrictVelX;
@@ -148,15 +164,28 @@ public class Player extends TextureObject {
         feet.setTransform(new Vector2(body.getPosition()).add(0, FEET_Y_OFFSET), 0);
 
         updateTexture(dir);
-        super.render(batch, delta);
     }
 
-    public void updateTexture(int moveDirection) {
+    private void updateTexture(int moveDirection) {
         // Changes the player texture based on movement
         if (moveDirection < 0)
             texture = playerTexLeft;
         else if (moveDirection > 0)
             texture = playerTexRight;
+    }
+
+    public void resolveDeath(SpriteBatch batch, float delta) {
+        deathTimer += delta;
+        if (deathTimer < 0.5f) batch.setColor(1, 0, 0, 1);
+        else if (delta < 1f) batch.setColor(0, 0, 0, 1);
+        else {
+            isDead = false;
+        }
+    }
+
+    public void kill() {
+        isDead = true;
+        deathTimer = 0;
     }
 
     public Vector2 getBodyPos(){

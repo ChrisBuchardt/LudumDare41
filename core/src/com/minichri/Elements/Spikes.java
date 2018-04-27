@@ -16,6 +16,7 @@ public class Spikes extends TextureObject {
 
     public Spikes(World world, Vector2 pos) {
         super(world, pos, BODY_DEF, FIXTURE_DEF, new TextureRegion(new Texture("tiles/spikes.png")));
+        body.setUserData(this);
     }
 
     /** The BodyDef used for something like tiles */
