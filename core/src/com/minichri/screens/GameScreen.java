@@ -32,11 +32,9 @@ public class GameScreen implements Screen {
     private ArrayList<TextureObject> gameMap;
     private int playerIndex;
 
-
-
-    public  GameScreen(MainGame game){
+    public GameScreen(MainGame game) {
         this.game = game;
-        this.world = new World(new Vector2(0,-9.8f), true); //Creating the world with gravity
+        this.world = new World(new Vector2(0, -9.8f), true); //Creating the world with gravity
         world.setContactListener(new GameContactListener(world));
 
         this.spriteBatch = new SpriteBatch();
@@ -57,7 +55,6 @@ public class GameScreen implements Screen {
 
         debugRenderer = new Box2DDebugRenderer(true,true,true,true,true,true);
     }
-
 
     @Override
     public void show() {

@@ -17,6 +17,7 @@ public class Player extends TextureObject {
     private boolean isCrouched;
     private float maxVelocity = 40;
     private float jumpPower = 80;
+
     // Inventory singleton
     private static Inventory _inventory;
     public static Inventory getInventory() {
@@ -28,7 +29,7 @@ public class Player extends TextureObject {
     private static TextureRegion playerTexRight = new TextureRegion(new Texture("player/player_right.png"),0,0,16,16);
 
     public Player(World world, Vector2 pos) {
-        super(world, pos, GameObject.DEFAULT_DYNAMIC_BODYDEF,GameObject.DEFAULT_DYNAMIC_FIXTUREDEF,playerTexLeft);
+        super(world, pos, GameObject.DEFAULT_DYNAMIC_BODYDEF, GameObject.DEFAULT_DYNAMIC_FIXTUREDEF, playerTexLeft);
         body.setGravityScale(10f);
         body.setLinearDamping(0);
         body.setUserData("Grounded");
@@ -86,7 +87,6 @@ public class Player extends TextureObject {
 
         //Draws the texture the size of the player
         super.render(batch);
-
 
         //Exits game
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))Gdx.app.exit();
