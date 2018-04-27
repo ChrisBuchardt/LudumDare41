@@ -16,4 +16,5 @@ public class Tile extends TextureObject {
         this.tileType = tileType;
         body.setUserData(this);
     }
+
 }

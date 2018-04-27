@@ -50,7 +50,7 @@ public class GameMap {
         for(RenderableObject renderableObject : gameObjects)
             renderableObject.render(spriteBatch, delta);
 
-        getPlayer().render(world,mousePos,controller, spriteBatch, delta);
+        getPlayer().render(this,world,mousePos,controller, spriteBatch, delta);
     }
 
     /** Removes the objects listed in the removequeue from the gameObjects list */
