@@ -1,16 +1,13 @@
 package com.minichri.screens;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.minichri.helpers.GameInfo;
 import com.minichri.inventory.Inventory;
+import com.minichri.inventory.InventorySlotUI;
 
 import static com.minichri.helpers.GameInfo.UI_SCALE;
 

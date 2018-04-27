@@ -12,7 +12,7 @@ public class Tile extends TextureObject {
     private TileType tileType;
 
     public Tile(World world, TileType tileType, Vector2 pos) {
-        super(world, pos, GameObject.DEFAULT_STATIC_BODYDEF, GameObject.DEFAULT_STATIC_FIXTUREDEF, new TextureRegion(tileType.getTexture()));
+        super(world, pos, GameObject.DEFAULT_STATIC_BODYDEF, GameObject.DEFAULT_STATIC_FIXTUREDEF, new TextureRegion(tileType.getBlockTexture()));
         this.tileType = tileType;
         body.setUserData(this);
     }

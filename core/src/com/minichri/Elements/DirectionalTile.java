@@ -23,9 +23,9 @@ public class DirectionalTile extends Tile {
 
         TextureRegion[] regions = new TextureRegion[4];
 
-        regions[0] = new TextureRegion(texture, 16, 16, GameInfo.TILE_SIZE, GameInfo.TILE_SIZE); //Under
-        regions[1] = new TextureRegion(texture, 16, 0, GameInfo.TILE_SIZE, GameInfo.TILE_SIZE); //Middle
-        regions[2] = new TextureRegion(texture, 0, 16, GameInfo.TILE_SIZE, GameInfo.TILE_SIZE); //Left
+        regions[0] = new TextureRegion(texture, GameInfo.TILE_SIZE, GameInfo.TILE_SIZE, GameInfo.TILE_SIZE, GameInfo.TILE_SIZE); //Under
+        regions[1] = new TextureRegion(texture, GameInfo.TILE_SIZE, 0, GameInfo.TILE_SIZE, GameInfo.TILE_SIZE); //Middle
+        regions[2] = new TextureRegion(texture, 0, GameInfo.TILE_SIZE, GameInfo.TILE_SIZE, GameInfo.TILE_SIZE); //Left
         regions[3] = new TextureRegion(texture, 0, 0, GameInfo.TILE_SIZE, GameInfo.TILE_SIZE); //Right
 
         switch (placementType){

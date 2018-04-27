@@ -1,9 +1,10 @@
-package com.minichri.screens;
+package com.minichri.inventory;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.minichri.entity.Player;
 import com.minichri.helpers.GameInfo;
@@ -31,10 +32,11 @@ public class InventorySlotUI extends Image implements InventoryListener {
 
     @Override
     public void onChange(Inventory inventory) {
-        if (inventory.getSelectedSlot() == index) {
-            setDrawable(new TextureRegionDrawable(new TextureRegion(selectedTexture)));
-        } else {
-            setDrawable(new TextureRegionDrawable(new TextureRegion(slotTexture)));
-        }
+        Drawable slotDrawable = new TextureRegionDrawable(new TextureRegion(inventory.getSelectedSlot() == index ? selectedTexture : slotTexture));
+        setDrawable(slotDrawable);
+
+        Item item = inventory.get(index);
+        Drawable itemDrawable = item == null ? null : new TextureRegionDrawable(new TextureRegion(item.getType().getItemTexture()));
+        image.setDrawable(itemDrawable);
     }
 }
