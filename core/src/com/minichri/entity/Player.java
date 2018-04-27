@@ -58,6 +58,7 @@ public class Player extends TextureObject {
         feet.setUserData(PlayerFeetContactListener.FEET);
         feet.setGravityScale(0);
         body.setLinearDamping(0);
+        body.setUserData(this);
     }
 
     @Override

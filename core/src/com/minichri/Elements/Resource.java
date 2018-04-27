@@ -14,5 +14,6 @@ public class Resource extends AnimatedObject {
         super(world, pos, GameObject.DEFAULT_STATIC_BODYDEF, GameObject.DEFAULT_STATIC_FIXTUREDEF, tileType.getTexture(), RESOURCE_FRAMES);
 
         body.getFixtureList().get(0).setSensor(true);
+        body.setUserData(this);
     }
 }
