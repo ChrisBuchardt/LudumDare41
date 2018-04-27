@@ -22,8 +22,8 @@ public class Player extends TextureObject {
     private static final float FEET_HEIGHT = 0.2f;
     private static final float FEET_Y_OFFSET = -.85f;
     private static final float MAX_X_VEL = 6f;
-    private static final float JUMP_FORCE = 10f;
-    private static final float JUMP_FORCE_IN_AIR = 7.5f;
+    private static final float JUMP_FORCE = 11.4f;
+    private static final float JUMP_FORCE_IN_AIR = 9f;
     private static final float WALK_SPEED = 6f;
     private static final float AIR_WALK_FORCE = 0.3f;
 
