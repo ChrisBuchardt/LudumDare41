@@ -66,6 +66,18 @@ public enum TileType {
         return isResourceTile;
     }
 
+    /** Converts a RESOURCE enum to a PLATFORM enum (used when item is given to inventory) */
+    public static TileType convertFromResourceToPlatform(TileType resourceType){
+
+        switch (resourceType){
+            case RESOURCE_BLUE: return PLATFORM_BLUE;
+            case RESOURCE_GREEN: return PLATFORM_GREEN;
+            case RESOURCE_PURPLE: return PLATFORM_PURPLE;
+        }
+
+        return null;
+    }
+
     /** An enum describing the tiles placement related to its surroundings */
     public enum TextureDirection {
         LEFT, MIDDLE, RIGHT, UNDER
