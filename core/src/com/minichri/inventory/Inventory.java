@@ -32,6 +32,7 @@ public class Inventory {
         for (int i = nextEmpty; i < SIZE; i++) {
             if (items[i] == null) {
                 nextEmpty = i;
+                break;
             }
         }
 

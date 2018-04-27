@@ -2,6 +2,7 @@ package com.minichri.helpers;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public enum TileType {
 
@@ -17,7 +18,8 @@ public enum TileType {
     ;
 
     private Color color;
-    private Texture texture;
+    private Texture blockTexture;
+    private TextureRegion itemTexture;
     private boolean isDirectionalTile;
     private boolean isResourceTile;
 
@@ -26,9 +28,10 @@ public enum TileType {
         this.isDirectionalTile = isDirectionalTile;
         this.isResourceTile = isResourceTile;
 
-        if(pathToTexture != null)
-            this.texture = new Texture(pathToTexture);
-
+        if(pathToTexture != null) {
+            this.blockTexture = new Texture(pathToTexture);
+            itemTexture = new TextureRegion(blockTexture, 2 * GameInfo.TILE_SIZE, 0, GameInfo.TILE_SIZE, GameInfo.TILE_SIZE);
+        }
     }
 
     /** Takes a color and returns a matching type. Returns null of non matches.
@@ -43,8 +46,12 @@ public enum TileType {
         return null;
     }
 
-    public Texture getTexture() {
-        return texture;
+    public Texture getBlockTexture() {
+        return blockTexture;
+    }
+
+    public TextureRegion getItemTexture() {
+        return itemTexture;
     }
 
     public Color getColor() {
