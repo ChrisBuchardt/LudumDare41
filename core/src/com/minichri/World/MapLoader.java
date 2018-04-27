@@ -9,9 +9,11 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.minichri.Elements.DirectionalTile;
 import com.minichri.Elements.Resource;
 import com.minichri.Elements.Tile;
+import com.minichri.MainGame;
 import com.minichri.entity.Player;
 import com.minichri.entity.RenderableObject;
 import com.minichri.helpers.TileType;
+import com.minichri.screens.GameScreen;
 
 import java.util.ArrayList;
 
@@ -19,12 +21,14 @@ public class MapLoader {
 
     private ArrayList<RenderableObject> tilesList;
     private Player player;
+    private World world;
 
     /** Loads an image.
      * @param levelImageLocation a path to a level image.
-     * @param world the world where the elements will be spawned in. */
-    public void loadLevelFromImage(String levelImageLocation, World world){
+     * @param screen the world where the elements will be spawned in. */
+    public void loadLevelFromImage(String levelImageLocation, GameScreen screen){
 
+        this.world = screen.world;
         tilesList = new ArrayList<>();
 
         //Load map image and create pixmap containing the pixels
