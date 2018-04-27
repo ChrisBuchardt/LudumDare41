@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.minichri.Elements.DirectionalTile;
 import com.minichri.Elements.Resource;
+import com.minichri.Elements.Spikes;
 import com.minichri.Elements.Tile;
 import com.minichri.entity.Player;
 import com.minichri.entity.RenderableObject;
@@ -63,22 +64,32 @@ public class MapLoader {
                 TileType currentTileType = TileType.getTypeFromColor(color);
 
                 //Create an element if color was found
-                if(currentTileType == TileType.WHITE_SPACE) { //White-space = do nothing
+
+                if (currentTileType == TileType.WHITE_SPACE || currentTileType == null) { //White-space = do nothing
+
                     tileArray[x][this.mapTileSizeY - (y + 1)] = null;
-                    continue;
-                } else if(currentTileType == TileType.PLAYER){
+
+                } else if (currentTileType == TileType.PLAYER) {
 
                     this.player = new Player(world, currentTilePos);
 
-                }else if(currentTileType.isResourceTile()){ //Resources
+                } else if (currentTileType.isResourceTile()) { //Resources
 
                     this.tilesList.add(new Resource(world, currentTileType, currentTilePos));
 
-                }else if(currentTileType != null){ //Add tile based on tileType
+                } else if (currentTileType == TileType.SPIKES) {
 
-                    tileArray[x][this.mapTileSizeY - (y + 1)] = new Tile(world, currentTileType, currentTilePos);
+                    RenderableObject spike = new Spikes(world, currentTilePos);
+                    this.tilesList.add(spike);
 
-                    if(currentTileType.isDirectionalTile()){ //Is the tile directional?
+                } else { //Add tile based on tileType
+
+                    Tile tile;
+
+                    if (!currentTileType.isDirectionalTile()) {
+                        tile = new Tile(world, currentTileType, currentTilePos);
+
+                    } else { //Is the tile directional?
 
                         //Get tiletypes of surrounding tiles
                         Color.rgba8888ToColor(color, levelPixmap.getPixel(x, y-1));
@@ -88,31 +99,12 @@ public class MapLoader {
                         Color.rgba8888ToColor(color, levelPixmap.getPixel(x+1, y));
                         TileType rightTileType = TileType.getTypeFromColor(color);
 
-                        //Surrounding checks
-                        boolean isTileAboveTheSame = currentTileType == aboveTileType;//Is the block above the same as this?
-                        boolean isTileLeftTheSame = currentTileType == leftTileType;//Is the block to the left the same?
-                        boolean isTileRightTheSame = currentTileType == rightTileType;//Is the block to the right the same?
-
-                        if(isTileAboveTheSame){ //Under block
-                            this.tilesList.add(new DirectionalTile(world, TileType.TextureDirection.UNDER, currentTileType, currentTilePos));
-                        }else if(aboveTileType == TileType.WHITE_SPACE){ //Above free
-
-                            if(isTileLeftTheSame && isTileRightTheSame){ //Both sides free
-                                this.tilesList.add(new DirectionalTile(world, TileType.TextureDirection.MIDDLE, currentTileType, currentTilePos));
-                            }else if(leftTileType == TileType.WHITE_SPACE){ //Left is free
-                                if(rightTileType == TileType.WHITE_SPACE) //Is right also free
-                                    this.tilesList.add(new DirectionalTile(world, TileType.TextureDirection.MIDDLE, currentTileType, currentTilePos));
-                                else
-                                    this.tilesList.add(new DirectionalTile(world, TileType.TextureDirection.LEFT, currentTileType, currentTilePos));
-                            }else if(rightTileType == TileType.WHITE_SPACE){ //Right is free
-                                this.tilesList.add(new DirectionalTile(world, TileType.TextureDirection.RIGHT, currentTileType, currentTilePos));
-                            }else
-                                this.tilesList.add(new DirectionalTile(world, TileType.TextureDirection.MIDDLE, currentTileType, currentTilePos));
-                        }
-
-                    }else{
-                        this.tilesList.add(new Tile(world, currentTileType, currentTilePos));
+                        TileType.TextureDirection direction = createDirectionalTile(currentTileType, aboveTileType, leftTileType, rightTileType);
+                        tile = new DirectionalTile(world, direction, currentTileType, currentTilePos);
                     }
+
+                    this.tilesList.add(tile);
+                    tileArray[x][this.mapTileSizeY - (y + 1)] = tile;
                 }
             }
         }
@@ -121,6 +113,34 @@ public class MapLoader {
         levelTexture.dispose();
         tempData.disposePixmap();
         levelPixmap.dispose();
+    }
+
+    private TileType.TextureDirection createDirectionalTile(TileType currentTileType, TileType above, TileType left, TileType right) {
+
+        //Surrounding checks
+        boolean isTileAboveTheSame = currentTileType == above;//Is the block above the same as this?
+        boolean isTileLeftTheSame = currentTileType == left;//Is the block to the left the same?
+        boolean isTileRightTheSame = currentTileType == right;//Is the block to the right the same?
+
+        if (isTileAboveTheSame) { //Under block
+            return TileType.TextureDirection.UNDER;
+        } else if (above == TileType.WHITE_SPACE) { //Above free
+
+            if (isTileLeftTheSame && isTileRightTheSame) { //Both sides free
+                return TileType.TextureDirection.MIDDLE;
+            } else if(left == TileType.WHITE_SPACE) { //Left is free
+                if(right == TileType.WHITE_SPACE) //Is right also free
+                    return TileType.TextureDirection.MIDDLE;
+                else
+                    return TileType.TextureDirection.LEFT;
+            } else if(right == TileType.WHITE_SPACE) { //Right is free
+                return TileType.TextureDirection.RIGHT;
+            } else {
+                return TileType.TextureDirection.MIDDLE;
+            }
+        } else {
+            return TileType.TextureDirection.UNDER;
+        }
     }
 
     public ArrayList<RenderableObject> getTilesList() {
