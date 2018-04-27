@@ -22,7 +22,6 @@ public class PlayerFeetContactListener implements ContactListener {
 
         if (fa.getBody().getUserData() == FEET || fb.getBody().getUserData() == FEET) {
             feetCollisions++;
-            isFeetOnGround = true;
         }
     }
 
@@ -33,7 +32,6 @@ public class PlayerFeetContactListener implements ContactListener {
 
         if (fa.getBody().getUserData() == FEET || fb.getBody().getUserData() == FEET) {
             feetCollisions--;
-            isFeetOnGround = false;
         }
     }
 
