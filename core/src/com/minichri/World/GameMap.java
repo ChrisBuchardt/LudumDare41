@@ -2,6 +2,7 @@ package com.minichri.World;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.minichri.Elements.Resource;
 import com.minichri.entity.GameObject;
 import com.minichri.entity.Player;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 public class GameMap {
 
     private ArrayList<RenderableObject> gameObjects;
-    private ArrayList<RenderableObject> removeQeue = new ArrayList<>();
+    private ArrayList<RenderableObject> removeQueue = new ArrayList<>();
     private Player player;
     private World world;
 
@@ -40,10 +41,11 @@ public class GameMap {
 
     /** Removes the objects listed in the removequeue from the gameObjects list */
     private void processRemoveQueue(){
-        if(removeQeue.size() != 0){
-            for(RenderableObject removeQueueObject : removeQeue){
+        if(removeQueue.size() != 0){
+            for(RenderableObject removeQueueObject : new ArrayList<>(removeQueue)){
                 gameObjects.remove(removeQueueObject);
                 world.destroyBody(((GameObject) removeQueueObject).getBody());
+                removeQueue.remove(removeQueueObject);
             }
         }
     }
@@ -52,9 +54,9 @@ public class GameMap {
     public void addToRemoveResource(Resource resource){
 
         //Find the resource in the map
-        for(RenderableObject renderableObject : new ArrayList<>(gameObjects)){
+        for(RenderableObject renderableObject : gameObjects){
             if(renderableObject == resource){
-                this.removeQeue.add(renderableObject); //Add to remove queue
+                this.removeQueue.add(renderableObject); //Add to remove queue
             }
         }
     }

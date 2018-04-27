@@ -75,6 +75,10 @@ public class Inventory {
         return selectedSlot;
     }
 
+    public int getItemCount() {
+        return itemCount;
+    }
+
     /** @return item in selected slot. Can be null. */
     public Item getSelectedItem() {
         return items[selectedSlot];
