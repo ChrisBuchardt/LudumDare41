@@ -77,8 +77,6 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         spriteBatch.begin();
-        spriteBatch.draw(img2,0,img.getHeight());
-        spriteBatch.draw(img,0,0);
 
         //TODO MIKKEL
         for(TextureObject textureObject : gameMap)
@@ -120,6 +118,5 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         spriteBatch.dispose();
-        img.dispose();
     }
 }
