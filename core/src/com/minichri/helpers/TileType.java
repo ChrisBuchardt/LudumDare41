@@ -6,7 +6,10 @@ import com.badlogic.gdx.graphics.Texture;
 public enum TileType {
     PLAYER(Constants.PLAYER_COLOR, false, null),
     WHITE_SPACE(Constants.WHITE_SPACE_COLOR, false, null),
-    GROUND(Constants.GROUND_COLOR, true, "tiles/groundTiles.png");
+    GROUND(Constants.GROUND_COLOR, true, "tiles/groundTiles.png"),
+    RESOURCE_BLUE(Constants.RESOURCE_BLUE, false, "tiles/platform_resource_blue.png"),
+    RESOURCE_GREEN(Constants.RESOURCE_GREEN , false, "tiles/platform_resource_green.png"),
+    RESOURCE_PURPLE(Constants.RESOURCE_PURPLE, false, "tiles/platform_resource_purple.png");
 
     private Color color;
     private Texture texture;
@@ -31,6 +34,12 @@ public enum TileType {
             return GROUND;
         if(color.equals(TileType.PLAYER.getColor()))
             return PLAYER;
+        if(color.equals(TileType.RESOURCE_BLUE.getColor()))
+            return RESOURCE_BLUE;
+        if(color.equals(TileType.RESOURCE_GREEN.getColor()))
+            return RESOURCE_GREEN;
+        if(color.equals(TileType.RESOURCE_PURPLE.getColor()))
+            return RESOURCE_PURPLE;
         else
             return null;
     }
@@ -52,10 +61,13 @@ public enum TileType {
         static final Color PLAYER_COLOR = Color.valueOf("#26ffff00");
         static final Color WHITE_SPACE_COLOR = Color.valueOf("#FFFFFFFF");
         static final Color GROUND_COLOR = Color.valueOf("#0000FF00");
+        static final Color RESOURCE_BLUE = Color.valueOf("#00000000");
+        static final Color RESOURCE_GREEN = Color.valueOf("#00000000");
+        static final Color RESOURCE_PURPLE = Color.valueOf("#00000000");
     }
 
     /** An enum describing the tiles placement related to its surroundings */
     public enum TileTextureDirection {
-        LEFT, MIDDLE, RIGHT, UNDER;
+        LEFT, MIDDLE, RIGHT, UNDER
     }
 }
