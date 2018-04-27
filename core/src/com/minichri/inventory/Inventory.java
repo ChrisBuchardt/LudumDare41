@@ -11,6 +11,7 @@ public class Inventory {
     private Item[] items;
     private int itemCount = 0;
     private int nextEmpty = 0;
+    private int selectedSlot = 0;
     private List<InventoryListener> listeners;
 
     public Inventory() {
@@ -58,6 +59,25 @@ public class Inventory {
     /** @return empty slot count. */
     public int slotsLeft() {
         return SIZE - itemCount;
+    }
+
+    public void setSelectedSlot(int i) {
+        selectedSlot = Math.min(Math.max(0, i), SIZE);
+    }
+
+    /** Move selected slot. slots = 1 is one to the right. Negative for left. */
+    public void moveSelectedBy(int slots) {
+        setSelectedSlot(selectedSlot + slots);
+    }
+
+    /** @return index of selected slot. */
+    public int getSelectedSlot() {
+        return selectedSlot;
+    }
+
+    /** @return item in selected slot. Can be null. */
+    public Item getSelectedItem() {
+        return items[selectedSlot];
     }
 
     private void updateListeners() {

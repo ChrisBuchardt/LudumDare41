@@ -17,6 +17,7 @@ import static com.minichri.helpers.GameInfo.UI_SCALE;
 public class IngameStage extends Stage {
 
     private Texture slotTexture = new Texture("ui/inventory_slot.png");
+    private Texture slotTextureSelected = new Texture("ui/inventory_slot_selected.png");
 
     public IngameStage(Viewport viewport) {
         super(viewport);
@@ -37,7 +38,7 @@ public class IngameStage extends Stage {
         }
         hotbarTable.row();
         for (int i = 0; i < Inventory.SIZE; i++) {
-            InventorySlotUI slot = new InventorySlotUI(i, slotTexture, images[i]);
+            InventorySlotUI slot = new InventorySlotUI(i, slotTexture, slotTextureSelected, images[i]);
             hotbarTable.add(slot).size(width, height).fill();
         }
     }
