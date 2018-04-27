@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.minichri.helpers.GameInfo;
 
 public class TextureObject extends GameObject {
 
@@ -21,8 +22,8 @@ public class TextureObject extends GameObject {
     /** Render the TextureObjects texture at the body's position. */
     public void render(SpriteBatch batch) {
         Vector2 pos = body.getPosition();
-        float width = texture.getRegionWidth();
-        float height = texture.getRegionHeight();
+        float width = texture.getRegionWidth() * GameInfo.PPM;
+        float height = texture.getRegionHeight() * GameInfo.PPM;
         batch.draw(texture, pos.x - width/2, pos.y - height/2, width / 2f, height / 2f, width, height, 1, 1, body.getAngle());
     }
 }

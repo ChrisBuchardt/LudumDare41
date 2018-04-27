@@ -15,11 +15,18 @@ import java.util.SortedMap;
 
 public class Player extends TextureObject {
 
+    public static final float WIDTH = 1;
+    public static final float HEIGHT = 1.2f;
+    public static final float FEET_WIDTH = WIDTH * 0.8f;
+    public static final float FEET_HEIGHT = 0.12f;
+    public static final float FEET_Y_OFFSET = -WIDTH/2f;
+
     private boolean isMidAir;
     private boolean isCrouched;
     private float maxVelocity = 40;
     private float jumpPower = 80;
     private Body feet;
+
     // Inventory singleton
     private static Inventory _inventory;
     public static Inventory getInventory() {
@@ -27,23 +34,22 @@ public class Player extends TextureObject {
         return _inventory;
     }
 
-    private static TextureRegion playerTexLeft = new TextureRegion(new Texture("player/player_left.png"),0,0,16,16);
-    private static TextureRegion playerTexRight = new TextureRegion(new Texture("player/player_right.png"),0,0,16,16);
+    private static TextureRegion playerTexLeft = new TextureRegion(new Texture("player/player_left.png"), 0, 0, 16, 16);
+    private static TextureRegion playerTexRight = new TextureRegion(new Texture("player/player_right.png"), 0, 0, 16, 16);
 
     public Player(World world, Vector2 pos) {
         super(world, pos, GameObject.DEFAULT_DYNAMIC_BODYDEF,GameObject.DEFAULT_DYNAMIC_FIXTUREDEF,playerTexLeft);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox((GameInfo.TILE_SIZE / 2f) - 1f, (1f));
+        shape.setAsBox(FEET_WIDTH/2f, FEET_HEIGHT/2f);
 
-        // TODO Clean the player class up
         FixtureDef feetDef = new FixtureDef();
         feetDef.shape = shape;
         feetDef.density = 0;
         feetDef.friction = 1;
         feetDef.restitution = 0;
         feetDef.isSensor = false;
-        feet = new GameObject(world,new Vector2(pos.x,pos.y-5),GameObject.DEFAULT_DYNAMIC_BODYDEF,feetDef).getBody();
+        feet = new GameObject(world, new Vector2(pos.x, pos.y + FEET_Y_OFFSET), GameObject.DEFAULT_DYNAMIC_BODYDEF,feetDef).getBody();
         feet.setUserData("In Air");
         body.setGravityScale(10f);
         body.setLinearDamping(0);
@@ -100,19 +106,11 @@ public class Player extends TextureObject {
         }
         else isCrouched = false;
 
-        //Draws the texture the size of the player
-       /* Vector2 pos = body.getPosition();
-        float width = GameInfo.TILE_SIZE;
-        float height = GameInfo.PLAYER_HEIGHT;
-        batch.draw(texture, pos.x - width/2, pos.y - height/2, width / 2f, height / 2f, width, height, 1, 1, body.getAngle());*/
-
+        //Exits game
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))body.setTransform(368.0f,176.0f,0);
 
         super.render(batch);
         feet.setTransform(body.getPosition().sub(0,5),0);
-
-
-        //Exits game
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))body.setTransform(368.0f,176.0f,0);
     }
 
     public Vector2 getBodyPos(){

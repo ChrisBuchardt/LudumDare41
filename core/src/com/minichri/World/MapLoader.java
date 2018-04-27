@@ -41,7 +41,7 @@ public class MapLoader {
             for (int x = 0; x < levelPixmap.getWidth(); x++) {
 
                 //Calculate tiles coordinates
-                currentTilePos = new Vector2(x * GameInfo.TILE_SIZE, (levelPixmap.getHeight() - y) * GameInfo.TILE_SIZE);
+                currentTilePos = new Vector2(x, levelPixmap.getHeight() - y);
 
                 //Get a color
                 Color color = new Color();
