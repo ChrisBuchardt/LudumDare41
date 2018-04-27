@@ -57,7 +57,7 @@ public class Player extends TextureObject {
     }
 
     @Override
-    public void render(SpriteBatch batch) {
+    public void render(SpriteBatch batch, float delta) {
 
         isMidAir = feet.getUserData() != "Grounded";
 
@@ -108,9 +108,9 @@ public class Player extends TextureObject {
 
         //Exits game
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))body.setTransform(368.0f,176.0f,0);
+        feet.setTransform(body.getPosition().sub(0, FEET_Y_OFFSET), 0);
 
-        super.render(batch);
-        feet.setTransform(body.getPosition().sub(0,5),0);
+        super.render(batch, delta);
     }
 
     public Vector2 getBodyPos(){

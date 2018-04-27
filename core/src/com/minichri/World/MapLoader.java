@@ -7,8 +7,10 @@ import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.minichri.Elements.DirectionalTile;
+import com.minichri.Elements.Resource;
 import com.minichri.Elements.Tile;
 import com.minichri.entity.Player;
+import com.minichri.entity.RenderableObject;
 import com.minichri.entity.TextureObject;
 import com.minichri.helpers.GameInfo;
 import com.minichri.helpers.TileType;
@@ -17,7 +19,8 @@ import java.util.ArrayList;
 
 public class MapLoader {
 
-    private ArrayList<TextureObject> tilesList;
+    //private ArrayList<TextureObject> tilesList;
+    private ArrayList<RenderableObject> tilesList;
     private int playerIndex;
 
     /** Loads an image.
@@ -58,6 +61,10 @@ public class MapLoader {
 
                     this.tilesList.add(new Player(world, currentTilePos));
                     this.playerIndex = tilesList.size()-1;
+
+                }else if(currentTileType.isResourceTile()){ //Resources
+
+                    this.tilesList.add(new Resource(world, currentTileType, currentTilePos));
 
                 }else if(currentTileType != null){ //Add tile based on tileType
 
@@ -106,7 +113,7 @@ public class MapLoader {
         levelPixmap.dispose();
     }
 
-    public ArrayList<TextureObject> getTilesList() {
+    public ArrayList<RenderableObject> getTilesList() {
         return tilesList;
     }
 

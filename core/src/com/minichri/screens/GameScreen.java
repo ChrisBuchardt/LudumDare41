@@ -14,6 +14,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.minichri.MainGame;
 import com.minichri.World.MapLoader;
+import com.minichri.entity.GameObject;
+import com.minichri.entity.Player;
+import com.minichri.entity.RenderableObject;
 import com.minichri.entity.TextureObject;
 import com.minichri.helpers.GameInfo;
 import com.minichri.physics.GameContactListener;
@@ -31,7 +34,7 @@ public class GameScreen implements Screen {
     private Stage stage;
     private Box2DDebugRenderer debugRenderer;
 
-    private ArrayList<TextureObject> gameMap;
+    private ArrayList<RenderableObject> gameMap;
     private int playerIndex;
 
     public GameScreen(MainGame game) {
@@ -67,9 +70,9 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
 
+        camera.position.x = ((TextureObject)gameMap.get(playerIndex)).getBody().getPosition().x;
+        camera.position.y = ((TextureObject)gameMap.get(playerIndex)).getBody().getPosition().y;
 
-        camera.position.x = gameMap.get(playerIndex).getBody().getPosition().x;
-        camera.position.y = gameMap.get(playerIndex).getBody().getPosition().y;
         camera.update();
 
         world.step(delta,3,3);
@@ -80,10 +83,10 @@ public class GameScreen implements Screen {
         spriteBatch.begin();
         spriteBatch.draw(background,0,0);
         //Render map
-        for(TextureObject textureObject : gameMap)
-            textureObject.render(spriteBatch);
+        for(RenderableObject renderableObject : gameMap)
+            renderableObject.render(spriteBatch, delta);
 
-        gameMap.get(playerIndex).render(spriteBatch);
+        gameMap.get(playerIndex).render(spriteBatch, delta);
 
         spriteBatch.end();
 

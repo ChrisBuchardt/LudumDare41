@@ -9,7 +9,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.minichri.helpers.GameInfo;
 
-public class TextureObject extends GameObject {
+public class TextureObject extends GameObject implements RenderableObject{
 
     protected TextureRegion texture;
 
@@ -20,7 +20,7 @@ public class TextureObject extends GameObject {
     }
 
     /** Render the TextureObjects texture at the body's position. */
-    public void render(SpriteBatch batch) {
+    public void render(SpriteBatch batch, float delta) {
         Vector2 pos = body.getPosition();
         float width = texture.getRegionWidth() * GameInfo.PPM;
         float height = texture.getRegionHeight() * GameInfo.PPM;

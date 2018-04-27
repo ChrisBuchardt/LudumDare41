@@ -5,24 +5,26 @@ import com.badlogic.gdx.graphics.Texture;
 
 public enum TileType {
 
-    PLAYER("0026FFFF", null, false),
-    WHITE_SPACE("FFFFFFFF", null, false),
-    GROUND("000000FF", "tiles/ground_tiles.png", true),
-    PLATFORM_BLUE("00FFFFFF", "tiles/platform_blue.png", false),
-    PLATFORM_GREEN("00FF21FF", "tiles/platform_green.png", false),
-    PLATFORM_PURPLE("FF00DCFF", "tiles/platform_purple.png", false),
-    RESOURCE_BLUE("FFFFFFFF", "tiles/platform_resource_blue.png", false),
-    RESOURCE_GREEN("FFFFFFFF", "tiles/platform_resource_green.png", false),
-    RESOURCE_PURPLE("FFFFFFFF", "tiles/platform_resource_purple.png", false)
+    PLAYER("0026FFFF", null, false, false),
+    WHITE_SPACE("FFFFFFFF", null, false, false),
+    GROUND("000000FF", "tiles/ground_tiles.png", true, false),
+    PLATFORM_BLUE("FFFFFFFF", "tiles/platform_blue.png", false, false),
+    PLATFORM_GREEN("FFFFFFFF", "tiles/platform_green.png", false, false),
+    PLATFORM_PURPLE("FFFFFFFF", "tiles/platform_purple.png", false, false),
+    RESOURCE_BLUE("00FFFFFF", "tiles/platform_resource_blue.png", false, true),
+    RESOURCE_GREEN("00FF21FF", "tiles/platform_resource_green.png", false, true),
+    RESOURCE_PURPLE("FF00DCFF", "tiles/platform_resource_purple.png", false, true)
     ;
 
     private Color color;
     private Texture texture;
     private boolean isDirectionalTile;
+    private boolean isResourceTile;
 
-    TileType(String color, String pathToTexture, boolean isDirectionalTile){
+    TileType(String color, String pathToTexture, boolean isDirectionalTile, boolean isResourceTile){
         this.color = Color.valueOf(color);
         this.isDirectionalTile = isDirectionalTile;
+        this.isResourceTile = isResourceTile;
 
         if(pathToTexture != null)
             this.texture = new Texture(pathToTexture);
@@ -51,6 +53,10 @@ public enum TileType {
 
     public boolean isDirectionalTile() {
         return isDirectionalTile;
+    }
+
+    public boolean isResourceTile() {
+        return isResourceTile;
     }
 
     /** An enum describing the tiles placement related to its surroundings */
