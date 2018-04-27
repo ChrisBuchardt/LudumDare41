@@ -33,9 +33,15 @@ public class MapLoader {
         tempData.prepare();
         Pixmap levelPixmap = levelTexture.getTextureData().consumePixmap();
 
+        //Coordinates
+        Vector2 currentTilePos;
+
         //Goes through all pixels, analyses and converts the colored pixel to tiles
         for(int y = 0; y < levelPixmap.getHeight(); y++) {
             for (int x = 0; x < levelPixmap.getWidth(); x++) {
+
+                //Calculate tiles coordinates
+                currentTilePos = new Vector2(x * GameInfo.TILE_SIZE, (levelPixmap.getHeight() - y) * GameInfo.TILE_SIZE);
 
                 //Get a color
                 Color color = new Color();
@@ -44,31 +50,43 @@ public class MapLoader {
                 //Check if color matches a type
                 TileType currentTileType = TileType.getTypeFromColor(color);
 
-                //TODO x og y for tiles!
 
                 //Create an element if color was found
                 if(currentTileType == TileType.WHITE_SPACE) { //Do nothing
                     continue;
                 }
                 else if(currentTileType == TileType.PLAYER){
-                    this.tilesList.add(new Player(world, new Vector2(x * GameInfo.TILE_SIZE, (levelPixmap.getHeight() - y) * GameInfo.TILE_SIZE), BodyDef.BodyType.DynamicBody));
+                    this.tilesList.add(new Player(world, currentTilePos));
                     this.playerIndex = tilesList.size()-1;
                 }else if(currentTileType != null){ //Add tile based on tileType
 
-                    //TileType aboveTileType = ;
-                    //TileType leftTileType = ;
-                    //TileType rightTileType = ;
+                    //Get tiletypes of surrounding tiles
+                    Color.argb8888ToColor(color, levelPixmap.getPixel(x, y+1));
+                    TileType aboveTileType = TileType.getTypeFromColor(color);
+                    Color.argb8888ToColor(color, levelPixmap.getPixel(x-1, y));
+                    TileType leftTileType = TileType.getTypeFromColor(color);
+                    Color.argb8888ToColor(color, levelPixmap.getPixel(x+1, y));
+                    TileType rightTileType = TileType.getTypeFromColor(color);
 
 
-                    //boolean isTileAboveTheSame = ;//Is the block above the same as this?
-                    //boolean isTileLeftTheSame = ;//Is the block to the left the same?
-                    //boolean isTileRightTheSame = ;//Is the block to the right the same?
+                    boolean isTileAboveTheSame = currentTileType == aboveTileType;//Is the block above the same as this?
+                    boolean isTileLeftTheSame = currentTileType == leftTileType;//Is the block to the left the same?
+                    boolean isTileRightTheSame = currentTileType == rightTileType;//Is the block to the right the same?
 
+                    if(isTileAboveTheSame){ //Under block
+                        this.tilesList.add(new Tile(world, TileType.TileTextureDirection.UNDER, currentTileType, currentTilePos));
+                    }else if(aboveTileType == TileType.WHITE_SPACE){ //Above free
 
+                       if(isTileLeftTheSame && isTileRightTheSame){ //Both sides free
+                           this.tilesList.add(new Tile(world, TileType.TileTextureDirection.MIDDEL, currentTileType, currentTilePos));
+                       }else if(leftTileType == TileType.WHITE_SPACE){ //Left is free
+                           this.tilesList.add(new Tile(world, TileType.TileTextureDirection.LEFT, currentTileType, currentTilePos));
+                       }else if(rightTileType == TileType.WHITE_SPACE){ //Left is free
+                           this.tilesList.add(new Tile(world, TileType.TileTextureDirection.RIGHT, currentTileType, currentTilePos));
+                       }else
+                           this.tilesList.add(new Tile(world, TileType.TileTextureDirection.MIDDEL, currentTileType, currentTilePos)); //TODO maybe something else?
 
-                    this.tilesList.add(new Tile(world, TileType.TilePlacementType.MIDDEL, currentTileType, x * GameInfo.TILE_SIZE, (levelPixmap.getHeight() - y) * GameInfo.TILE_SIZE)); //TODO Add arguments
-                    //this.tilesList.add(new Tile(world, currentTileType, x * GameInfo.TILE_SIZE, (levelPixmap.getHeight() - y) * GameInfo.TILE_SIZE - GameInfo.TILE_SIZE)); //TODO Add arguments
-
+                    }
                 }
             }
         }
