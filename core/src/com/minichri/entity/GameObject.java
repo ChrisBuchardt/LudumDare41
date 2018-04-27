@@ -55,8 +55,8 @@ public class GameObject {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 1;
-        fixtureDef.friction = 0.5f;
+        fixtureDef.density = 0.4f;
+        fixtureDef.friction = 1f;
         fixtureDef.restitution = 0;
 
         return fixtureDef;
