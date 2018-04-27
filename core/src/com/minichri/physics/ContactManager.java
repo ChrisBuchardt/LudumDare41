@@ -2,7 +2,7 @@ package com.minichri.physics;
 
 import com.badlogic.gdx.physics.box2d.*;
 import com.minichri.Elements.Resource;
-import com.minichri.Elements.Tile;
+import com.minichri.World.GameMap;
 import com.minichri.entity.Player;
 
 public class ContactManager implements ContactListener {
@@ -11,12 +11,14 @@ public class ContactManager implements ContactListener {
     public static final String TILE = "Tile";
 
     private World world;
+    private GameMap gameMap;
 
     public static int feetCollisions = 0;
     public static boolean playerTouchWall = false;
 
-    public ContactManager(World world){
+    public ContactManager(World world, GameMap gameMap){
         this.world = world;
+        this.gameMap = gameMap;
     }
 
     @Override
@@ -34,7 +36,8 @@ public class ContactManager implements ContactListener {
 
             //Collision with resource
             if(other instanceof Resource) {
-
+                gameMap.addToRemoveResource((Resource)other);
+                //TODO: Add item to inventory
             }
         }
     }
