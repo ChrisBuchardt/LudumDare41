@@ -92,7 +92,7 @@ public class Player extends TextureObject {
         isMidAir = !(ContactManager.feetCollisions > 0 && Math.abs(vel.y) <= 1e-2);
 
         if (!isMidAir) hasJumped = false;
-        if (!hasJumped && controller.w  || controller.space) {
+        if (!hasJumped && (controller.w  || controller.space)) {
             vel.y = isMidAir ? JUMP_FORCE_IN_AIR : JUMP_FORCE;
             isMidAir = true;
             hasJumped = true;
