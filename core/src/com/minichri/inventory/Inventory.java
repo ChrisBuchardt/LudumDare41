@@ -8,39 +8,56 @@ public class Inventory {
 
     public static final int SIZE = 5;
 
-    private ArrayList<Item> items;
+    private Item[] items;
+    private int itemCount = 0;
+    private int nextEmpty = 0;
     private List<InventoryListener> listeners;
 
     public Inventory() {
-        items = new ArrayList<>(SIZE);
+        items = new Item[SIZE];
         listeners = new LinkedList<>();
     }
 
     public Item get(int i) {
-        return items.get(i);
+        return items[i];
     }
 
     /** @return true if the item was added */
     public boolean add(Item item) {
         if (isFull()) return false;
 
-        items.add(item);
+        items[nextEmpty] = item;
+        itemCount++;
+        for (int i = nextEmpty; i < SIZE; i++) {
+            if (items[i] == null) {
+                nextEmpty = i;
+            }
+        }
+
         updateListeners();
         return true;
     }
 
-    public boolean remove(Item item) {
-        boolean wasRemoved = items.remove(item);
-        if (wasRemoved) updateListeners();
-        return wasRemoved;
+    /** @return true if successful. */
+    public boolean remove(int i) {
+        boolean canRemoved = items[i] != null;
+        if (canRemoved) {
+            items[i] = null;
+            if (i < nextEmpty) {
+                nextEmpty = i;
+            }
+        }
+        updateListeners();
+        return canRemoved;
     }
 
     public boolean isFull() {
-        return items.size() == SIZE;
+        return itemCount == SIZE;
     }
 
+    /** @return empty slot count. */
     public int slotsLeft() {
-        return SIZE - items.size();
+        return SIZE - itemCount;
     }
 
     private void updateListeners() {
@@ -49,6 +66,7 @@ public class Inventory {
         }
     }
 
+    /** Listeners are called with anything changes in the inventory. */
     public void addListener(InventoryListener listener) {
         listeners.add(listener);
     }
