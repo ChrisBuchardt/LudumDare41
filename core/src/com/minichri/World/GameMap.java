@@ -20,6 +20,8 @@ public class GameMap {
 
     private ArrayList<RenderableObject> gameObjects;
     private Tile[][] tilesArray;
+    private int mapTileSizeX;
+    private int mapTileSizeY;
     private ArrayList<RenderableObject> removeQueue = new ArrayList<>();
     private Player player;
     private World world;
@@ -36,6 +38,8 @@ public class GameMap {
         this.tilesArray = ml.getTileArray();
         this.player = ml.getPlayer();
         this.tilesArray = ml.getTileArray();
+        this.mapTileSizeX = ml.getMapTileSizeX();
+        this.mapTileSizeY = ml.getMapTileSizeY();
     }
 
     /** Renders objects from the game map. */
@@ -77,9 +81,11 @@ public class GameMap {
 
     /** Takes a set of tile coordinates and check if the tile is occupied */
     public boolean isTileOcccipied(int x, int y){
+        
+        //Check game map bounds
+        if(x < 0 || x > this.mapTileSizeX || y < 0 || y > this.mapTileSizeY)
+            return true;
         return this.tilesArray[x][y] != null;
-
-        //TODO out of bounds check
     }
 
     /** Places a block in the world (both arrays).
@@ -91,7 +97,7 @@ public class GameMap {
 
         int x = (int)(pos.x / GameInfo.TILE_SIZE);
         int y = (int)(pos.y / GameInfo.TILE_SIZE);
-        
+
         this.tilesArray[x][y] = tile;
         this.gameObjects.add(tile);
     }
