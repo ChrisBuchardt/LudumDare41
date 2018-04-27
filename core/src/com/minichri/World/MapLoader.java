@@ -54,7 +54,7 @@ public class MapLoader {
             for (int x = 0; x < levelPixmap.getWidth(); x++) {
 
                 //Calculate tiles coordinates
-                currentTilePos = new Vector2(x, levelPixmap.getHeight() - y);
+                currentTilePos = new Vector2(x, levelPixmap.getHeight() - (y + 1));
 
                 //Get a color
                 Color color = new Color();
@@ -64,9 +64,11 @@ public class MapLoader {
                 TileType currentTileType = TileType.getTypeFromColor(color);
 
                 //Create an element if color was found
+
                 if (currentTileType == TileType.WHITE_SPACE || currentTileType == null) { //White-space = do nothing
-                    tileArray[x][y] = null;
-                    continue;
+
+                    tileArray[x][this.mapTileSizeY - (y + 1)] = null;
+
                 } else if (currentTileType == TileType.PLAYER) {
 
                     this.player = new Player(world, currentTilePos);
@@ -102,7 +104,7 @@ public class MapLoader {
                     }
 
                     this.tilesList.add(tile);
-                    tileArray[x][y] = tile;
+                    tileArray[x][this.mapTileSizeY - (y + 1)] = tile;
                 }
             }
         }
