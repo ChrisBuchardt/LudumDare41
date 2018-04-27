@@ -21,6 +21,8 @@ public class MapLoader {
     private ArrayList<RenderableObject> tilesList;
     private Player player;
     private World world;
+    private int mapTileSizeX;
+    private int mapTileSizeY;
 
     /** Loads an image.
      * @param levelImageLocation a path to a level image.
@@ -36,8 +38,12 @@ public class MapLoader {
         tempData.prepare();
         Pixmap levelPixmap = levelTexture.getTextureData().consumePixmap();
 
+        //Save map size
+        this.mapTileSizeX = levelPixmap.getWidth();
+        this.mapTileSizeY = levelPixmap.getHeight();
+
         //Init tile array
-        this.tileArray = new Tile[levelPixmap.getWidth()][levelPixmap.getHeight()];
+        this.tileArray = new Tile[mapTileSizeX][mapTileSizeY];
 
         //Coordinates
         Vector2 currentTilePos;
@@ -127,5 +133,13 @@ public class MapLoader {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public int getMapTileSizeX() {
+        return mapTileSizeX;
+    }
+
+    public int getMapTileSizeY() {
+        return mapTileSizeY;
     }
 }

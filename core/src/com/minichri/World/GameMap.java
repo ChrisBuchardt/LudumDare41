@@ -10,6 +10,8 @@ import com.minichri.KeyboardController;
 import com.minichri.entity.GameObject;
 import com.minichri.entity.Player;
 import com.minichri.entity.RenderableObject;
+import com.minichri.helpers.GameInfo;
+import com.minichri.helpers.TileType;
 import com.minichri.screens.GameScreen;
 
 import java.util.ArrayList;
@@ -18,6 +20,8 @@ public class GameMap {
 
     private ArrayList<RenderableObject> gameObjects;
     private Tile[][] tilesArray;
+    private int mapTileSizeX;
+    private int mapTileSizeY;
     private ArrayList<RenderableObject> removeQueue = new ArrayList<>();
     private Player player;
     private World world;
@@ -34,6 +38,8 @@ public class GameMap {
         this.tilesArray = ml.getTileArray();
         this.player = ml.getPlayer();
         this.tilesArray = ml.getTileArray();
+        this.mapTileSizeX = ml.getMapTileSizeX();
+        this.mapTileSizeY = ml.getMapTileSizeY();
     }
 
     /** Renders objects from the game map. */
@@ -75,8 +81,24 @@ public class GameMap {
 
     /** Takes a set of tile coordinates and check if the tile is occupied */
     public boolean isTileOcccipied(int x, int y){
+        
+        //Check game map bounds
+        if(x < 0 || x > this.mapTileSizeX || y < 0 || y > this.mapTileSizeY)
+            return true;
         return this.tilesArray[x][y] != null;
     }
 
-    
+    /** Places a block in the world (both arrays).
+     *  @param tileType the type if the tile you want to set.
+     *  @param pos the position of the tile. */
+    public void setTile(TileType tileType, Vector2 pos){
+
+        Tile tile = new Tile(this.world, tileType, pos);
+
+        int x = (int)(pos.x / GameInfo.TILE_SIZE);
+        int y = (int)(pos.y / GameInfo.TILE_SIZE);
+
+        this.tilesArray[x][y] = tile;
+        this.gameObjects.add(tile);
+    }
 }
