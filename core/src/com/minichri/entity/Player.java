@@ -43,6 +43,7 @@ public class Player extends TextureObject {
 
     private static TextureRegion playerTexLeft = new TextureRegion(new Texture("player/player_left.png"), 0, 0, PIXEL_WIDTH, PIXEL_HEIGHT);
     private static TextureRegion playerTexRight = new TextureRegion(new Texture("player/player_right.png"), 0, 0, PIXEL_WIDTH, PIXEL_HEIGHT);
+    private static TextureRegion playerShip = new TextureRegion(new Texture("escape_pod.png"), 0, 0, PIXEL_WIDTH*2, PIXEL_HEIGHT*2);
 
     // Inventory singleton
     private static Inventory _inventory;
@@ -59,9 +60,15 @@ public class Player extends TextureObject {
     private float minRange = 1.6f;
     private Vector2 placeVector = new Vector2(0,0);
     private Texture preview;
+
     private boolean spawning;
     private boolean isDead = false;
     private float deathTimer = 0;
+    //Spawning timer
+    private float timeSeconds;
+    private float spawntimer =2;
+    private Vector2 startPosition = new Vector2(0,0);
+
 
     private Body feet;
 
@@ -70,6 +77,7 @@ public class Player extends TextureObject {
 
         playerTiles = new ArrayList<>();
         queue = new ArrayList<>();
+        spawning = true;
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(FEET_WIDTH/2f, FEET_HEIGHT/2f);
@@ -90,6 +98,7 @@ public class Player extends TextureObject {
 
     public void render(GameMap map, World world, Vector3 mousePos, KeyboardController controller, SpriteBatch batch, float delta) {
 
+
         //adds Player spawned tiles to the array
         if (queue.size()>0)playerTiles.addAll(queue);
             queue.removeAll(queue);
@@ -97,14 +106,24 @@ public class Player extends TextureObject {
         for(RenderableObject renderableObject : playerTiles)
                 renderableObject.render(batch, delta);
 
-        if (!isDead) {
-            movement(map, controller, batch, delta);
-            blockPlacing(batch, map, controller, mousePos);
-        } else {
-            resolveDeath(batch, delta);
+        timeSeconds+=delta;
+
+        if (timeSeconds<spawntimer) {
+            startPosition = new Vector2(body.getPosition().x - 2f, body.getPosition().y - 2f);
+        }
+         //Draws player Ship. Needs to be here to be drawn in the right layerqqq
+            batch.draw(playerShip, startPosition.x, startPosition.y, 4, 4);
+        if (timeSeconds>spawntimer) {
+            if (!isDead) {
+                movement(map, controller, batch, delta);
+                blockPlacing(batch, map, controller, mousePos);
+            } else {
+                resolveDeath(batch, delta);
+            }
+
+            super.render(batch, delta);
         }
 
-        super.render(batch, delta);
     }
 
     private void blockPlacing(SpriteBatch batch, GameMap map, KeyboardController controller, Vector3 mousePos) {
@@ -132,9 +151,10 @@ public class Player extends TextureObject {
         Vector2 vel = body.getLinearVelocity();
 
         isMidAir = !(ContactManager.feetCollisions > 0 && Math.abs(vel.y) <= 1e-2);
+     //avoid those things
 
         if (!isMidAir) hasJumped = false;
-        if (!hasJumped && (controller.w  || controller.space)) {
+        if (!hasJumped && (controller.w || controller.space)) {
             vel.y = isMidAir ? JUMP_FORCE_IN_AIR : JUMP_FORCE;
             isMidAir = true;
             hasJumped = true;
@@ -164,6 +184,8 @@ public class Player extends TextureObject {
         feet.setTransform(new Vector2(body.getPosition()).add(0, FEET_Y_OFFSET), 0);
 
         updateTexture(dir);
+        super.render(batch, delta);
+
     }
 
     private void updateTexture(int moveDirection) {
