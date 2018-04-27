@@ -4,6 +4,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.minichri.Elements.Resource;
 import com.minichri.World.GameMap;
 import com.minichri.entity.Player;
+import com.minichri.helpers.TileType;
 import com.minichri.inventory.Item;
 
 public class ContactManager implements ContactListener {
@@ -38,7 +39,7 @@ public class ContactManager implements ContactListener {
             //Collision with resource
             if(other instanceof Resource) {
                 gameMap.addToRemoveResource((Resource)other);
-                Player.getInventory().add(new Item(((Resource) other).getTileType()));
+                Player.getInventory().add(new Item(TileType.convertFromResourceToPlatform(((Resource) other).getTileType())));
             }
         }
     }
