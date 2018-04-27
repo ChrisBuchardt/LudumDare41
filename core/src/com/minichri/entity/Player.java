@@ -1,23 +1,22 @@
 package com.minichri.entity;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
+import com.minichri.Elements.Resource;
 import com.minichri.Elements.Tile;
 import com.minichri.KeyboardController;
 import com.minichri.World.GameMap;
 import com.minichri.helpers.TileType;
 import com.minichri.inventory.Inventory;
+import com.minichri.inventory.Item;
 import com.minichri.physics.ContactManager;
-import com.minichri.screens.GameScreen;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class Player extends TextureObject {
@@ -37,8 +36,8 @@ public class Player extends TextureObject {
     private static final float WALK_SPEED = 6f;
     private static final float AIR_WALK_FORCE = 0.3f;
 
-    private ArrayList<RenderableObject> playerTiles;
-    private ArrayList<RenderableObject> queue;
+    private ArrayList<Tile> playerPlacedTiles;
+    private ArrayList<Tile> queue;
 
     private static TextureRegion playerTexLeft = new TextureRegion(new Texture("player/player_left.png"), 0, 0, PIXEL_WIDTH, PIXEL_HEIGHT);
     private static TextureRegion playerTexRight = new TextureRegion(new Texture("player/player_right.png"), 0, 0, PIXEL_WIDTH, PIXEL_HEIGHT);
@@ -62,7 +61,7 @@ public class Player extends TextureObject {
     public Player(World world, Vector2 pos) {
         super(world, pos, GameObject.DEFAULT_DYNAMIC_BODYDEF, GameObject.DEFAULT_DYNAMIC_FIXTUREDEF, playerTexLeft);
 
-        playerTiles = new ArrayList<>();
+        playerPlacedTiles = new ArrayList<>();
         queue = new ArrayList<>();
 
         PolygonShape shape = new PolygonShape();
@@ -84,10 +83,10 @@ public class Player extends TextureObject {
     public void render(GameMap map, World world, Vector3 mousePos, KeyboardController controller, SpriteBatch batch, float delta) {
 
         //adds Player spawned tiles to the array
-        if (queue.size()>0)playerTiles.addAll(queue);
+        if (queue.size()>0) playerPlacedTiles.addAll(queue);
             queue.removeAll(queue);
 
-        for(RenderableObject renderableObject : playerTiles)
+        for(RenderableObject renderableObject : playerPlacedTiles)
                 renderableObject.render(batch, delta);
 
 
@@ -110,6 +109,58 @@ public class Player extends TextureObject {
         } else {
             // Mid air
             vel.add(AIR_WALK_FORCE * dir, 0);
+        }
+
+        // Q-collect
+        if(controller.q){
+            System.out.println("Q is pressed!");
+
+            System.out.println("Player placed blocks: " + playerPlacedTiles.size());
+
+            //Get number of empty item slots
+            int emptySlots = getInventory().slotsLeft();
+
+            if(emptySlots != 0){
+
+                //Create dist from player ordered list
+                Collections.sort(playerPlacedTiles, (a, b) -> {
+
+                    Vector2 vectorA = ((GameObject)a).body.getPosition();
+                    Vector2 vectorB = ((GameObject)b).body.getPosition();
+
+                    float distToA = Vector2.dst(vectorA.x, vectorA.y, getBodyPos().x, getBodyPos().y);
+                    float distToB = Vector2.dst(vectorB.x, vectorB.y, getBodyPos().x, getBodyPos().y);
+
+                    float comparison = distToA - distToB;
+
+                    if(comparison > 0)
+                        return 1;
+                    else if(comparison < 0)
+                        return -1;
+                    else
+                        return 0;
+                });
+
+                //Remove till the found number of elements and add them to inv
+                for(int i = 0; i < Math.min(getPlayerPlacedTiles().size(), emptySlots); i ++){
+
+                    Tile involvedTile = getPlayerPlacedTiles().get(i);
+
+                    //Add element to inventory
+                    getInventory().add(new Item(involvedTile.getTileType()));
+
+                    //Remove and destroy from world
+                    getPlayerPlacedTiles().remove(i);
+                    world.destroyBody(involvedTile.getBody());
+                }
+
+                //TODO
+                //TODO HOW MANY BLOCKS HAS PLAYER PLACED?
+                System.out.println("TOTODO");
+
+            }
+
+
         }
 
         if (controller.s) isCrouched = true;
@@ -155,5 +206,13 @@ public class Player extends TextureObject {
 
     public Vector2 getBodyPos(){
          return body.getPosition();
+    }
+
+    public ArrayList<Tile> getPlayerPlacedTiles() {
+        return playerPlacedTiles;
+    }
+
+    public ArrayList<Tile> getQueue() {
+        return queue;
     }
 }
