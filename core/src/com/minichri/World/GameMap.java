@@ -1,6 +1,7 @@
 package com.minichri.World;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
 import com.minichri.Elements.Resource;
@@ -32,6 +33,7 @@ public class GameMap {
         this.gameObjects = ml.getTilesList();
         this.tilesArray = ml.getTileArray();
         this.player = ml.getPlayer();
+        this.tilesArray = ml.getTileArray();
     }
 
     /** Renders objects from the game map. */
@@ -71,5 +73,10 @@ public class GameMap {
         return this.player;
     }
 
+    /** Takes a set of tile coordinates and check if the tile is occupied */
+    public boolean isTileOcccipied(int x, int y){
+        return this.tilesArray[x][y] != null;
+    }
 
+    
 }
