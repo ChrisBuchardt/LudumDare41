@@ -11,17 +11,14 @@ import com.minichri.Elements.Resource;
 import com.minichri.Elements.Tile;
 import com.minichri.entity.Player;
 import com.minichri.entity.RenderableObject;
-import com.minichri.entity.TextureObject;
-import com.minichri.helpers.GameInfo;
 import com.minichri.helpers.TileType;
 
 import java.util.ArrayList;
 
 public class MapLoader {
 
-    //private ArrayList<TextureObject> tilesList;
     private ArrayList<RenderableObject> tilesList;
-    private int playerIndex;
+    private Player player;
 
     /** Loads an image.
      * @param levelImageLocation a path to a level image.
@@ -58,8 +55,7 @@ public class MapLoader {
                     continue;
                 } else if(currentTileType == TileType.PLAYER){
 
-                    this.tilesList.add(new Player(world, currentTilePos));
-                    this.playerIndex = tilesList.size()-1;
+                    this.player = new Player(world, currentTilePos);
 
                 }else if(currentTileType.isResourceTile()){ //Resources
 
@@ -116,7 +112,7 @@ public class MapLoader {
         return tilesList;
     }
 
-    public int getPlayerIndex() {
-        return playerIndex;
+    public Player getPlayer() {
+        return player;
     }
 }

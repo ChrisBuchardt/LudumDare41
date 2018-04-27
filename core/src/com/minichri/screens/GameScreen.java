@@ -35,7 +35,8 @@ public class GameScreen implements Screen {
     public GameScreen(MainGame game) {
         this.game = game;
         this.world = new World(new Vector2(0, -18f), true); //Creating the world with gravity
-        world.setContactListener(new ContactManager(world));
+        this.gameMap = new GameMap(world); //Load map
+        world.setContactListener(new ContactManager(world, gameMap));
 
         this.spriteBatch = new SpriteBatch();
 
@@ -50,7 +51,6 @@ public class GameScreen implements Screen {
         spriteBatch.setProjectionMatrix(camera.combined);
         background = new Texture("background.png");
 
-        this.gameMap = new GameMap(world); //Load map
 
         debugRenderer = new Box2DDebugRenderer(true,true,true,true,true,true);
     }
