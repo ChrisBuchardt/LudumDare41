@@ -14,12 +14,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.minichri.MainGame;
 import com.minichri.World.MapLoader;
-import com.minichri.entity.GameObject;
-import com.minichri.entity.Player;
 import com.minichri.entity.RenderableObject;
 import com.minichri.entity.TextureObject;
 import com.minichri.helpers.GameInfo;
-import com.minichri.physics.GameContactListener;
+import com.minichri.physics.PlayerFeetContactListener;
 
 import java.util.ArrayList;
 
@@ -39,8 +37,8 @@ public class GameScreen implements Screen {
 
     public GameScreen(MainGame game) {
         this.game = game;
-        this.world = new World(new Vector2(0, -9.8f), true); //Creating the world with gravity
-        world.setContactListener(new GameContactListener(world));
+        this.world = new World(new Vector2(0, -9.82f), true); //Creating the world with gravity
+        world.setContactListener(new PlayerFeetContactListener(world));
 
         this.spriteBatch = new SpriteBatch();
 
@@ -75,7 +73,7 @@ public class GameScreen implements Screen {
 
         camera.update();
 
-        world.step(delta,3,3);
+        world.step(delta, 3, 3);
         Gdx.gl.glClearColor(0f, 0.5f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
