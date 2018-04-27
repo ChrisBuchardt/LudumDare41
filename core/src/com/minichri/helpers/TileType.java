@@ -6,31 +6,33 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public enum TileType {
 
-    PLAYER("0026FFFF", null, false, false),
-    WHITE_SPACE("FFFFFFFF", null, false, false),
-    GROUND("000000FF", "tiles/ground_tiles.png", true, false),
-    PLATFORM_BLUE("FFFFFFFF", "tiles/platform_blue.png", false, false),
-    PLATFORM_GREEN("FFFFFFFF", "tiles/platform_green.png", false, false),
-    PLATFORM_PURPLE("FFFFFFFF", "tiles/platform_purple.png", false, false),
-    RESOURCE_BLUE("00FFFFFF", "tiles/platform_resource_blue.png", false, true),
-    RESOURCE_GREEN("00FF21FF", "tiles/platform_resource_green.png", false, true),
-    RESOURCE_PURPLE("FF00DCFF", "tiles/platform_resource_purple.png", false, true)
+    PLAYER("0026FFFF", null, null, false, false),
+    WHITE_SPACE("FFFFFFFF", null, null, false, false),
+    GROUND("000000FF", "tiles/ground_tiles.png", null, true, false),
+    PLATFORM_BLUE("FFFFFFFF", "tiles/platform_blue.png", "items/platform_item_blue.png", false, false),
+    PLATFORM_GREEN("FFFFFFFF", "tiles/platform_green.png", "items/platform_item_green.png", false, false),
+    PLATFORM_PURPLE("FFFFFFFF", "tiles/platform_purple.png", "items/platform_item_purple.png", false, false),
+    RESOURCE_BLUE("00FFFFFF", "tiles/platform_resource_blue.png", null, false, true),
+    RESOURCE_GREEN("00FF21FF", "tiles/platform_resource_green.png", null, false, true),
+    RESOURCE_PURPLE("FF00DCFF", "tiles/platform_resource_purple.png", null, false, true)
     ;
 
     private Color color;
     private Texture blockTexture;
-    private TextureRegion itemTexture;
+    private Texture itemTexture;
     private boolean isDirectionalTile;
     private boolean isResourceTile;
 
-    TileType(String color, String pathToTexture, boolean isDirectionalTile, boolean isResourceTile){
+    TileType(String color, String pathToTexture, String pathToItemTexture, boolean isDirectionalTile, boolean isResourceTile) {
         this.color = Color.valueOf(color);
         this.isDirectionalTile = isDirectionalTile;
         this.isResourceTile = isResourceTile;
 
-        if(pathToTexture != null) {
+        if (pathToTexture != null) {
             this.blockTexture = new Texture(pathToTexture);
-            itemTexture = new TextureRegion(blockTexture, 2 * GameInfo.TILE_SIZE, 0, GameInfo.TILE_SIZE, GameInfo.TILE_SIZE);
+        }
+        if (pathToItemTexture != null) {
+            this.itemTexture = new Texture(pathToItemTexture);
         }
     }
 
@@ -50,7 +52,7 @@ public enum TileType {
         return blockTexture;
     }
 
-    public TextureRegion getItemTexture() {
+    public Texture getItemTexture() {
         return itemTexture;
     }
 

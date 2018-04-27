@@ -36,7 +36,7 @@ public class KeyboardController implements InputProcessor {
                 d = true;
                 keyProcessed = true;
         }
-        if (Input.Keys.NUM_1 <= keycode && keycode <= Input.Keys.NUM_1 + Inventory.SIZE) {
+        if (Input.Keys.NUM_1 <= keycode && keycode <= Input.Keys.NUM_1 + Inventory.SIZE - 1) {
             int slot = keycode - Input.Keys.NUM_1;
             Player.getInventory().setSelectedSlot(slot);
             return true;
