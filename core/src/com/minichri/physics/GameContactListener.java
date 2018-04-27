@@ -15,14 +15,15 @@ public class GameContactListener implements ContactListener {
     public void beginContact(Contact contact) {
         Fixture fa = contact.getFixtureA();
         Fixture fb = contact.getFixtureB();
-        
+        //System.out.println("Fixture A" + fa.getBody().getUserData());
+        //System.out.println("Fixture B" + fb.getBody().getUserData());
 
-        if(fa.getBody().getType()== BodyDef.BodyType.DynamicBody){
-
+        if(fa.getBody().getUserData() == "In Air"){
+            //System.out.println("Test");
             fa.getBody().setUserData("Grounded");
 
             return;
-        }else if(fb.getBody().getUserData() == BodyDef.BodyType.DynamicBody){
+        }else if(fb.getBody().getUserData() =="In Air"){
 
             fb.getBody().setUserData("Grounded");
             return;

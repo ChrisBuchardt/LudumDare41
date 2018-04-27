@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -26,6 +27,7 @@ public class GameScreen implements Screen {
 
     private MainGame game;
     private SpriteBatch spriteBatch;
+    private Texture background;
     private OrthographicCamera camera;
     private InputProcessor inputProcessor;
     private World world;
@@ -35,11 +37,9 @@ public class GameScreen implements Screen {
     private ArrayList<RenderableObject> gameMap;
     private int playerIndex;
 
-
-
-    public  GameScreen(MainGame game){
+    public GameScreen(MainGame game) {
         this.game = game;
-        this.world = new World(new Vector2(0,-9.8f), true); //Creating the world with gravity
+        this.world = new World(new Vector2(0, -9.8f), true); //Creating the world with gravity
         world.setContactListener(new GameContactListener(world));
 
         this.spriteBatch = new SpriteBatch();
@@ -51,6 +51,7 @@ public class GameScreen implements Screen {
         stage = new IngameStage(new FitViewport(GameInfo.SCREEN_WIDTH, GameInfo.SCREEN_HEIGHT));
 
         spriteBatch.setProjectionMatrix(camera.combined);
+        background = new Texture("background.png");
 
         //Load map
         MapLoader ml = new MapLoader();
@@ -60,7 +61,6 @@ public class GameScreen implements Screen {
 
         debugRenderer = new Box2DDebugRenderer(true,true,true,true,true,true);
     }
-
 
     @Override
     public void show() {
@@ -72,6 +72,7 @@ public class GameScreen implements Screen {
 
         camera.position.x = ((TextureObject)gameMap.get(playerIndex)).getBody().getPosition().x;
         camera.position.y = ((TextureObject)gameMap.get(playerIndex)).getBody().getPosition().y;
+
         camera.update();
 
         world.step(delta,3,3);
@@ -80,7 +81,7 @@ public class GameScreen implements Screen {
 
 
         spriteBatch.begin();
-
+        spriteBatch.draw(background,0,0);
         //Render map
         for(RenderableObject renderableObject : gameMap)
             renderableObject.render(spriteBatch, delta);

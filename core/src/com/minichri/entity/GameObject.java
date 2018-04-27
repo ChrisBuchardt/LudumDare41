@@ -51,7 +51,7 @@ public class GameObject {
     /** The default fixturedef for players */
     private static FixtureDef createDefaultDynamicFixtureDef(){
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(GameInfo.TILE_SIZE / 2f, GameInfo.PLAYER_HEIGHT / 2f);
+        shape.setAsBox(GameInfo.TILE_SIZE / 2f, (GameInfo.PLAYER_HEIGHT / 2f)-1);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
