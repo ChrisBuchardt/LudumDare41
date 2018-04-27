@@ -1,0 +1,43 @@
+package com.minichri.Elements;
+
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
+import com.minichri.entity.TextureObject;
+import com.minichri.helpers.TileType;
+
+public class Spikes extends TextureObject {
+
+    private static final BodyDef BODY_DEF = createBodyDef();
+    private static final FixtureDef FIXTURE_DEF = createFixtureDef();
+
+    public Spikes(World world, Vector2 pos) {
+        super(world, pos, BODY_DEF, FIXTURE_DEF, new TextureRegion(new Texture("objects/spikes.png")));
+    }
+
+    /** The BodyDef used for something like tiles */
+    private static BodyDef createBodyDef() {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.fixedRotation = true;
+        bodyDef.type = BodyDef.BodyType.StaticBody;
+        return bodyDef;
+    }
+
+    /** The FixtureDef used for something like tiles */
+    private static FixtureDef createFixtureDef() {
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(0.48f, 0.25f);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1;
+        fixtureDef.friction = 1;
+        fixtureDef.restitution = 0;
+
+        return fixtureDef;
+    }
+}
