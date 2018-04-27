@@ -13,13 +13,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.minichri.MainGame;
-import com.minichri.World.MapLoader;
-import com.minichri.entity.RenderableObject;
-import com.minichri.entity.TextureObject;
+import com.minichri.World.GameMap;
 import com.minichri.helpers.GameInfo;
 import com.minichri.physics.PlayerFeetContactListener;
-
-import java.util.ArrayList;
 
 public class GameScreen implements Screen {
 
@@ -32,8 +28,7 @@ public class GameScreen implements Screen {
     private Stage stage;
     private Box2DDebugRenderer debugRenderer;
 
-    private ArrayList<RenderableObject> gameMap;
-    private int playerIndex;
+    private GameMap gameMap;
 
     public GameScreen(MainGame game) {
         this.game = game;
@@ -51,11 +46,7 @@ public class GameScreen implements Screen {
         spriteBatch.setProjectionMatrix(camera.combined);
         background = new Texture("background.png");
 
-        //Load map
-        MapLoader ml = new MapLoader();
-        ml.loadLevelFromImage("level/testLevel04.png", world);
-        gameMap = ml.getTilesList();
-        playerIndex = ml.getPlayerIndex();
+        this.gameMap = new GameMap(world); //Load map
 
         debugRenderer = new Box2DDebugRenderer(true,true,true,true,true,true);
     }
@@ -68,8 +59,8 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
 
-        camera.position.x = ((TextureObject)gameMap.get(playerIndex)).getBody().getPosition().x;
-        camera.position.y = ((TextureObject)gameMap.get(playerIndex)).getBody().getPosition().y;
+        camera.position.x = gameMap.getPlayer().getBody().getPosition().x;
+        camera.position.y = gameMap.getPlayer().getBody().getPosition().y;
 
         camera.update();
 
@@ -80,11 +71,8 @@ public class GameScreen implements Screen {
 
         spriteBatch.begin();
         spriteBatch.draw(background,0,0);
-        //Render map
-        for(RenderableObject renderableObject : gameMap)
-            renderableObject.render(spriteBatch, delta);
 
-        gameMap.get(playerIndex).render(spriteBatch, delta);
+        gameMap.render(spriteBatch, delta);
 
         spriteBatch.end();
 
