@@ -2,13 +2,11 @@ package com.minichri.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.minichri.helpers.GameInfo;
 import com.minichri.inventory.Inventory;
 import com.minichri.physics.PlayerFeetContactListener;
 
@@ -59,6 +57,7 @@ public class Player extends TextureObject {
         feet.setUserData(PlayerFeetContactListener.FEET);
         feet.setGravityScale(0);
         body.setLinearDamping(0);
+        body.setUserData(this);
     }
 
     @Override

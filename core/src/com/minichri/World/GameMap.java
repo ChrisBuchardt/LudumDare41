@@ -33,4 +33,6 @@ public class GameMap {
     public Player getPlayer(){
         return (Player) gameObjects.get(playerIndex);
     }
+
+
 }

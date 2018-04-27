@@ -1,6 +1,8 @@
 package com.minichri.physics;
 
 import com.badlogic.gdx.physics.box2d.*;
+import com.minichri.Elements.Resource;
+import com.minichri.entity.Player;
 
 public class PlayerFeetContactListener implements ContactListener {
 
@@ -22,6 +24,20 @@ public class PlayerFeetContactListener implements ContactListener {
 
         if (fa.getBody().getUserData() == FEET || fb.getBody().getUserData() == FEET) {
             feetCollisions++;
+        }
+
+        //if(fa.getBody().getUserData() instanceof Resource || fb.getBody().getUserData() instanceof Resource)
+        //    System.out.println("RESOURCE!");
+
+
+        //Collision with resource
+        if(fa.getBody().getUserData() instanceof Resource || fb.getBody().getUserData() instanceof Resource){
+
+            //Check for player collison
+            if(fa.getBody().getUserData()instanceof Player || fb.getBody().getUserData() instanceof Player){
+
+                System.out.println("YOU ARE NOW TOUCH A RESOURCE!");
+            }
         }
     }
 

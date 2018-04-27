@@ -2,7 +2,6 @@ package com.minichri.entity;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.minichri.helpers.GameInfo;
 
 public class GameObject {
 
@@ -56,7 +55,7 @@ public class GameObject {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
-        fixtureDef.friction = 1f;
+        fixtureDef.friction = 0f;
         fixtureDef.restitution = 0;
 
         return fixtureDef;
