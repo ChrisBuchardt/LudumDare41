@@ -63,7 +63,8 @@ public class Inventory {
     }
 
     public void setSelectedSlot(int i) {
-        selectedSlot = Math.min(Math.max(0, i), SIZE);
+        selectedSlot = Math.min(Math.max(0, i), SIZE - 1);
+        updateListeners();
     }
 
     /** Move selected slot. slots = 1 is one to the right. Negative for left. */

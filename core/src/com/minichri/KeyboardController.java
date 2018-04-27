@@ -2,11 +2,13 @@ package com.minichri;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.minichri.entity.Player;
+import com.minichri.inventory.Inventory;
 
-public class KeyboardController implements InputProcessor{
+public class KeyboardController implements InputProcessor {
 
 
-    public boolean a, s, d, w, leftClick, rightClick, space;
+    public boolean a, s, d, w, leftClick, rightClick, space, n1, n2, n3, n4, n5;
 
 
     @Override
@@ -33,6 +35,11 @@ public class KeyboardController implements InputProcessor{
             case Input.Keys.D:
                 d = true;
                 keyProcessed = true;
+        }
+        if (Input.Keys.NUM_1 <= keycode && keycode <= Input.Keys.NUM_1 + Inventory.SIZE) {
+            int slot = keycode - Input.Keys.NUM_1;
+            Player.getInventory().setSelectedSlot(slot);
+            return true;
         }
         return keyProcessed;
     }
@@ -105,9 +112,11 @@ public class KeyboardController implements InputProcessor{
     public boolean mouseMoved(int screenX, int screenY) {
         return false;
     }
+
     @Override
     public boolean scrolled(int amount) {
-        return false;
+        Player.getInventory().moveSelectedBy(amount);
+        return true;
     }
 
 }
