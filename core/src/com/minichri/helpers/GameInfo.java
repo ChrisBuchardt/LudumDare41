@@ -8,5 +8,5 @@ public class GameInfo {
     public static final int SCREEN_HEIGHT = 800;
     public static final float PPM = 100; //100px = 1m //PPM pixels per min //THIS ONE HAS TO BE A FLOAT!
     public static final float ZOOM = 1/3f;
-
+    public static final float UI_SCALE = 4;
 }

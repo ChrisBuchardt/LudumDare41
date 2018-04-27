@@ -10,32 +10,35 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.minichri.helpers.GameInfo;
+import com.minichri.inventory.Inventory;
+
+import static com.minichri.helpers.GameInfo.UI_SCALE;
 
 public class IngameStage extends Stage {
 
-    private Texture hotbarTexture = new Texture("ui/hotbar.png");
+    private Texture slotTexture = new Texture("ui/inventory_slot.png");
 
     public IngameStage(Viewport viewport) {
         super(viewport);
 
         OrthographicCamera cam = ((OrthographicCamera)getCamera());
 
-        Image hotbar = new Image(hotbarTexture);
-        hotbar.setOrigin(hotbarTexture.getWidth() / 2f, hotbarTexture.getHeight() /2f);
-
-        Table table = new Table();
-        table.setFillParent(true);
-        table.setDebug(true);
-
-        table.bottom();
-        table.add(hotbar).size(hotbarTexture.getWidth() * 4, hotbarTexture.getHeight() * 4).fill();
-
-        addActor(table);
+        Table hotbarTable = new Table();
+        hotbarTable.setFillParent(true);
+        hotbarTable.setDebug(true);
+        hotbarTable.bottom();
+        addActor(hotbarTable);
+        float width = slotTexture.getWidth() * UI_SCALE;
+        float height = slotTexture.getHeight() * UI_SCALE;
+        for (int i = 0; i < Inventory.SIZE; i++) {
+            InventorySlotUI slot = new InventorySlotUI(i, slotTexture);
+            hotbarTable.add(slot).size(width, height).fill();
+        }
     }
 
     @Override
     public void dispose() {
         super.dispose();
-        hotbarTexture.dispose();
+        slotTexture.dispose();
     }
 }
