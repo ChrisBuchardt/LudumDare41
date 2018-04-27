@@ -30,8 +30,14 @@ public class IngameStage extends Stage {
         addActor(hotbarTable);
         float width = slotTexture.getWidth() * UI_SCALE;
         float height = slotTexture.getHeight() * UI_SCALE;
+        Image[] images = new Image[Inventory.SIZE];
         for (int i = 0; i < Inventory.SIZE; i++) {
-            InventorySlotUI slot = new InventorySlotUI(i, slotTexture);
+            images[i] = new Image();
+            hotbarTable.add(images[i]).size(width, width).fill();
+        }
+        hotbarTable.row();
+        for (int i = 0; i < Inventory.SIZE; i++) {
+            InventorySlotUI slot = new InventorySlotUI(i, slotTexture, images[i]);
             hotbarTable.add(slot).size(width, height).fill();
         }
     }

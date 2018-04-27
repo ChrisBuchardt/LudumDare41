@@ -11,10 +11,12 @@ import com.minichri.inventory.InventoryListener;
 public class InventorySlotUI extends Image implements InventoryListener {
 
     private final int index;
+    private final Image image;
 
-    public InventorySlotUI(int index, Texture slotTexture) {
+    public InventorySlotUI(int index, Texture slotTexture, Image image) {
         super(slotTexture);
         this.index = index;
+        this.image = image;
         Player.getInventory().addListener(this);
     }
 
