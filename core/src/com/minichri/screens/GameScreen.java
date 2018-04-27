@@ -80,8 +80,6 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0f, 0.5f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        spriteBatch.setProjectionMatrix(camera.combined);
-        debugRenderer.render(world,camera.combined);
 
         spriteBatch.begin();
 
@@ -99,6 +97,12 @@ public class GameScreen implements Screen {
         stage.act(delta);
         stage.draw();
         spriteBatch.end();
+
+
+
+        spriteBatch.setProjectionMatrix(camera.combined);
+        debugRenderer.render(world,camera.combined);
+
     }
 
     @Override
