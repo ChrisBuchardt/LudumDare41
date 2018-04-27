@@ -13,7 +13,7 @@ import com.minichri.inventory.Inventory;
 
 public class Player extends TextureObject {
 
-    private boolean hasJumped;
+    private boolean isMidAir;
     private boolean isCrouched;
     private float maxVelocity = 40;
     private float jumpPower = 80;
@@ -31,10 +31,14 @@ public class Player extends TextureObject {
         super(world, pos, GameObject.DEFAULT_DYNAMIC_BODYDEF,GameObject.DEFAULT_DYNAMIC_FIXTUREDEF,playerTexLeft);
         body.setGravityScale(10f);
         body.setLinearDamping(0);
+        body.setUserData("Grounded");
     }
 
     @Override
     public void render(SpriteBatch batch) {
+
+        isMidAir = body.getUserData() != "Grounded";
+
 
         //Changes the player texture based on movement.
         if (body.getLinearVelocity().x<0){
@@ -43,10 +47,10 @@ public class Player extends TextureObject {
 
 
         //Checks if the player hsa jumped.
-        if (!hasJumped) {
+        if (!isMidAir) {
             if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-                body.setLinearVelocity(body.getLinearVelocity().x*8, jumpPower);
-                hasJumped = true;
+                body.setLinearVelocity(body.getLinearVelocity().x, jumpPower);
+                body.setUserData("In Air");
             }
             if (Gdx.input.isKeyPressed(Input.Keys.D)) {
                 if (body.getLinearVelocity().x>maxVelocity){
@@ -75,9 +79,8 @@ public class Player extends TextureObject {
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)){
-            System.out.println("Player is crouched, and can jump again");
+            System.out.println("Player is crouched");
             isCrouched = true;
-            hasJumped = false;
         }
         else isCrouched = false;
 
@@ -86,7 +89,6 @@ public class Player extends TextureObject {
         float width = GameInfo.TILE_SIZE;
         float height = GameInfo.PLAYER_HEIGHT;
         batch.draw(texture, pos.x - width/2, pos.y - height/2, width / 2f, height / 2f, width, height, 1, 1, body.getAngle());
-
 
 
         //Exits game
