@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.minichri.Elements.DirectionalTile;
 import com.minichri.Elements.Tile;
 import com.minichri.entity.Player;
 import com.minichri.entity.TextureObject;
@@ -60,32 +60,43 @@ public class MapLoader {
                     this.playerIndex = tilesList.size()-1;
                 }else if(currentTileType != null){ //Add tile based on tileType
 
-                    //Get tiletypes of surrounding tiles
-                    Color.argb8888ToColor(color, levelPixmap.getPixel(x, y+1));
-                    TileType aboveTileType = TileType.getTypeFromColor(color);
-                    Color.argb8888ToColor(color, levelPixmap.getPixel(x-1, y));
-                    TileType leftTileType = TileType.getTypeFromColor(color);
-                    Color.argb8888ToColor(color, levelPixmap.getPixel(x+1, y));
-                    TileType rightTileType = TileType.getTypeFromColor(color);
+                    if(currentTileType.isDirectionalTile()){ //Is the tile directional?
+
+                        //Get tiletypes of surrounding tiles
+                        Color.argb8888ToColor(color, levelPixmap.getPixel(x, y-1));
+                        TileType aboveTileType = TileType.getTypeFromColor(color);
+                        Color.argb8888ToColor(color, levelPixmap.getPixel(x-1, y));
+                        TileType leftTileType = TileType.getTypeFromColor(color);
+                        Color.argb8888ToColor(color, levelPixmap.getPixel(x+1, y));
+                        TileType rightTileType = TileType.getTypeFromColor(color);
 
 
-                    boolean isTileAboveTheSame = currentTileType == aboveTileType;//Is the block above the same as this?
-                    boolean isTileLeftTheSame = currentTileType == leftTileType;//Is the block to the left the same?
-                    boolean isTileRightTheSame = currentTileType == rightTileType;//Is the block to the right the same?
+                        boolean isTileAboveTheSame = currentTileType == aboveTileType;//Is the block above the same as this?
+                        boolean isTileLeftTheSame = currentTileType == leftTileType;//Is the block to the left the same?
+                        boolean isTileRightTheSame = currentTileType == rightTileType;//Is the block to the right the same?
 
-                    if(isTileAboveTheSame){ //Under block
-                        this.tilesList.add(new Tile(world, TileType.TileTextureDirection.UNDER, currentTileType, currentTilePos));
-                    }else if(aboveTileType == TileType.WHITE_SPACE){ //Above free
+                        if(isTileAboveTheSame){ //Under block
+                            this.tilesList.add(new DirectionalTile(world, TileType.TileTextureDirection.UNDER, currentTileType, currentTilePos));
+                        }else if(aboveTileType == TileType.WHITE_SPACE){ //Above free
 
-                       if(isTileLeftTheSame && isTileRightTheSame){ //Both sides free
-                           this.tilesList.add(new Tile(world, TileType.TileTextureDirection.MIDDEL, currentTileType, currentTilePos));
-                       }else if(leftTileType == TileType.WHITE_SPACE){ //Left is free
-                           this.tilesList.add(new Tile(world, TileType.TileTextureDirection.LEFT, currentTileType, currentTilePos));
-                       }else if(rightTileType == TileType.WHITE_SPACE){ //Left is free
-                           this.tilesList.add(new Tile(world, TileType.TileTextureDirection.RIGHT, currentTileType, currentTilePos));
-                       }else
-                           this.tilesList.add(new Tile(world, TileType.TileTextureDirection.MIDDEL, currentTileType, currentTilePos)); //TODO maybe something else?
+                            if(isTileLeftTheSame && isTileRightTheSame){ //Both sides free
+                                this.tilesList.add(new DirectionalTile(world, TileType.TileTextureDirection.MIDDLE, currentTileType, currentTilePos));
+                            }else if(leftTileType == TileType.WHITE_SPACE){ //Left is free
+                                if(rightTileType == TileType.WHITE_SPACE) //Is right also free
+                                    this.tilesList.add(new DirectionalTile(world, TileType.TileTextureDirection.MIDDLE, currentTileType, currentTilePos));
+                                else
+                                    this.tilesList.add(new DirectionalTile(world, TileType.TileTextureDirection.LEFT, currentTileType, currentTilePos));
+                            }else if(rightTileType == TileType.WHITE_SPACE){ //Right is free
+                                if(leftTileType == TileType.WHITE_SPACE) //Is Left also free
+                                    this.tilesList.add(new DirectionalTile(world, TileType.TileTextureDirection.MIDDLE, currentTileType, currentTilePos));
+                                else
+                                    this.tilesList.add(new DirectionalTile(world, TileType.TileTextureDirection.RIGHT, currentTileType, currentTilePos));
+                            }else
+                                this.tilesList.add(new DirectionalTile(world, TileType.TileTextureDirection.MIDDLE, currentTileType, currentTilePos)); //TODO maybe something else?
+                        }
 
+                    }else{
+                        this.tilesList.add(new Tile(world, currentTileType, currentTilePos));
                     }
                 }
             }

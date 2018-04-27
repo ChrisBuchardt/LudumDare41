@@ -11,11 +11,9 @@ import com.minichri.helpers.TileType;
 public class Tile extends TextureObject {
 
     private TileType tileType;
-    private TileType.TileTextureDirection placementType;
 
-    public Tile(World world, TileType.TileTextureDirection placementType, TileType tileType, Vector2 pos) {
-        super(world, pos, GameObject.DEFAULT_STATIC_BODYDEF, GameObject.DEFAULT_STATIC_FIXTUREDEF, new TextureRegion(new Texture("tiles/dirt.png")));
+    public Tile(World world, TileType tileType, Vector2 pos) {
+        super(world, pos, GameObject.DEFAULT_STATIC_BODYDEF, GameObject.DEFAULT_STATIC_FIXTUREDEF, new TextureRegion(tileType.getTexture()));
         this.tileType = tileType;
-        this.placementType = placementType;
     }
 }

@@ -1,16 +1,23 @@
 package com.minichri.helpers;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 
 public enum TileType {
-    PLAYER(Constants.PLAYER_COLOR),
-    WHITE_SPACE(Constants.WHITE_SPACE_COLOR),
-    GROUND(Constants.GROUND_COLOR);
+    PLAYER(Constants.PLAYER_COLOR, false, null),
+    WHITE_SPACE(Constants.WHITE_SPACE_COLOR, false, null),
+    GROUND(Constants.GROUND_COLOR, true, "tiles/groundTiles.png");
 
     private Color color;
+    private Texture texture;
+    private boolean isDirectionalTile;
 
-    TileType(Color color){
+    TileType(Color color, boolean isDirectionalTile, String pathToTexture){
         this.color = color;
+        this.isDirectionalTile = isDirectionalTile;
+
+        if(pathToTexture != null)
+            this.texture = new Texture(pathToTexture);
     }
 
     /** Takes a color and returns a matching type. Returns null of non matches.
@@ -28,8 +35,16 @@ public enum TileType {
             return null;
     }
 
+    public Texture getTexture() {
+        return texture;
+    }
+
     public Color getColor() {
         return color;
+    }
+
+    public boolean isDirectionalTile() {
+        return isDirectionalTile;
     }
 
     /** Color constants. */
@@ -41,6 +56,6 @@ public enum TileType {
 
     /** An enum describing the tiles placement related to its surroundings */
     public enum TileTextureDirection {
-        LEFT, MIDDEL, RIGHT, UNDER;
+        LEFT, MIDDLE, RIGHT, UNDER;
     }
 }
