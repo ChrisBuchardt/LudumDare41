@@ -1,13 +1,16 @@
 package com.minichri.World;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
 import com.minichri.Elements.Resource;
 import com.minichri.Elements.Tile;
+import com.minichri.KeyboardController;
 import com.minichri.entity.GameObject;
 import com.minichri.entity.Player;
 import com.minichri.entity.RenderableObject;
+import com.minichri.screens.GameScreen;
+
 import java.util.ArrayList;
 
 public class GameMap {
@@ -19,9 +22,9 @@ public class GameMap {
     private World world;
 
     /** The constructor loads the map. */
-    public GameMap(World world){
+    public GameMap(GameScreen screen){
 
-        this.world = world;
+        this.world = screen.world;
 
         //Load the map
         MapLoader ml = new MapLoader();
@@ -32,14 +35,14 @@ public class GameMap {
     }
 
     /** Renders objects from the game map. */
-    public void render(SpriteBatch spriteBatch, float delta){
+    public void render(World world,Vector3 mousePos, KeyboardController controller, SpriteBatch spriteBatch, float delta){
 
         processRemoveQueue();
 
         for(RenderableObject renderableObject : gameObjects)
             renderableObject.render(spriteBatch, delta);
 
-        getPlayer().render(spriteBatch, delta);
+        getPlayer().render(world,mousePos,controller, spriteBatch, delta);
     }
 
     /** Removes the objects listed in the removequeue from the gameObjects list */
@@ -67,4 +70,6 @@ public class GameMap {
     public Player getPlayer(){
         return this.player;
     }
+
+
 }

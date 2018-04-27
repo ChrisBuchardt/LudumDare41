@@ -20,12 +20,14 @@ public class MapLoader {
     private Tile[][] tileArray;
     private ArrayList<RenderableObject> tilesList;
     private Player player;
+    private World world;
 
     /** Loads an image.
      * @param levelImageLocation a path to a level image.
      * @param world the world where the elements will be spawned in. */
     public void loadLevelFromImage(String levelImageLocation, World world){
 
+        this.world = world;
         tilesList = new ArrayList<>();
 
         //Load map image and create pixmap containing the pixels
