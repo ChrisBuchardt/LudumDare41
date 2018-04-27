@@ -51,11 +51,11 @@ public class GameObject {
     /** The default fixturedef for players */
     private static FixtureDef createDefaultDynamicFixtureDef(){
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(0.5f, 0.42f);
+        shape.setAsBox(Player.WIDTH/2f, Player.HEIGHT/2f);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0.4f;
+        fixtureDef.density = 1f;
         fixtureDef.friction = 1f;
         fixtureDef.restitution = 0;
 
