@@ -5,23 +5,17 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.minichri.Elements.Tile;
 import com.minichri.MainGame;
 import com.minichri.World.MapLoader;
-import com.minichri.entity.GameObject;
-import com.minichri.entity.Player;
 import com.minichri.entity.TextureObject;
 import com.minichri.helpers.GameInfo;
-import com.minichri.inventory.Inventory;
+import com.minichri.physics.GameContactListener;
 
 import java.util.ArrayList;
 
@@ -43,6 +37,7 @@ public class GameScreen implements Screen {
     public  GameScreen(MainGame game){
         this.game = game;
         this.world = new World(new Vector2(0,-9.8f), true); //Creating the world with gravity
+        world.setContactListener(new GameContactListener(world));
 
         this.spriteBatch = new SpriteBatch();
 
