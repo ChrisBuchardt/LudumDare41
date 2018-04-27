@@ -28,8 +28,6 @@ public class GameScreen implements Screen {
     private MainGame game;
     private SpriteBatch spriteBatch;
     private OrthographicCamera camera;
-    private Texture img;
-    private Texture img2;
     private InputProcessor inputProcessor;
     private World world;
     private Box2DDebugRenderer debugRenderer;
@@ -43,11 +41,6 @@ public class GameScreen implements Screen {
         this.game = game;
         this.world = new World(new Vector2(0,-9.8f), true); //Creating the world with gravity
 
-        // Temp images for testing screen/camera
-        img = new Texture("tiles/dirt.png");
-        img2 = new Texture("tiles/grass.png");
-
-        //player = new Player(world,new Vector2(1,1), BodyDef.BodyType.DynamicBody);
         this.spriteBatch = new SpriteBatch();
 
         this.camera = new OrthographicCamera(GameInfo.SCREEN_WIDTH, GameInfo.SCREEN_HEIGHT);
@@ -58,7 +51,7 @@ public class GameScreen implements Screen {
 
         //Load map //TODO MIKKEL
         MapLoader ml = new MapLoader();
-        ml.loadLevelFromImage("level/testLevel03.png", world);
+        ml.loadLevelFromImage("level/testLevel04.png", world);
         gameMap = ml.getTilesList();
         playerIndex = ml.getPlayerIndex();
 
