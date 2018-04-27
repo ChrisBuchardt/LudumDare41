@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -23,6 +24,7 @@ public class GameScreen implements Screen {
 
     private MainGame game;
     private SpriteBatch spriteBatch;
+    private Texture background;
     private OrthographicCamera camera;
     private InputProcessor inputProcessor;
     private World world;
@@ -46,6 +48,7 @@ public class GameScreen implements Screen {
         stage = new IngameStage(new FitViewport(GameInfo.SCREEN_WIDTH, GameInfo.SCREEN_HEIGHT));
 
         spriteBatch.setProjectionMatrix(camera.combined);
+        background = new Texture("background.png");
 
         //Load map
         MapLoader ml = new MapLoader();
@@ -64,6 +67,7 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
 
+
         camera.position.x = gameMap.get(playerIndex).getBody().getPosition().x;
         camera.position.y = gameMap.get(playerIndex).getBody().getPosition().y;
         camera.update();
@@ -74,7 +78,7 @@ public class GameScreen implements Screen {
 
 
         spriteBatch.begin();
-
+        spriteBatch.draw(background,0,0);
         //Render map
         for(TextureObject textureObject : gameMap)
             textureObject.render(spriteBatch);

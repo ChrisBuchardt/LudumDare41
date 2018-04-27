@@ -7,9 +7,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import com.minichri.helpers.GameInfo;
 import com.minichri.inventory.Inventory;
+
+import java.util.SortedMap;
 
 public class Player extends TextureObject {
 
@@ -17,7 +19,7 @@ public class Player extends TextureObject {
     private boolean isCrouched;
     private float maxVelocity = 40;
     private float jumpPower = 80;
-
+    private Body feet;
     // Inventory singleton
     private static Inventory _inventory;
     public static Inventory getInventory() {
@@ -29,7 +31,20 @@ public class Player extends TextureObject {
     private static TextureRegion playerTexRight = new TextureRegion(new Texture("player/player_right.png"),0,0,16,16);
 
     public Player(World world, Vector2 pos) {
-        super(world, pos, GameObject.DEFAULT_DYNAMIC_BODYDEF, GameObject.DEFAULT_DYNAMIC_FIXTUREDEF, playerTexLeft);
+        super(world, pos, GameObject.DEFAULT_DYNAMIC_BODYDEF,GameObject.DEFAULT_DYNAMIC_FIXTUREDEF,playerTexLeft);
+
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox((GameInfo.TILE_SIZE / 2f) - 1f, (1f));
+
+        // TODO Clean the player class up
+        FixtureDef feetDef = new FixtureDef();
+        feetDef.shape = shape;
+        feetDef.density = 0;
+        feetDef.friction = 1;
+        feetDef.restitution = 0;
+        feetDef.isSensor = false;
+        feet = new GameObject(world,new Vector2(pos.x,pos.y-5),GameObject.DEFAULT_DYNAMIC_BODYDEF,feetDef).getBody();
+        feet.setUserData("In Air");
         body.setGravityScale(10f);
         body.setLinearDamping(0);
         body.setUserData("Grounded");
@@ -38,7 +53,7 @@ public class Player extends TextureObject {
     @Override
     public void render(SpriteBatch batch) {
 
-        isMidAir = body.getUserData() != "Grounded";
+        isMidAir = feet.getUserData() != "Grounded";
 
 
         //Changes the player texture based on movement.
@@ -51,7 +66,7 @@ public class Player extends TextureObject {
         if (!isMidAir) {
             if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
                 body.setLinearVelocity(body.getLinearVelocity().x, jumpPower);
-                body.setUserData("In Air");
+                feet.setUserData("In Air");
             }
             if (Gdx.input.isKeyPressed(Input.Keys.D)) {
                 if (body.getLinearVelocity().x>maxVelocity){
@@ -69,27 +84,35 @@ public class Player extends TextureObject {
             if (body.getLinearVelocity().x<-maxVelocity){
                 body.setLinearVelocity(-maxVelocity,body.getLinearVelocity().y);
             }
-            body.applyForceToCenter(-200,0,true);
+            body.applyForceToCenter(-2000,0,true);
 
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             if (body.getLinearVelocity().x>maxVelocity){
                 body.setLinearVelocity(maxVelocity,body.getLinearVelocity().y);
             }
-            body.applyForceToCenter(200,0,true);
+            body.applyForceToCenter(2000,0,true);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)){
-            System.out.println("Player is crouched");
+            System.out.println(feet.getUserData());
             isCrouched = true;
         }
         else isCrouched = false;
 
         //Draws the texture the size of the player
+       /* Vector2 pos = body.getPosition();
+        float width = GameInfo.TILE_SIZE;
+        float height = GameInfo.PLAYER_HEIGHT;
+        batch.draw(texture, pos.x - width/2, pos.y - height/2, width / 2f, height / 2f, width, height, 1, 1, body.getAngle());*/
+
+
         super.render(batch);
+        feet.setTransform(body.getPosition().sub(0,5),0);
+
 
         //Exits game
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))Gdx.app.exit();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))body.setTransform(368.0f,176.0f,0);
     }
 
     public Vector2 getBodyPos(){
