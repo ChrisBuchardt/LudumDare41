@@ -32,8 +32,8 @@ public class GameScreen implements Screen {
     private World world;
     private Box2DDebugRenderer debugRenderer;
 
-    private ArrayList<TextureObject> gameMap; //TODO MIKKEL
-    private int playerIndex; //TODO MIKKEL
+    private ArrayList<TextureObject> gameMap;
+    private int playerIndex;
 
 
 
@@ -49,7 +49,7 @@ public class GameScreen implements Screen {
 
         spriteBatch.setProjectionMatrix(camera.combined);
 
-        //Load map //TODO MIKKEL
+        //Load map
         MapLoader ml = new MapLoader();
         ml.loadLevelFromImage("level/testLevel04.png", world);
         gameMap = ml.getTilesList();
@@ -62,7 +62,6 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(inputProcessor);
-
     }
 
     @Override
@@ -78,21 +77,16 @@ public class GameScreen implements Screen {
 
         spriteBatch.begin();
 
-        //TODO MIKKEL
+        //Render map
         for(TextureObject textureObject : gameMap)
             textureObject.render(spriteBatch);
 
-
-        spriteBatch.end();
-
-        spriteBatch.begin();
         gameMap.get(playerIndex).render(spriteBatch);
-        spriteBatch.end();
 
+        spriteBatch.end();
 
         spriteBatch.setProjectionMatrix(camera.combined);
         debugRenderer.render(world,camera.combined);
-
     }
 
     @Override
