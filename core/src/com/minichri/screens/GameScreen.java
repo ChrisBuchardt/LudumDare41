@@ -35,8 +35,8 @@ public class GameScreen implements Screen {
     private Stage stage;
     private Box2DDebugRenderer debugRenderer;
 
-    private ArrayList<TextureObject> gameMap; //TODO MIKKEL
-    private int playerIndex; //TODO MIKKEL
+    private ArrayList<TextureObject> gameMap;
+    private int playerIndex;
 
 
 
@@ -54,7 +54,7 @@ public class GameScreen implements Screen {
 
         spriteBatch.setProjectionMatrix(camera.combined);
 
-        //Load map //TODO MIKKEL
+        //Load map
         MapLoader ml = new MapLoader();
         ml.loadLevelFromImage("level/testLevel04.png", world);
         gameMap = ml.getTilesList();
@@ -67,7 +67,6 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(inputProcessor);
-
     }
 
     @Override
@@ -81,15 +80,15 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0f, 0.5f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        spriteBatch.setProjectionMatrix(camera.combined);
-        debugRenderer.render(world,camera.combined);
 
         spriteBatch.begin();
 
-        //TODO MIKKEL
+        //Render map
         for(TextureObject textureObject : gameMap)
             textureObject.render(spriteBatch);
+
         gameMap.get(playerIndex).render(spriteBatch);
+
         spriteBatch.end();
 
         spriteBatch.setProjectionMatrix(stage.getCamera().combined);
@@ -98,6 +97,11 @@ public class GameScreen implements Screen {
         stage.act(delta);
         stage.draw();
         spriteBatch.end();
+
+
+
+        spriteBatch.setProjectionMatrix(camera.combined);
+        debugRenderer.render(world,camera.combined);
 
     }
 

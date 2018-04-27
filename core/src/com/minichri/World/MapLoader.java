@@ -50,14 +50,15 @@ public class MapLoader {
                 //Check if color matches a type
                 TileType currentTileType = TileType.getTypeFromColor(color);
 
-
                 //Create an element if color was found
-                if(currentTileType == TileType.WHITE_SPACE) { //Do nothing
+                if(currentTileType == TileType.WHITE_SPACE) { //White-space = do nothing
                     continue;
                 }
                 else if(currentTileType == TileType.PLAYER){
+
                     this.tilesList.add(new Player(world, currentTilePos));
                     this.playerIndex = tilesList.size()-1;
+
                 }else if(currentTileType != null){ //Add tile based on tileType
 
                     if(currentTileType.isDirectionalTile()){ //Is the tile directional?
@@ -70,7 +71,7 @@ public class MapLoader {
                         Color.argb8888ToColor(color, levelPixmap.getPixel(x+1, y));
                         TileType rightTileType = TileType.getTypeFromColor(color);
 
-
+                        //Surrounding checks
                         boolean isTileAboveTheSame = currentTileType == aboveTileType;//Is the block above the same as this?
                         boolean isTileLeftTheSame = currentTileType == leftTileType;//Is the block to the left the same?
                         boolean isTileRightTheSame = currentTileType == rightTileType;//Is the block to the right the same?
@@ -87,12 +88,9 @@ public class MapLoader {
                                 else
                                     this.tilesList.add(new DirectionalTile(world, TileType.TileTextureDirection.LEFT, currentTileType, currentTilePos));
                             }else if(rightTileType == TileType.WHITE_SPACE){ //Right is free
-                                if(leftTileType == TileType.WHITE_SPACE) //Is Left also free
-                                    this.tilesList.add(new DirectionalTile(world, TileType.TileTextureDirection.MIDDLE, currentTileType, currentTilePos));
-                                else
-                                    this.tilesList.add(new DirectionalTile(world, TileType.TileTextureDirection.RIGHT, currentTileType, currentTilePos));
+                                this.tilesList.add(new DirectionalTile(world, TileType.TileTextureDirection.RIGHT, currentTileType, currentTilePos));
                             }else
-                                this.tilesList.add(new DirectionalTile(world, TileType.TileTextureDirection.MIDDLE, currentTileType, currentTilePos)); //TODO maybe something else?
+                                this.tilesList.add(new DirectionalTile(world, TileType.TileTextureDirection.MIDDLE, currentTileType, currentTilePos));
                         }
 
                     }else{
