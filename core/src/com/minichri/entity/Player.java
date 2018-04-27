@@ -12,20 +12,23 @@ import com.minichri.physics.ContactManager;
 
 public class Player extends TextureObject {
 
-    public static final float WIDTH = 0.8f;
-    public static final float HEIGHT = 0.8f;
+    private static final int PIXEL_WIDTH = 16;
+    private static final int PIXEL_HEIGHT = 21;
+
+    public static final float WIDTH = 0.56f;
+    public static final float HEIGHT = 1.35f;
 
     private static final float FEET_WIDTH = WIDTH - 0.05f;
     private static final float FEET_HEIGHT = 0.2f;
-    private static final float FEET_Y_OFFSET = -.54f;
+    private static final float FEET_Y_OFFSET = -.85f;
     private static final float MAX_X_VEL = 6f;
     private static final float JUMP_FORCE = 10f;
     private static final float JUMP_FORCE_IN_AIR = 7.5f;
     private static final float WALK_SPEED = 6f;
     private static final float AIR_WALK_FORCE = 0.3f;
 
-    private static TextureRegion playerTexLeft = new TextureRegion(new Texture("player/player_left.png"), 0, 0, 16, 16);
-    private static TextureRegion playerTexRight = new TextureRegion(new Texture("player/player_right.png"), 0, 0, 16, 16);
+    private static TextureRegion playerTexLeft = new TextureRegion(new Texture("player/player_left.png"), 0, 0, PIXEL_WIDTH, PIXEL_HEIGHT);
+    private static TextureRegion playerTexRight = new TextureRegion(new Texture("player/player_right.png"), 0, 0, PIXEL_WIDTH, PIXEL_HEIGHT);
 
     // Inventory singleton
     private static Inventory _inventory;
@@ -40,7 +43,7 @@ public class Player extends TextureObject {
     private Body feet;
 
     public Player(World world, Vector2 pos) {
-        super(world, pos, GameObject.DEFAULT_DYNAMIC_BODYDEF,GameObject.DEFAULT_DYNAMIC_FIXTUREDEF, playerTexLeft);
+        super(world, pos, GameObject.DEFAULT_DYNAMIC_BODYDEF, GameObject.DEFAULT_DYNAMIC_FIXTUREDEF, playerTexLeft);
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(FEET_WIDTH/2f, FEET_HEIGHT/2f);
