@@ -53,7 +53,8 @@ public class Player extends TextureObject {
     private boolean isMidAir = false;
     private boolean isCrouched = false;
     private boolean hasJumped = false;
-    private float range = 20;
+    private float maxRange = 5f;
+    private float minRange = 1.6f;
     private Vector2 placeVector = new Vector2(0,0);
 
     private Body feet;
@@ -117,15 +118,15 @@ public class Player extends TextureObject {
         //Spawn blocks at the click
         if (controller.leftClick){
             if (getInventory().getSelectedItem()!=null){
-                placeVector.x = (int)mousePos.x;
-                placeVector.y = (int)mousePos.y;
-                //System.out.println(placeVector);
-                //if (>range) {
+                placeVector.x = Math.round(mousePos.x);
+                placeVector.y = Math.round(mousePos.y);
+                float distance = new Vector2(placeVector).sub(body.getPosition()).len();
+                if (distance<maxRange && distance>minRange){
                     if (!map.isTileOcccipied((int)placeVector.x, (int)placeVector.y)) {
                         TileType type = getInventory().getSelectedItem().getType();
                         map.setTile(type, placeVector);
                         queue.add(new Tile(world, type, placeVector));
-                 //   }
+                   }
                 }
             }
         }
