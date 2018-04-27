@@ -8,9 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.minichri.inventory.Inventory;
-import com.minichri.physics.PlayerFeetContactListener;
-
-import java.util.SortedMap;
+import com.minichri.physics.ContactManager;
 
 public class Player extends TextureObject {
 
@@ -21,9 +19,10 @@ public class Player extends TextureObject {
     private static final float FEET_HEIGHT = 0.2f;
     private static final float FEET_Y_OFFSET = -.54f;
     private static final float MAX_X_VEL = 6f;
-    private static final float JUMP_FORCE = 14f;
+    private static final float JUMP_FORCE = 10f;
+    private static final float JUMP_FORCE_IN_AIR = 7.5f;
     private static final float WALK_SPEED = 6f;
-    private static final float AIR_WALK_FORCE = 4f;
+    private static final float AIR_WALK_FORCE = 0.3f;
 
     private static TextureRegion playerTexLeft = new TextureRegion(new Texture("player/player_left.png"), 0, 0, 16, 16);
     private static TextureRegion playerTexRight = new TextureRegion(new Texture("player/player_right.png"), 0, 0, 16, 16);
@@ -53,7 +52,7 @@ public class Player extends TextureObject {
         feetDef.restitution = 0;
         feetDef.isSensor = false;
         feet = new GameObject(world, new Vector2(pos.x, pos.y + FEET_Y_OFFSET), GameObject.DEFAULT_DYNAMIC_BODYDEF,feetDef).getBody();
-        feet.setUserData(PlayerFeetContactListener.FEET);
+        feet.setUserData(ContactManager.FEET);
         feet.setGravityScale(0);
         body.setLinearDamping(0);
         body.setUserData(this);
@@ -64,44 +63,48 @@ public class Player extends TextureObject {
 
         Vector2 vel = body.getLinearVelocity();
 
-        isMidAir = !(PlayerFeetContactListener.feetCollisions > 0 && Math.abs(vel.y) <= 1e-2);
-        System.out.println(PlayerFeetContactListener.feetCollisions);
+        isMidAir = !(ContactManager.feetCollisions > 0 && Math.abs(vel.y) <= 1e-2);
 
-        // Changes the player texture based on movement
-        if (vel.x < 0)
-            texture = playerTexLeft;
-        else if (vel.x > 0)
-            texture = playerTexRight;
+        if (!isMidAir) hasJumped = false;
+        if (!hasJumped && (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE))) {
+            vel.y = isMidAir ? JUMP_FORCE_IN_AIR : JUMP_FORCE;
+            isMidAir = true;
+            hasJumped = true;
+        }
 
         // Movement
-        float dir = Gdx.input.isKeyPressed(Input.Keys.D) ? 1 : Gdx.input.isKeyPressed(Input.Keys.A) ? -1 : 0;
+        int dir = Gdx.input.isKeyPressed(Input.Keys.D) ? 1 : Gdx.input.isKeyPressed(Input.Keys.A) ? -1 : 0;
         if (!isMidAir) {
             // Grounded
-            if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
-                body.setLinearVelocity(vel.x, vel.y + JUMP_FORCE);
-                isMidAir = true;
-                hasJumped = true;
-            }
-
-            body.setLinearVelocity(WALK_SPEED * dir, body.getLinearVelocity().y);
-
+            vel.x = WALK_SPEED * dir;
         } else {
             // Mid air
-            body.applyForceToCenter(AIR_WALK_FORCE * dir, 0, true);
-            body.applyForce(0, -9.82f, 0, 0, true);
+            vel.add(AIR_WALK_FORCE * dir, 0);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)) isCrouched = true;
         else isCrouched = false;
 
         // Restrict vel x
-        float restrictVelX = Math.min(Math.max(-MAX_X_VEL, body.getLinearVelocity().x), MAX_X_VEL);
-        body.setLinearVelocity(restrictVelX, body.getLinearVelocity().y);
+        float restrictVelX = Math.min(Math.max(-MAX_X_VEL, vel.x), MAX_X_VEL);
+        vel.x = restrictVelX;
 
-        //Exitsgame
+        // Apply new vel
+        body.setLinearVelocity(vel);
+
+        // Move feet
         feet.setTransform(new Vector2(body.getPosition()).add(0, FEET_Y_OFFSET), 0);
 
+        updateTextre(dir);
         super.render(batch, delta);
+    }
+
+    public void updateTextre(int moveDirection) {
+        // Changes the player texture based on movement
+        if (moveDirection < 0)
+            texture = playerTexLeft;
+        else if (moveDirection > 0)
+            texture = playerTexRight;
     }
 
     public Vector2 getBodyPos(){

@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.minichri.MainGame;
 import com.minichri.World.GameMap;
 import com.minichri.helpers.GameInfo;
-import com.minichri.physics.PlayerFeetContactListener;
+import com.minichri.physics.ContactManager;
 
 public class GameScreen implements Screen {
 
@@ -34,8 +34,8 @@ public class GameScreen implements Screen {
 
     public GameScreen(MainGame game) {
         this.game = game;
-        this.world = new World(new Vector2(0, -9.82f), true); //Creating the world with gravity
-        world.setContactListener(new PlayerFeetContactListener(world));
+        this.world = new World(new Vector2(0, -18f), true); //Creating the world with gravity
+        world.setContactListener(new ContactManager(world));
 
         this.spriteBatch = new SpriteBatch();
 
