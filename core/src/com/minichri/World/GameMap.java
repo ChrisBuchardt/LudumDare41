@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.minichri.Elements.Resource;
+import com.minichri.Elements.Tile;
 import com.minichri.entity.GameObject;
 import com.minichri.entity.Player;
 import com.minichri.entity.RenderableObject;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 public class GameMap {
 
     private ArrayList<RenderableObject> gameObjects;
+    private Tile[][] tilesArray;
     private ArrayList<RenderableObject> removeQueue = new ArrayList<>();
     private Player player;
     private World world;
@@ -24,8 +26,9 @@ public class GameMap {
         //Load the map
         MapLoader ml = new MapLoader();
         ml.loadLevelFromImage("level/testLevel04.png", world);
-        gameObjects = ml.getTilesList();
-        player = ml.getPlayer();
+        this.gameObjects = ml.getTilesList();
+        this.tilesArray = ml.getTileArray();
+        this.player = ml.getPlayer();
     }
 
     /** Renders objects from the game map. */
