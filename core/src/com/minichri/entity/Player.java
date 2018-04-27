@@ -8,9 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.minichri.inventory.Inventory;
-import com.minichri.physics.PlayerFeetContactListener;
-
-import java.util.SortedMap;
+import com.minichri.physics.ContactManager;
 
 public class Player extends TextureObject {
 
@@ -54,7 +52,7 @@ public class Player extends TextureObject {
         feetDef.restitution = 0;
         feetDef.isSensor = false;
         feet = new GameObject(world, new Vector2(pos.x, pos.y + FEET_Y_OFFSET), GameObject.DEFAULT_DYNAMIC_BODYDEF,feetDef).getBody();
-        feet.setUserData(PlayerFeetContactListener.FEET);
+        feet.setUserData(ContactManager.FEET);
         feet.setGravityScale(0);
         body.setLinearDamping(0);
         body.setUserData(this);
@@ -65,7 +63,7 @@ public class Player extends TextureObject {
 
         Vector2 vel = body.getLinearVelocity();
 
-        isMidAir = !(PlayerFeetContactListener.feetCollisions > 0 && Math.abs(vel.y) <= 1e-2);
+        isMidAir = !(ContactManager.feetCollisions > 0 && Math.abs(vel.y) <= 1e-2);
 
         if (!isMidAir) hasJumped = false;
         if (!hasJumped && (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE))) {
