@@ -11,6 +11,7 @@ public class DesktopLauncher {
 
 		config.width = GameInfo.SCREEN_WIDTH;
 		config.height = GameInfo.SCREEN_HEIGHT;
+		config.title = "LudumDare41 - Minichri project";
 
 		new LwjglApplication(new MainGame(), config);
 	}

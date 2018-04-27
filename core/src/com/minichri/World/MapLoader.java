@@ -17,14 +17,17 @@ import java.util.ArrayList;
 
 public class MapLoader {
 
+    private Tile[][] tileArray;
     private ArrayList<RenderableObject> tilesList;
     private Player player;
+    private World world;
 
     /** Loads an image.
      * @param levelImageLocation a path to a level image.
      * @param world the world where the elements will be spawned in. */
     public void loadLevelFromImage(String levelImageLocation, World world){
 
+        this.world = world;
         tilesList = new ArrayList<>();
 
         //Load map image and create pixmap containing the pixels
@@ -32,6 +35,9 @@ public class MapLoader {
         TextureData tempData = levelTexture.getTextureData();
         tempData.prepare();
         Pixmap levelPixmap = levelTexture.getTextureData().consumePixmap();
+
+        //Init tile array
+        this.tileArray = new Tile[levelPixmap.getWidth()][levelPixmap.getHeight()];
 
         //Coordinates
         Vector2 currentTilePos;
@@ -52,6 +58,7 @@ public class MapLoader {
 
                 //Create an element if color was found
                 if(currentTileType == TileType.WHITE_SPACE) { //White-space = do nothing
+                    tileArray[x][y] = null;
                     continue;
                 } else if(currentTileType == TileType.PLAYER){
 
@@ -62,6 +69,8 @@ public class MapLoader {
                     this.tilesList.add(new Resource(world, currentTileType, currentTilePos));
 
                 }else if(currentTileType != null){ //Add tile based on tileType
+
+                    tileArray[x][y] = new Tile(world, currentTileType, currentTilePos);
 
                     if(currentTileType.isDirectionalTile()){ //Is the tile directional?
 
@@ -110,6 +119,10 @@ public class MapLoader {
 
     public ArrayList<RenderableObject> getTilesList() {
         return tilesList;
+    }
+
+    public Tile[][] getTileArray() {
+        return tileArray;
     }
 
     public Player getPlayer() {

@@ -1,14 +1,23 @@
 package com.minichri.entity;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
+import com.minichri.Elements.Tile;
+import com.minichri.KeyboardController;
+import com.minichri.helpers.TileType;
 import com.minichri.inventory.Inventory;
 import com.minichri.physics.ContactManager;
+import com.minichri.screens.GameScreen;
+
+import java.util.ArrayList;
+
 
 public class Player extends TextureObject {
 
@@ -27,6 +36,9 @@ public class Player extends TextureObject {
     private static final float WALK_SPEED = 6f;
     private static final float AIR_WALK_FORCE = 0.3f;
 
+    private ArrayList<RenderableObject> playerTiles;
+    private ArrayList<RenderableObject> queue;
+
     private static TextureRegion playerTexLeft = new TextureRegion(new Texture("player/player_left.png"), 0, 0, PIXEL_WIDTH, PIXEL_HEIGHT);
     private static TextureRegion playerTexRight = new TextureRegion(new Texture("player/player_right.png"), 0, 0, PIXEL_WIDTH, PIXEL_HEIGHT);
 
@@ -40,10 +52,14 @@ public class Player extends TextureObject {
     private boolean isMidAir = false;
     private boolean isCrouched = false;
     private boolean hasJumped = false;
+
     private Body feet;
 
     public Player(World world, Vector2 pos) {
         super(world, pos, GameObject.DEFAULT_DYNAMIC_BODYDEF, GameObject.DEFAULT_DYNAMIC_FIXTUREDEF, playerTexLeft);
+
+        playerTiles = new ArrayList<>();
+        queue = new ArrayList<>();
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(FEET_WIDTH/2f, FEET_HEIGHT/2f);
@@ -61,22 +77,29 @@ public class Player extends TextureObject {
         body.setUserData(this);
     }
 
-    @Override
-    public void render(SpriteBatch batch, float delta) {
+    public void render(World world,Vector3 mousePos, KeyboardController controller, SpriteBatch batch, float delta) {
+
+        //adds Player spawned tiles to the array
+        if (queue.size()>0)playerTiles.addAll(queue);
+            queue.removeAll(queue);
+
+        for(RenderableObject renderableObject : playerTiles)
+                renderableObject.render(batch, delta);
+
 
         Vector2 vel = body.getLinearVelocity();
 
         isMidAir = !(ContactManager.feetCollisions > 0 && Math.abs(vel.y) <= 1e-2);
 
         if (!isMidAir) hasJumped = false;
-        if (!hasJumped && (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE))) {
+        if (!hasJumped && controller.w  || controller.space) {
             vel.y = isMidAir ? JUMP_FORCE_IN_AIR : JUMP_FORCE;
             isMidAir = true;
             hasJumped = true;
         }
 
         // Movement
-        int dir = Gdx.input.isKeyPressed(Input.Keys.D) ? 1 : Gdx.input.isKeyPressed(Input.Keys.A) ? -1 : 0;
+        int dir = controller.d ? 1 : controller.a ? -1 : 0;
         if (!isMidAir) {
             // Grounded
             vel.x = WALK_SPEED * dir;
@@ -85,8 +108,13 @@ public class Player extends TextureObject {
             vel.add(AIR_WALK_FORCE * dir, 0);
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) isCrouched = true;
+        if (controller.s) isCrouched = true;
         else isCrouched = false;
+
+        //Spawn blocks at the click
+        if (controller.leftClick){
+            queue.add( new Tile(world, TileType.PLATFORM_BLUE,new Vector2(mousePos.x,mousePos.y)));
+        }
 
         // Restrict vel x
         float restrictVelX = Math.min(Math.max(-MAX_X_VEL, vel.x), MAX_X_VEL);
@@ -98,11 +126,11 @@ public class Player extends TextureObject {
         // Move feet
         feet.setTransform(new Vector2(body.getPosition()).add(0, FEET_Y_OFFSET), 0);
 
-        updateTextre(dir);
+        updateTexture(dir);
         super.render(batch, delta);
     }
 
-    public void updateTextre(int moveDirection) {
+    public void updateTexture(int moveDirection) {
         // Changes the player texture based on movement
         if (moveDirection < 0)
             texture = playerTexLeft;

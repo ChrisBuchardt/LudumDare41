@@ -1,7 +1,6 @@
 package com.minichri.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -12,7 +11,9 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.minichri.KeyboardController;
 import com.minichri.MainGame;
 import com.minichri.World.GameMap;
 import com.minichri.helpers.GameInfo;
@@ -24,24 +25,28 @@ public class GameScreen implements Screen {
     private SpriteBatch spriteBatch;
     private Texture background;
     private OrthographicCamera camera;
-    private InputProcessor inputProcessor;
-    private World world;
     private Stage stage;
-    private Box2DDebugRenderer debugRenderer;
-    private Vector3 mousePos;
     private GameMap gameMap;
+    private Box2DDebugRenderer debugRenderer;
+    //TODO CHRIS make either getters or smooth this out.
+    public Vector3 mousePos;
+    public KeyboardController inputProcessor;
+    public World world;
 
 
     public GameScreen(MainGame game) {
+
+        mousePos = new Vector3 (0,0,0);
+        this.inputProcessor = new KeyboardController();
         this.game = game;
         this.world = new World(new Vector2(0, -18f), true); //Creating the world with gravity
-        this.gameMap = new GameMap(world); //Load map
+        this.gameMap = new GameMap(this); //Load map
         world.setContactListener(new ContactManager(world, gameMap));
 
         this.spriteBatch = new SpriteBatch();
 
+
         //Position of the mouse and camera
-        mousePos = new Vector3 (0,0,0);
         this.camera = new OrthographicCamera(GameInfo.SCREEN_WIDTH, GameInfo.SCREEN_HEIGHT);
         this.camera.zoom = GameInfo.ZOOM;
         this.camera.update();
@@ -82,7 +87,7 @@ public class GameScreen implements Screen {
         spriteBatch.begin();
         spriteBatch.draw(background,0,0);
 
-        gameMap.render(spriteBatch, delta);
+        gameMap.render(world,mousePos,inputProcessor,spriteBatch, delta);
 
         spriteBatch.end();
 
@@ -123,5 +128,6 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         spriteBatch.dispose();
+        stage.dispose();
     }
 }
