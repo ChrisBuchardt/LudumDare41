@@ -1,6 +1,5 @@
 package com.minichri.Elements;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
@@ -9,10 +8,10 @@ import com.minichri.helpers.TileType;
 
 public class DirectionalTile extends Tile {
 
-    private TileType.TileTextureDirection placementType;
+    private TileType.TextureDirection placementType;
 
 
-    public DirectionalTile(World world, TileType.TileTextureDirection placementType, TileType tileType, Vector2 pos) {
+    public DirectionalTile(World world, TileType.TextureDirection placementType, TileType tileType, Vector2 pos) {
         super(world, tileType, pos);
 
         this.placementType = placementType;

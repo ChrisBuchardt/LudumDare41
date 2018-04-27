@@ -85,10 +85,7 @@ public class Player extends TextureObject {
         else isCrouched = false;
 
         //Draws the texture the size of the player
-        Vector2 pos = body.getPosition();
-        float width = GameInfo.TILE_SIZE;
-        float height = GameInfo.PLAYER_HEIGHT;
-        batch.draw(texture, pos.x - width/2, pos.y - height/2, width / 2f, height / 2f, width, height, 1, 1, body.getAngle());
+        super.render(batch);
 
 
         //Exits game

@@ -45,7 +45,7 @@ public class MapLoader {
 
                 //Get a color
                 Color color = new Color();
-                Color.argb8888ToColor(color, levelPixmap.getPixel(x, y));
+                Color.rgba8888ToColor(color, levelPixmap.getPixel(x, y));
 
                 //Check if color matches a type
                 TileType currentTileType = TileType.getTypeFromColor(color);
@@ -77,20 +77,20 @@ public class MapLoader {
                         boolean isTileRightTheSame = currentTileType == rightTileType;//Is the block to the right the same?
 
                         if(isTileAboveTheSame){ //Under block
-                            this.tilesList.add(new DirectionalTile(world, TileType.TileTextureDirection.UNDER, currentTileType, currentTilePos));
+                            this.tilesList.add(new DirectionalTile(world, TileType.TextureDirection.UNDER, currentTileType, currentTilePos));
                         }else if(aboveTileType == TileType.WHITE_SPACE){ //Above free
 
                             if(isTileLeftTheSame && isTileRightTheSame){ //Both sides free
-                                this.tilesList.add(new DirectionalTile(world, TileType.TileTextureDirection.MIDDLE, currentTileType, currentTilePos));
+                                this.tilesList.add(new DirectionalTile(world, TileType.TextureDirection.MIDDLE, currentTileType, currentTilePos));
                             }else if(leftTileType == TileType.WHITE_SPACE){ //Left is free
                                 if(rightTileType == TileType.WHITE_SPACE) //Is right also free
-                                    this.tilesList.add(new DirectionalTile(world, TileType.TileTextureDirection.MIDDLE, currentTileType, currentTilePos));
+                                    this.tilesList.add(new DirectionalTile(world, TileType.TextureDirection.MIDDLE, currentTileType, currentTilePos));
                                 else
-                                    this.tilesList.add(new DirectionalTile(world, TileType.TileTextureDirection.LEFT, currentTileType, currentTilePos));
+                                    this.tilesList.add(new DirectionalTile(world, TileType.TextureDirection.LEFT, currentTileType, currentTilePos));
                             }else if(rightTileType == TileType.WHITE_SPACE){ //Right is free
-                                this.tilesList.add(new DirectionalTile(world, TileType.TileTextureDirection.RIGHT, currentTileType, currentTilePos));
+                                this.tilesList.add(new DirectionalTile(world, TileType.TextureDirection.RIGHT, currentTileType, currentTilePos));
                             }else
-                                this.tilesList.add(new DirectionalTile(world, TileType.TileTextureDirection.MIDDLE, currentTileType, currentTilePos));
+                                this.tilesList.add(new DirectionalTile(world, TileType.TextureDirection.MIDDLE, currentTileType, currentTilePos));
                         }
 
                     }else{
