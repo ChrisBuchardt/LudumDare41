@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.minichri.Elements.Tile;
 import com.minichri.KeyboardController;
 import com.minichri.World.GameMap;
+import com.minichri.helpers.GameInfo;
 import com.minichri.helpers.TileType;
 import com.minichri.inventory.Inventory;
 import com.minichri.physics.ContactManager;
@@ -56,6 +57,8 @@ public class Player extends TextureObject {
     private float maxRange = 5f;
     private float minRange = 1.6f;
     private Vector2 placeVector = new Vector2(0,0);
+    private Texture preview;
+    private boolean spawning;
 
     private Body feet;
 
@@ -116,16 +119,19 @@ public class Player extends TextureObject {
         else isCrouched = false;
 
         //Spawn blocks at the click
-        if (controller.leftClick){
-            if (getInventory().getSelectedItem()!=null){
-                placeVector.x = Math.round(mousePos.x);
-                placeVector.y = Math.round(mousePos.y);
-                float distance = new Vector2(placeVector).sub(body.getPosition()).len();
+        if (getInventory().getSelectedItem()!=null){
+            placeVector.x = Math.round(mousePos.x);
+            placeVector.y = Math.round(mousePos.y);
+            float distance = new Vector2(placeVector).sub(body.getPosition()).len();
                 if (distance<maxRange && distance>minRange){
+                    preview = getInventory().getSelectedItem().getType().getBlockTexture();
+                    batch.draw(getInventory().getSelectedItem().getType().getBlockTexture(),placeVector.x-0.5f,placeVector.y-0.5f,1, 1);
+                    if (controller.leftClick){
                     if (!map.isTileOcccipied((int)placeVector.x, (int)placeVector.y)) {
                         TileType type = getInventory().getSelectedItem().getType();
                         map.setTile(type, placeVector);
                         queue.add(new Tile(world, type, placeVector));
+                        getInventory().remove(getInventory().getSelectedSlot());
                    }
                 }
             }
