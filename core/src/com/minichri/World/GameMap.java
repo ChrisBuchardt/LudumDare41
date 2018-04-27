@@ -81,9 +81,9 @@ public class GameMap {
 
     /** Takes a set of tile coordinates and check if the tile is occupied */
     public boolean isTileOcccipied(int x, int y){
-        
+
         //Check game map bounds
-        if(x < 0 || x > this.mapTileSizeX || y < 0 || y > this.mapTileSizeY)
+        if(x < 0 || x > this.mapTileSizeX-1 || y < 0 || y > this.mapTileSizeY-1)
             return true;
         return this.tilesArray[x][y] != null;
     }
