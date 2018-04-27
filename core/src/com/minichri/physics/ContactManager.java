@@ -12,8 +12,8 @@ public class ContactManager implements ContactListener {
 
     private World world;
 
-    public static boolean isFeetOnGround = false;
     public static int feetCollisions = 0;
+    public static boolean playerTouchWall = false;
 
     public ContactManager(World world){
         this.world = world;
@@ -34,7 +34,7 @@ public class ContactManager implements ContactListener {
 
             //Collision with tile
             if(other instanceof Tile) {
-
+                playerTouchWall = true;
             }
 
             //Collision with resource
