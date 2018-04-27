@@ -56,8 +56,7 @@ public class MapLoader {
                 //Create an element if color was found
                 if(currentTileType == TileType.WHITE_SPACE) { //White-space = do nothing
                     continue;
-                }
-                else if(currentTileType == TileType.PLAYER){
+                } else if(currentTileType == TileType.PLAYER){
 
                     this.tilesList.add(new Player(world, currentTilePos));
                     this.playerIndex = tilesList.size()-1;
@@ -71,11 +70,11 @@ public class MapLoader {
                     if(currentTileType.isDirectionalTile()){ //Is the tile directional?
 
                         //Get tiletypes of surrounding tiles
-                        Color.argb8888ToColor(color, levelPixmap.getPixel(x, y-1));
+                        Color.rgba8888ToColor(color, levelPixmap.getPixel(x, y-1));
                         TileType aboveTileType = TileType.getTypeFromColor(color);
-                        Color.argb8888ToColor(color, levelPixmap.getPixel(x-1, y));
+                        Color.rgba8888ToColor(color, levelPixmap.getPixel(x-1, y));
                         TileType leftTileType = TileType.getTypeFromColor(color);
-                        Color.argb8888ToColor(color, levelPixmap.getPixel(x+1, y));
+                        Color.rgba8888ToColor(color, levelPixmap.getPixel(x+1, y));
                         TileType rightTileType = TileType.getTypeFromColor(color);
 
                         //Surrounding checks
