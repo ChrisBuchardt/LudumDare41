@@ -56,7 +56,13 @@ public class AnimatedObject extends GameObject implements RenderableObject{
     public void render(SpriteBatch batch, float delta){
         stateTime += delta;
         updateFrame();
-        batch.draw(getCurrentFrame(), body.getPosition().x - getCurrentFrame().getRegionWidth()/2f, body.getPosition().y - getCurrentFrame().getRegionHeight()/2f);
+
+        Vector2 pos = body.getPosition();
+        float width = getCurrentFrame().getRegionWidth();
+        float height = getCurrentFrame().getRegionHeight();
+
+        batch.draw(getCurrentFrame(), pos.x - width/2, pos.y - height/2, width / 2f, height / 2f, width, height, 1, 1, body.getAngle());;
+        //batch.draw(getCurrentFrame(), body.getPosition().x - getCurrentFrame().getRegionWidth()/2f, body.getPosition().y - getCurrentFrame().getRegionHeight()/2f);
     }
 
     /** Updates the current frame number */
