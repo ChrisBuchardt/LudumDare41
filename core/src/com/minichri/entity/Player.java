@@ -1,8 +1,5 @@
 package com.minichri.entity;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -12,11 +9,9 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.minichri.Elements.Tile;
 import com.minichri.KeyboardController;
 import com.minichri.World.GameMap;
-import com.minichri.helpers.GameInfo;
 import com.minichri.helpers.TileType;
 import com.minichri.inventory.Inventory;
 import com.minichri.physics.ContactManager;
-import com.minichri.screens.GameScreen;
 
 import java.util.ArrayList;
 
@@ -37,6 +32,8 @@ public class Player extends TextureObject {
     private static final float JUMP_FORCE_IN_AIR = 9f;
     private static final float WALK_SPEED = 6f;
     private static final float AIR_WALK_FORCE = 0.3f;
+
+    private static final float SPAWN_TIMER = 2f;
 
     private ArrayList<RenderableObject> playerTiles;
     private ArrayList<RenderableObject> queue;
@@ -61,14 +58,12 @@ public class Player extends TextureObject {
     private Vector2 placeVector = new Vector2(0,0);
     private Texture preview;
 
-    private boolean spawning;
+    private boolean isPodLanding = true;
     private boolean isDead = false;
     private float deathTimer = 0;
-    //Spawning timer
-    private float timeSeconds;
-    private float spawntimer =2;
-    private Vector2 startPosition = new Vector2(0,0);
-
+    private float timePassed = 0;
+    private Vector2 podPosition;
+    private Vector2 spawnPosition;
 
     private Body feet;
 
@@ -77,7 +72,6 @@ public class Player extends TextureObject {
 
         playerTiles = new ArrayList<>();
         queue = new ArrayList<>();
-        spawning = true;
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(FEET_WIDTH/2f, FEET_HEIGHT/2f);
@@ -94,10 +88,11 @@ public class Player extends TextureObject {
         feet.setGravityScale(0);
         body.setLinearDamping(0);
         body.setUserData(this);
+
+        podPosition = new Vector2(pos);
     }
 
     public void render(GameMap map, World world, Vector3 mousePos, KeyboardController controller, SpriteBatch batch, float delta) {
-
 
         //adds Player spawned tiles to the array
         if (queue.size()>0)playerTiles.addAll(queue);
@@ -106,14 +101,14 @@ public class Player extends TextureObject {
         for(RenderableObject renderableObject : playerTiles)
                 renderableObject.render(batch, delta);
 
-        timeSeconds+=delta;
+        timePassed += delta;
 
-        if (timeSeconds<spawntimer) {
-            startPosition = new Vector2(body.getPosition().x - 2f, body.getPosition().y - 2f);
-        }
-         //Draws player Ship. Needs to be here to be drawn in the right layerqqq
-            batch.draw(playerShip, startPosition.x, startPosition.y, 4, 4);
-        if (timeSeconds>spawntimer) {
+        //Draws player Ship. Needs to be here to be drawn in the right layer
+        batch.draw(playerShip, podPosition.x, podPosition.y, 4, 4);
+
+        if (isPodLanding) {
+            spacePodLanding(delta);
+        } else {
             if (!isDead) {
                 movement(map, controller, batch, delta);
                 blockPlacing(batch, map, controller, mousePos);
@@ -123,7 +118,15 @@ public class Player extends TextureObject {
 
             super.render(batch, delta);
         }
+    }
 
+    private void spacePodLanding(float delta) {
+        if (timePassed < SPAWN_TIMER) {
+            podPosition = new Vector2(body.getPosition().x - 2f, body.getPosition().y - 2f);
+        } else {
+            isPodLanding = false;
+            spawnPosition = new Vector2(body.getPosition());
+        }
     }
 
     private void blockPlacing(SpriteBatch batch, GameMap map, KeyboardController controller, Vector3 mousePos) {
@@ -151,8 +154,8 @@ public class Player extends TextureObject {
         Vector2 vel = body.getLinearVelocity();
 
         isMidAir = !(ContactManager.feetCollisions > 0 && Math.abs(vel.y) <= 1e-2);
-     //avoid those things
 
+        // Jump
         if (!isMidAir) hasJumped = false;
         if (!hasJumped && (controller.w || controller.space)) {
             vel.y = isMidAir ? JUMP_FORCE_IN_AIR : JUMP_FORCE;
@@ -174,8 +177,7 @@ public class Player extends TextureObject {
         else isCrouched = false;
 
         // Restrict vel x
-        float restrictVelX = Math.min(Math.max(-MAX_X_VEL, vel.x), MAX_X_VEL);
-        vel.x = restrictVelX;
+        vel.x = Math.min(Math.max(-MAX_X_VEL, vel.x), MAX_X_VEL);
 
         // Apply new vel
         body.setLinearVelocity(vel);
@@ -184,8 +186,6 @@ public class Player extends TextureObject {
         feet.setTransform(new Vector2(body.getPosition()).add(0, FEET_Y_OFFSET), 0);
 
         updateTexture(dir);
-        super.render(batch, delta);
-
     }
 
     private void updateTexture(int moveDirection) {
@@ -198,16 +198,20 @@ public class Player extends TextureObject {
 
     public void resolveDeath(SpriteBatch batch, float delta) {
         deathTimer += delta;
-        if (deathTimer < 0.5f) batch.setColor(1, 0, 0, 1);
-        else if (delta < 1f) batch.setColor(0, 0, 0, 1);
+        if (deathTimer < 0.23f) batch.setColor(1, 0, 0, 1);
+        else if (deathTimer < 1f) batch.setColor(0, 0, 0, 1);
         else {
+            body.setTransform(spawnPosition, 0);
             isDead = false;
+            batch.setColor(1, 1, 1, 1);
         }
     }
 
     public void kill() {
-        isDead = true;
-        deathTimer = 0;
+        if (!isDead) {
+            isDead = true;
+            deathTimer = 0;
+        }
     }
 
     public Vector2 getBodyPos(){
