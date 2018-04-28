@@ -85,20 +85,39 @@ public class GameMap {
         //Check game map bounds
         if(x < 0 || x > this.mapTileSizeX-1 || y < 0 || y > this.mapTileSizeY-1)
             return true;
-        return this.tilesArray[x][y] != null;
+
+        //Check tilesArray /pre placed tiles
+        if(this.tilesArray[x][y] != null)
+            return true;
+
+        //Check player queue
+        for(int i = 0; i < player.getQueue().size(); i++){
+            if(player.getQueue().get(i).getBody().getPosition().x == x ||
+                    player.getQueue().get(i).getBody().getPosition().y == y)
+                return true;
+        }
+
+        //Check player placed blocks
+        for(int i = 0; i < player.getPlayerPlacedTiles().size(); i++){
+            if(player.getPlayerPlacedTiles().get(i).getBody().getPosition().x == x &&
+                    player.getPlayerPlacedTiles().get(i).getBody().getPosition().y == y)
+                return true;
+        }
+
+        return false;
     }
 
     /** Places a block in the world (both arrays).
      *  @param tileType the type if the tile you want to set.
      *  @param pos the position of the tile. */
-    public void setTile(TileType tileType, Vector2 pos){
+    /*public void setTile(TileType tileType, Vector2 pos){
 
         Tile tile = new Tile(this.world, tileType, pos);
 
         int x = (int)(pos.x / GameInfo.TILE_SIZE);
         int y = (int)(pos.y / GameInfo.TILE_SIZE);
 
-        this.tilesArray[x][y] = tile;
-        this.gameObjects.add(tile);
-    }
+        //this.tilesArray[x][y] = tile;
+        //this.gameObjects.add(tile);
+    }*/
 }

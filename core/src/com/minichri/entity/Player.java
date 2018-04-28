@@ -91,7 +91,7 @@ public class Player extends TextureObject {
 
         //adds Player spawned tiles to the array
         if (queue.size()>0) playerPlacedTiles.addAll(queue);
-            queue.removeAll(queue);
+        queue.removeAll(queue);
 
         for(RenderableObject renderableObject : playerPlacedTiles)
                 renderableObject.render(batch, delta);
@@ -118,7 +118,6 @@ public class Player extends TextureObject {
                 if (controller.leftClick){
                     if (!map.isTileOcccipied((int)placeVector.x, (int)placeVector.y)) {
                         TileType type = getInventory().getSelectedItem().getType();
-                        map.setTile(type, placeVector);
                         queue.add(new Tile(world, type, placeVector));
                         getInventory().remove(getInventory().getSelectedSlot());
                     }
@@ -151,13 +150,11 @@ public class Player extends TextureObject {
 
         // Q-collect
         if(controller.q){
-            System.out.println("Q is pressed!");
-
-            System.out.println("Player placed blocks: " + playerPlacedTiles.size());
 
             //Get number of empty item slots
             int emptySlots = getInventory().slotsLeft();
 
+            //Any free slots?
             if(emptySlots != 0){
 
                 //Create dist from player ordered list
@@ -179,30 +176,25 @@ public class Player extends TextureObject {
                         return 0;
                 });
 
-                //Remove till the found number of elements and add them to inv
-                for(int i = 0; i < Math.min(getPlayerPlacedTiles().size(), emptySlots); i ++){
+                ArrayList<Tile> playerPlacedCopy = new ArrayList(playerPlacedTiles);
 
-                    Tile involvedTile = getPlayerPlacedTiles().get(i);
+                //Remove till the found number of elements and add them to inv
+                int collectCount = Math.min(getPlayerPlacedTiles().size(), emptySlots);
+                for(int i = 0; i < collectCount; i ++){
+
+                    Tile involvedTile = playerPlacedCopy.get(i);
 
                     //Add element to inventory
                     getInventory().add(new Item(involvedTile.getTileType()));
 
                     //Remove and destroy from world
-                    getPlayerPlacedTiles().remove(i);
-                    world.destroyBody(involvedTile.getBody());
+                    world.destroyBody(playerPlacedTiles.get(playerPlacedTiles.indexOf(playerPlacedCopy.get(i))).getBody());
+                    getPlayerPlacedTiles().remove(playerPlacedTiles.indexOf(playerPlacedCopy.get(i)));
                 }
-
-                //TODO
-                //TODO HOW MANY BLOCKS HAS PLAYER PLACED?
-                System.out.println("TOTODO");
-
             }
-
-
         }
 
-        if (controller.s) isCrouched = true;
-        else isCrouched = false;
+        isCrouched = controller.s;
 
         // Restrict vel x
         float restrictVelX = Math.min(Math.max(-MAX_X_VEL, vel.x), MAX_X_VEL);

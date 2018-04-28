@@ -45,6 +45,7 @@ public class Inventory {
         boolean canRemoved = items[i] != null;
         if (canRemoved) {
             items[i] = null;
+            itemCount--;
             if (i < nextEmpty) {
                 nextEmpty = i;
             }

@@ -8,7 +8,7 @@ import com.minichri.inventory.Inventory;
 public class KeyboardController implements InputProcessor {
 
 
-    public boolean a, s, d, w, leftClick, rightClick, space, n1, n2, n3, n4, n5;
+    public boolean a, s, d, w, q, leftClick, rightClick, space, n1, n2, n3, n4, n5;
 
 
     @Override
@@ -35,6 +35,9 @@ public class KeyboardController implements InputProcessor {
             case Input.Keys.D:
                 d = true;
                 keyProcessed = true;
+                break;
+            case Input.Keys.Q:
+                q = true;
         }
         if (Input.Keys.NUM_1 <= keycode && keycode <= Input.Keys.NUM_1 + Inventory.SIZE - 1) {
             int slot = keycode - Input.Keys.NUM_1;
@@ -65,6 +68,10 @@ public class KeyboardController implements InputProcessor {
                 break;
             case Input.Keys.S:
                 s = false;
+                keyProcessed = true;
+                break;
+            case Input.Keys.Q:
+                q = false;
                 keyProcessed = true;
                 break;
         }
