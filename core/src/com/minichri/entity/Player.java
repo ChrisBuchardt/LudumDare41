@@ -36,11 +36,12 @@ public class Player extends TextureObject {
     private static final float WALK_SPEED = 6f;
     private static final float AIR_WALK_FORCE = 0.3f;
 
+    private static final float SPAWN_TIMER = 2f;
+    private static final float DEATH_TIMER_RED = 0.24f;
+    private static final float RESPAWN_TIMER = 2.2f;
 
     private ArrayList<Tile> playerPlacedTiles;
     private ArrayList<Tile> queue;
-
-    private static final float SPAWN_TIMER = 2f;
 
     private static TextureRegion playerTexLeft = new TextureRegion(new Texture("player/player_left.png"), 0, 0, PIXEL_WIDTH, PIXEL_HEIGHT);
     private static TextureRegion playerTexRight = new TextureRegion(new Texture("player/player_right.png"), 0, 0, PIXEL_WIDTH, PIXEL_HEIGHT);
@@ -246,8 +247,8 @@ public class Player extends TextureObject {
 
     public void resolveDeath(SpriteBatch batch, float delta) {
         deathTimer += delta;
-        if (deathTimer < 0.23f) batch.setColor(1, 0, 0, 1);
-        else if (deathTimer < 1f) batch.setColor(0, 0, 0, 1);
+        if (deathTimer < DEATH_TIMER_RED) batch.setColor(1, 0, 0, 1);
+        else if (deathTimer < RESPAWN_TIMER) batch.setColor(0, 0, 0, 1);
         else {
             body.setTransform(spawnPosition, 0);
             isDead = false;
