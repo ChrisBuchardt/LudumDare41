@@ -38,7 +38,7 @@ public class GameMap {
 
         //Load the map
         MapLoader ml = new MapLoader();
-        ml.loadLevelFromImage("level/testLevel04.png", world);
+        ml.loadLevelFromImage("level/thelevel.png", world);
         this.gameObjects = ml.getTilesList();
         this.tilesArray = ml.getTileArray();
         this.player = ml.getPlayer();
