@@ -4,11 +4,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
-import com.minichri.entity.RenderableObject;
 import com.minichri.entity.TextureObject;
 import com.minichri.helpers.TileType;
 
-public class CollectedPlatform extends TextureObject implements RenderableObject{
+public class CollectedPlatform extends TextureObject{
 
     private TileType tileType;
     private boolean markedAsDeleted;

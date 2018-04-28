@@ -1,5 +1,7 @@
 package com.minichri.entity;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -37,15 +39,20 @@ public class Player extends TextureObject {
     private static final float WALK_SPEED = 6f;
     private static final float AIR_WALK_FORCE = 0.3f;
 
+    private static final float MAX_RANGE = 5f;
+    private static final float MIN_RANGE = 1.6f;
+    private static final float SPAWN_TIMER = 2f;
+    private static final float DEATH_TIMER_RED = 0.24f;
+    private static final float RESPAWN_TIMER = 2.2f;
 
     private ArrayList<Tile> playerPlacedTiles;
     private ArrayList<Tile> queue;
 
-    private static final float SPAWN_TIMER = 2f;
-
     private static TextureRegion playerTexLeft = new TextureRegion(new Texture("player/player_left.png"), 0, 0, PIXEL_WIDTH, PIXEL_HEIGHT);
     private static TextureRegion playerTexRight = new TextureRegion(new Texture("player/player_right.png"), 0, 0, PIXEL_WIDTH, PIXEL_HEIGHT);
     private static TextureRegion playerShip = new TextureRegion(new Texture("escape_pod.png"), 0, 0, PIXEL_WIDTH*2, PIXEL_HEIGHT*2);
+    private static Texture aimTexture = new Texture("player/aim.png");
+    private static Texture rangeTexture = new Texture("player/range_indicator.png");
 
     // Inventory singleton
     private static Inventory _inventory;
@@ -58,10 +65,7 @@ public class Player extends TextureObject {
     private boolean isMidAir = false;
     private boolean isCrouched = false;
     private boolean hasJumped = false;
-    private float maxRange = 5f;
-    private float minRange = 1.6f;
     private Vector2 placeVector = new Vector2(0,0);
-    private Texture preview;
 
     private boolean isPodLanding = true;
     private boolean isDead = false;
@@ -69,6 +73,11 @@ public class Player extends TextureObject {
     private float timePassed = 0;
     private Vector2 podPosition;
     private Vector2 spawnPosition;
+
+    private Sound placementSound;
+    private Sound deathSound;
+    private Sound walkingSound;
+
 
     private Body feet;
 
@@ -80,6 +89,8 @@ public class Player extends TextureObject {
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(FEET_WIDTH/2f, FEET_HEIGHT/2f);
+
+        placementSound = Gdx.audio.newSound(Gdx.files.internal("sounds/Temp_placeblock_Sound.wav"));
 
         this.world = world;
         FixtureDef feetDef = new FixtureDef();
@@ -103,7 +114,7 @@ public class Player extends TextureObject {
         if (queue.size()>0) playerPlacedTiles.addAll(queue);
         queue.removeAll(queue);
 
-        for(RenderableObject renderableObject : playerPlacedTiles)
+        for(RenderObject renderableObject : playerPlacedTiles)
                 renderableObject.render(batch, delta);
 
         timePassed += delta;
@@ -136,18 +147,34 @@ public class Player extends TextureObject {
 
     private void blockPlacing(SpriteBatch batch, GameMap map, KeyboardController controller, Vector3 mousePos) {
         //Spawn blocks at the click
-        if (getInventory().getSelectedItem()!=null){
+        if (getInventory().getSelectedItem() != null && !isMidAir) {
             placeVector.x = Math.round(mousePos.x);
             placeVector.y = Math.round(mousePos.y);
             float distance = new Vector2(placeVector).sub(body.getPosition()).len();
-            if (distance<maxRange && distance>minRange){
-                preview = getInventory().getSelectedItem().getType().getBlockTexture();
-                batch.draw(getInventory().getSelectedItem().getType().getBlockTexture(),placeVector.x-0.5f,placeVector.y-0.5f,1, 1);
-                if (controller.leftClick){
-                    if (!map.isTileOcccipied((int)placeVector.x, (int)placeVector.y)) {
+            if (MIN_RANGE < distance && distance < MAX_RANGE) {
+                if (!map.isTileOcccipied((int)placeVector.x, (int)placeVector.y)) {
+                    batch.draw(aimTexture, placeVector.x - 0.5f, placeVector.y - 0.5f, 1, 1);
+                    if (controller.leftClick){
+                        placementSound.play();
                         TileType type = getInventory().getSelectedItem().getType();
                         queue.add(new Tile(world, type, placeVector));
                         getInventory().remove(getInventory().getSelectedSlot());
+                    }
+                }
+            }
+            // Show range
+            Vector2 bodyPos = body.getPosition();
+            int lowX = (int)(bodyPos.x - MAX_RANGE);
+            int highX= (int)(bodyPos.x + MAX_RANGE);
+            int lowY= (int)(bodyPos.y - MAX_RANGE);
+            int highY = (int)(bodyPos.y + MAX_RANGE);
+            for (int x = lowX; x <= highX; x++) {
+                for (int y = lowY; y <= highY; y++) {
+                    distance = new Vector2(x, y).sub(bodyPos).len();
+                    if (MIN_RANGE < distance && distance < MAX_RANGE) {
+                        if (!map.isTileOcccipied(x, y)) {
+                            batch.draw(rangeTexture, x - 0.5f, y - 0.5f, 1, 1);
+                        }
                     }
                 }
             }
@@ -202,13 +229,13 @@ public class Player extends TextureObject {
             int emptySlots = getInventory().slotsLeft();
 
             //Any free slots?
-            if(emptySlots != 0){
+            if (emptySlots != 0) {
 
                 //Create dist from player ordered list
                 Collections.sort(playerPlacedTiles, (a, b) -> {
 
-                    Vector2 vectorA = ((GameObject)a).body.getPosition();
-                    Vector2 vectorB = ((GameObject)b).body.getPosition();
+                    Vector2 vectorA = a.body.getPosition();
+                    Vector2 vectorB = b.body.getPosition();
 
                     float distToA = Vector2.dst(vectorA.x, vectorA.y, getBodyPos().x, getBodyPos().y);
                     float distToB = Vector2.dst(vectorB.x, vectorB.y, getBodyPos().x, getBodyPos().y);
@@ -255,8 +282,8 @@ public class Player extends TextureObject {
 
     public void resolveDeath(SpriteBatch batch, float delta) {
         deathTimer += delta;
-        if (deathTimer < 0.23f) batch.setColor(1, 0, 0, 1);
-        else if (deathTimer < 1f) batch.setColor(0, 0, 0, 1);
+        if (deathTimer < DEATH_TIMER_RED) batch.setColor(1, 0, 0, 1);
+        else if (deathTimer < RESPAWN_TIMER) batch.setColor(0, 0, 0, 1);
         else {
             body.setTransform(spawnPosition, 0);
             isDead = false;

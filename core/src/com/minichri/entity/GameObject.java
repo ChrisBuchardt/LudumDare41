@@ -14,7 +14,7 @@ public class GameObject {
     /** The BodyDef used for something like a player     */
     public static BodyDef DEFAULT_DYNAMIC_BODYDEF = createDefaultDynamicBodyDef();
 
-    protected Body body;
+    protected final Body body;
 
     public GameObject(World world, Vector2 pos, BodyDef bodyDef, FixtureDef fixtureDef) {
 

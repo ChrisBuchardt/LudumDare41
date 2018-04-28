@@ -1,6 +1,5 @@
 package com.minichri.entity;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -9,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.minichri.helpers.GameInfo;
 
-public class TextureObject extends GameObject implements RenderableObject {
+public class TextureObject extends RenderObject {
 
     protected TextureRegion texture;
 
