@@ -21,9 +21,15 @@ public class TextureObject extends RenderObject {
     /** Render the TextureObjects texture at the body's position. */
     @Override
     public void render(SpriteBatch batch, float delta) {
-        Vector2 pos = body.getPosition();
-        float width = texture.getRegionWidth() * GameInfo.PPM;
-        float height = texture.getRegionHeight() * GameInfo.PPM;
-        batch.draw(texture, pos.x - width/2, pos.y - height/2, width / 2f, height / 2f, width, height, 1, 1, body.getAngle());
+        if (texture != null) {
+            Vector2 pos = body.getPosition();
+            float width = texture.getRegionWidth() * GameInfo.PPM;
+            float height = texture.getRegionHeight() * GameInfo.PPM;
+            batch.draw(texture, pos.x - width / 2, pos.y - height / 2, width / 2f, height / 2f, width, height, 1, 1, body.getAngle());
+        }
+    }
+
+    public void setTexture(TextureRegion texture) {
+        this.texture = texture;
     }
 }
