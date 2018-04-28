@@ -1,6 +1,7 @@
 package com.minichri.entity;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -78,8 +79,11 @@ public class Player extends TextureObject {
 
     private Sound placementSound;
     private Sound deathSound;
-    private Sound walkingSound;
     private Sound qCollectSound;
+    private Sound bounceSound;
+    private Music walkingOnIce;
+    private Sound walkingSound;
+    private Sound pickupSound;
 
 
     private boolean onIce;
@@ -101,6 +105,11 @@ public class Player extends TextureObject {
 
         placementSound = Gdx.audio.newSound(Gdx.files.internal("sounds/Temp_placeblock_Sound.wav"));
         qCollectSound = Gdx.audio.newSound(Gdx.files.internal("sounds/qSound.wav"));
+        walkingSound = Gdx.audio.newSound(Gdx.files.internal("sounds/running_Sound.wav"));
+        walkingOnIce = Gdx.audio.newMusic(Gdx.files.internal("sounds/ice_Sound.wav"));
+        bounceSound  = Gdx.audio.newSound(Gdx.files.internal("sounds/bounce_sound.mp3"));
+
+        pickupSound = Gdx.audio.newSound(Gdx.files.internal("Sounds/pickup dak.wav"));
 
         this.world = world;
         FixtureDef feetDef = new FixtureDef();
@@ -166,10 +175,10 @@ public class Player extends TextureObject {
                 int x = (int)placeVector.x;
                 int y = (int)placeVector.y;
                 if (!map.isTileOcccipied(x, y)) {
-                    batch.draw(aimTexture, placeVector.x - 0.5f, placeVector.y - 0.5f, 1, 1);
+                    TileType type = getInventory().getSelectedItem().getType();
+                    batch.draw(type.getAimTexture(), placeVector.x - 0.5f, placeVector.y - 0.5f, 1, 1);
                     if (controller.leftClick){
                         placementSound.play();
-                        TileType type = getInventory().getSelectedItem().getType();
                         queue.add(new Tile(world, type, placeVector));
                         getInventory().remove(getInventory().getSelectedSlot());
                         getInventory().focus();
@@ -220,10 +229,16 @@ public class Player extends TextureObject {
         lookingDir = dir == 0 ? lookingDir : dir;
         if (onIce && !isMidAir){
             //Sliding on ice
+            if (!walkingOnIce.isPlaying())walkingOnIce.play();
                body.applyForceToCenter(WALK_SPEED*dir,0,true);
         }else if (!onIce && !isMidAir) {
             // Grounded
+
             vel.x = WALK_SPEED * dir;
+            if (vel.x!=0){
+               // walkingSound.play();
+
+            }
         } else  {
             // Mid air
             vel.add(AIR_WALK_FORCE * dir, 0);
@@ -375,8 +390,14 @@ public class Player extends TextureObject {
 
     public void bounce(Body other) {
         if (!isCrouched) {
-            if (Math.round(other.getPosition().x) == Math.round(body.getPosition().x) && body.getLinearVelocity().y < 0)
+            if (Math.round(other.getPosition().x) == Math.round(body.getPosition().x) && body.getLinearVelocity().y < 1)
+                bounceSound.stop();
+                bounceSound.play();
                 body.setLinearVelocity(body.getLinearVelocity().x, -body.getLinearVelocity().y);
         }
+    }
+
+    public void playPickupSound() {
+        pickupSound.play();
     }
 }

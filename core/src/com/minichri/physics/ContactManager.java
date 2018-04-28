@@ -51,7 +51,7 @@ public class ContactManager implements ContactListener {
                 gameMap.addToRemoveResource((Resource)other);
                 Player.getInventory().add(new Item(TileType.convertFromResourceToPlatform(((Resource) other).getTileType())));
                 Player.getInventory().addResource();
-
+                player.playPickupSound();
             }
 
             // Collision with spikes
@@ -77,8 +77,10 @@ public class ContactManager implements ContactListener {
             }
             // Collision with CollectableObject
             if(other instanceof CollectedPlatform){
-                if(!((CollectedPlatform) other).isMarkedAsDeleted())
+                if(!((CollectedPlatform) other).isMarkedAsDeleted()) {
                     gameMap.addToCollecableRemoveQueue((CollectedPlatform) other);
+                    player.playPickupSound();
+                }
             }
         }
     }
