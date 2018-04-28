@@ -77,6 +77,7 @@ public class Player extends TextureObject {
     private Sound placementSound;
     private Sound deathSound;
     private Sound walkingSound;
+    private Sound qCollectSound;
 
 
     private Body feet;
@@ -91,6 +92,7 @@ public class Player extends TextureObject {
         shape.setAsBox(FEET_WIDTH/2f, FEET_HEIGHT/2f);
 
         placementSound = Gdx.audio.newSound(Gdx.files.internal("sounds/Temp_placeblock_Sound.wav"));
+        qCollectSound = Gdx.audio.newSound(Gdx.files.internal("sounds/qSound.wav"));
 
         this.world = world;
         FixtureDef feetDef = new FixtureDef();
@@ -268,6 +270,11 @@ public class Player extends TextureObject {
                     //Remove and destroy from world
                     world.destroyBody(playerPlacedTiles.get(playerPlacedTiles.indexOf(playerPlacedCopy.get(i))).getBody());
                     getPlayerPlacedTiles().remove(playerPlacedTiles.indexOf(playerPlacedCopy.get(i)));
+
+                    //Play sound
+                    //qCollectSound.play();
+                    long qCollectSoundsID = qCollectSound.play(0.5f);
+                    qCollectSound.setPitch(qCollectSoundsID, 3);
                 }
             }
         }
