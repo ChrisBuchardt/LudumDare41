@@ -31,7 +31,7 @@ public class Player extends TextureObject {
     public static final float HEIGHT = 1.35f;
 
     private static final float FEET_WIDTH = WIDTH - 0.05f;
-    private static final float FEET_HEIGHT = 0.2f;
+    private static final float FEET_HEIGHT = 0.23f;
     private static final float FEET_Y_OFFSET = -.85f;
     private static final float MAX_X_VEL = 6f;
     private static final float JUMP_FORCE = 11.4f;
@@ -83,7 +83,7 @@ public class Player extends TextureObject {
     private Body feet;
 
     public Player(World world, Vector2 pos) {
-        super(world, pos, GameObject.DEFAULT_DYNAMIC_BODYDEF, GameObject.DEFAULT_DYNAMIC_FIXTUREDEF, playerTexLeft);
+        super(world, pos, GameObject.PLAYER_BODYDEF, GameObject.PLAYER__FIXTUREDEF, playerTexLeft);
 
         playerPlacedTiles = new ArrayList<>();
         queue = new ArrayList<>();
@@ -101,7 +101,7 @@ public class Player extends TextureObject {
         feetDef.friction = 1;
         feetDef.restitution = 0;
         feetDef.isSensor = false;
-        feet = new GameObject(world, new Vector2(pos.x, pos.y + FEET_Y_OFFSET), GameObject.DEFAULT_DYNAMIC_BODYDEF,feetDef).getBody();
+        feet = new GameObject(world, new Vector2(pos.x, pos.y + FEET_Y_OFFSET), GameObject.PLAYER_BODYDEF,feetDef).getBody();
         feet.setUserData(ContactManager.FEET);
         feet.setGravityScale(0);
         body.setLinearDamping(0);
@@ -219,6 +219,7 @@ public class Player extends TextureObject {
 
         // Move feet
         feet.setTransform(new Vector2(body.getPosition()).add(0, FEET_Y_OFFSET), 0);
+        feet.setLinearVelocity(vel);
 
         updateTexture(dir);
     }
