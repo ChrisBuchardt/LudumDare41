@@ -178,6 +178,24 @@ public class Player extends TextureObject {
         }
 
         // Q-collect
+        qCollect(controller);
+
+        isCrouched = controller.s;
+
+        // Restrict vel x
+        vel.x = Math.min(Math.max(-MAX_X_VEL, vel.x), MAX_X_VEL);
+
+        // Apply new vel
+        body.setLinearVelocity(vel);
+
+        // Move feet
+        feet.setTransform(new Vector2(body.getPosition()).add(0, FEET_Y_OFFSET), 0);
+
+        updateTexture(dir);
+    }
+
+    /** When q is pressed, collect as many nearby tiles as you can hold in your inventory. */
+    private void qCollect(KeyboardController controller){
         if(controller.q){
 
             //Get number of empty item slots
@@ -222,19 +240,6 @@ public class Player extends TextureObject {
                 }
             }
         }
-
-        isCrouched = controller.s;
-
-        // Restrict vel x
-        vel.x = Math.min(Math.max(-MAX_X_VEL, vel.x), MAX_X_VEL);
-
-        // Apply new vel
-        body.setLinearVelocity(vel);
-
-        // Move feet
-        feet.setTransform(new Vector2(body.getPosition()).add(0, FEET_Y_OFFSET), 0);
-
-        updateTexture(dir);
     }
 
     private void updateTexture(int moveDirection) {
