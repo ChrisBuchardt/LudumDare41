@@ -145,7 +145,7 @@ public class Player extends TextureObject {
 
     private void blockPlacing(SpriteBatch batch, GameMap map, KeyboardController controller, Vector3 mousePos) {
         //Spawn blocks at the click
-        if (getInventory().getSelectedItem() != null) {
+        if (getInventory().getSelectedItem() != null && !isMidAir) {
             placeVector.x = Math.round(mousePos.x);
             placeVector.y = Math.round(mousePos.y);
             float distance = new Vector2(placeVector).sub(body.getPosition()).len();
