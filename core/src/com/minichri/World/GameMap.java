@@ -65,7 +65,7 @@ public class GameMap {
         for(Decoration decoration : decorationList)
             decoration.render(spriteBatch, delta);
 
-        getPlayer().render(this,world,mousePos,controller, spriteBatch, delta);
+        getPlayer().render(this,mousePos,controller, spriteBatch, delta);
     }
 
     /** Removes the objects listed in the removequeue from the gameObjects list */

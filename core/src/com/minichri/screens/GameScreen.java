@@ -113,7 +113,6 @@ public class GameScreen implements Screen {
             font.draw(spriteBatch,"Congratulations you have gathered all the platforms!\n"+"You completed the game with "+ gameMap.getPlayer().getDeathCounter() + " deaths.",camera.position.x+GameInfo.SCREEN_HEIGHT/3,camera.position.y+GameInfo.SCREEN_HEIGHT/2);
         }
         if (gameMap.getPlayer().getPlayerPlacedTiles().size()>0){
-            System.out.println(gameMap.getPlayer().getPlayerPlacedTiles().size());
             font.draw(spriteBatch,"Press Q to recollect platforms",camera.position.x-70+GameInfo.SCREEN_HEIGHT/2,camera.position.y+GameInfo.SCREEN_HEIGHT/6);
         }
         spriteBatch.end();
