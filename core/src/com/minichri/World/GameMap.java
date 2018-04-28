@@ -9,7 +9,6 @@ import com.minichri.Elements.Decoration;
 import com.minichri.Elements.Resource;
 import com.minichri.Elements.Tile;
 import com.minichri.KeyboardController;
-import com.minichri.entity.GameObject;
 import com.minichri.entity.Player;
 import com.minichri.entity.RenderObject;
 import com.minichri.screens.GameScreen;
@@ -150,6 +149,8 @@ public class GameMap {
         //this.tilesArray[x][y] = tile;
         //this.gameObjects.add(tile);
     }
+
+
 
     public Vector2 getMapTileSize() {
         return new Vector2(mapTileSizeX, mapTileSizeY);

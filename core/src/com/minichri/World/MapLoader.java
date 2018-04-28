@@ -22,6 +22,7 @@ public class MapLoader {
     private World world;
     private int mapTileSizeX;
     private int mapTileSizeY;
+    private int numberOfResources;
 
     /** Loads an image.
      * @param levelImageLocation a path to a level image.
@@ -31,7 +32,7 @@ public class MapLoader {
         this.world = world;
         tilesList = new ArrayList<>();
         this.decorationList = new ArrayList<>();
-
+        numberOfResources = 0;
         //Load map image and create pixmap containing the pixels
         Texture levelTexture = new Texture(levelImageLocation);
         TextureData tempData = levelTexture.getTextureData();
@@ -75,6 +76,7 @@ public class MapLoader {
                 } else if (currentTileType.isResourceTile()) { //Resources
 
                     this.tilesList.add(new Resource(world, currentTileType, currentTilePos));
+                    numberOfResources++;
 
                 } else if (currentTileType == TileType.SPIKES) {
 
@@ -116,6 +118,7 @@ public class MapLoader {
         levelTexture.dispose();
         tempData.disposePixmap();
         levelPixmap.dispose();
+        Player.getInventory().setTotalResources(numberOfResources);
     }
 
     private TileType.TextureDirection createDirectionalTile(TileType currentTileType, TileType above, TileType left, TileType right) {
