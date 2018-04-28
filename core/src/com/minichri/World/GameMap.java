@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
 import com.minichri.Elements.CollectedPlatform;
+import com.minichri.Elements.Decoration;
 import com.minichri.Elements.Resource;
 import com.minichri.Elements.Tile;
 import com.minichri.KeyboardController;
@@ -20,6 +21,7 @@ public class GameMap {
     private ArrayList<CollectedPlatform> collectedObjects;
     private ArrayList<CollectedPlatform> collectedObjectsRemoveQueue;
     private ArrayList<RenderObject> gameObjects;
+    private ArrayList<Decoration> decorationList;
     private Tile[][] tilesArray;
     private int mapTileSizeX;
     private int mapTileSizeY;
@@ -33,16 +35,18 @@ public class GameMap {
         this.world = screen.world;
         this.collectedObjects = new ArrayList<>();
         this.collectedObjectsRemoveQueue = new ArrayList<>();
+        this.decorationList = new ArrayList<>();
 
         //Load the map
         MapLoader ml = new MapLoader();
-        ml.loadLevelFromImage("level/testLevel04.png", world);
+        ml.loadLevelFromImage("level/testLevel05.png", world);
         this.gameObjects = ml.getTilesList();
         this.tilesArray = ml.getTileArray();
         this.player = ml.getPlayer();
         this.tilesArray = ml.getTileArray();
         this.mapTileSizeX = ml.getMapTileSizeX();
         this.mapTileSizeY = ml.getMapTileSizeY();
+        this.decorationList = ml.getDecorationList();
     }
 
     /** Renders objects from the game map. */
@@ -55,6 +59,9 @@ public class GameMap {
 
         for(CollectedPlatform collectedPlatform : collectedObjects)
             collectedPlatform.render(spriteBatch, delta, player.getBodyPos());
+
+        for(Decoration decoration : decorationList)
+            decoration.render(spriteBatch, delta);
 
         getPlayer().render(this,world,mousePos,controller, spriteBatch, delta);
     }

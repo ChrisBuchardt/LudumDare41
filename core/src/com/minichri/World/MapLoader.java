@@ -6,10 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
-import com.minichri.Elements.DirectionalTile;
-import com.minichri.Elements.Resource;
-import com.minichri.Elements.Spikes;
-import com.minichri.Elements.Tile;
+import com.minichri.Elements.*;
 import com.minichri.entity.Player;
 import com.minichri.entity.RenderObject;
 import com.minichri.helpers.TileType;
@@ -20,6 +17,7 @@ public class MapLoader {
 
     private Tile[][] tileArray;
     private ArrayList<RenderObject> tilesList;
+    private ArrayList<Decoration> decorationList;
     private Player player;
     private World world;
     private int mapTileSizeX;
@@ -32,6 +30,7 @@ public class MapLoader {
 
         this.world = world;
         tilesList = new ArrayList<>();
+        this.decorationList = new ArrayList<>();
 
         //Load map image and create pixmap containing the pixels
         Texture levelTexture = new Texture(levelImageLocation);
@@ -81,6 +80,10 @@ public class MapLoader {
 
                     RenderObject spike = new Spikes(world, currentTilePos);
                     this.tilesList.add(spike);
+
+                } else if(currentTileType == TileType.PLANT || currentTileType == TileType.MULTIPLEPLANTS){
+
+                    this.decorationList.add(new Decoration(currentTileType, currentTilePos));
 
                 } else { //Add tile based on tileType
 
@@ -139,12 +142,16 @@ public class MapLoader {
                 return TileType.TextureDirection.MIDDLE;
             }
         } else {
-            return TileType.TextureDirection.UNDER;
+            return TileType.TextureDirection.MIDDLE;
         }
     }
 
     public ArrayList<RenderObject> getTilesList() {
         return tilesList;
+    }
+
+    public ArrayList<Decoration> getDecorationList() {
+        return decorationList;
     }
 
     public Tile[][] getTileArray() {

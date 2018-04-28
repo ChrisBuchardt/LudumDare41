@@ -15,7 +15,9 @@ public enum TileType {
     RESOURCE_BLUE("00FFFFFF", "tiles/platform_resource_blue.png", null, false, true),
     RESOURCE_GREEN("00FF21FF", "tiles/platform_resource_green.png", null, false, true),
     RESOURCE_PURPLE("FF00DCFF", "tiles/platform_resource_purple.png", null, false, true),
-    SPIKES("FF0000FF", null, null, false, false)
+    SPIKES("FF0000FF", null, null, false, false),
+    PLANT("FFD800FF", "decorations/singleplants.png", null, false, false),
+    MULTIPLEPLANTS("FF6A00FF", "decorations/multipleplants.png", null, false, false)
     ;
 
     private Color color;
