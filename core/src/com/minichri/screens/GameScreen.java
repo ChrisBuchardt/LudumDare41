@@ -82,12 +82,13 @@ public class GameScreen implements Screen {
         camera.update();
 
         world.step(delta, 3, 3);
-        Gdx.gl.glClearColor(0f, 0.5f, 0f, 1);
+        Gdx.gl.glClearColor(0f, 0.0f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-
         spriteBatch.begin();
-        spriteBatch.draw(background,0,0);
+        float bgX = gameMap.getMapTileSizeX()/2f - background.getWidth()/2f;
+        float bgY = gameMap.getMapTileSizeY()/2f - background.getHeight()/2f;
+        spriteBatch.draw(background, bgX, bgY);
 
         gameMap.render(world,mousePos,inputProcessor,spriteBatch, delta);
 

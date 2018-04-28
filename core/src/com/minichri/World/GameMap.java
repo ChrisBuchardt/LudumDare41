@@ -1,6 +1,7 @@
 package com.minichri.World;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
 import com.minichri.Elements.Resource;
@@ -117,4 +118,16 @@ public class GameMap {
         //this.tilesArray[x][y] = tile;
         //this.gameObjects.add(tile);
     }*/
+
+    public Vector2 getMapTileSize() {
+        return new Vector2(mapTileSizeX, mapTileSizeY);
+    }
+
+    public int getMapTileSizeX() {
+        return mapTileSizeX;
+    }
+
+    public int getMapTileSizeY() {
+        return mapTileSizeY;
+    }
 }
