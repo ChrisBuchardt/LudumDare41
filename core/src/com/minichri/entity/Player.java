@@ -166,10 +166,10 @@ public class Player extends TextureObject {
                 int x = (int)placeVector.x;
                 int y = (int)placeVector.y;
                 if (!map.isTileOcccipied(x, y)) {
-                    batch.draw(aimTexture, placeVector.x - 0.5f, placeVector.y - 0.5f, 1, 1);
+                    TileType type = getInventory().getSelectedItem().getType();
+                    batch.draw(type.getAimTexture(), placeVector.x - 0.5f, placeVector.y - 0.5f, 1, 1);
                     if (controller.leftClick){
                         placementSound.play();
-                        TileType type = getInventory().getSelectedItem().getType();
                         queue.add(new Tile(world, type, placeVector));
                         getInventory().remove(getInventory().getSelectedSlot());
                         getInventory().focus();
