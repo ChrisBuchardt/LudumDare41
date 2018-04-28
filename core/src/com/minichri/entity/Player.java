@@ -1,8 +1,6 @@
 package com.minichri.entity;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -39,6 +37,8 @@ public class Player extends TextureObject {
     private static final float WALK_SPEED = 6f;
     private static final float AIR_WALK_FORCE = 0.3f;
 
+    private static final float MAX_RANGE = 5f;
+    private static final float MIN_RANGE = 1.6f;
     private static final float SPAWN_TIMER = 2f;
     private static final float DEATH_TIMER_RED = 0.24f;
     private static final float RESPAWN_TIMER = 2.2f;
@@ -49,6 +49,8 @@ public class Player extends TextureObject {
     private static TextureRegion playerTexLeft = new TextureRegion(new Texture("player/player_left.png"), 0, 0, PIXEL_WIDTH, PIXEL_HEIGHT);
     private static TextureRegion playerTexRight = new TextureRegion(new Texture("player/player_right.png"), 0, 0, PIXEL_WIDTH, PIXEL_HEIGHT);
     private static TextureRegion playerShip = new TextureRegion(new Texture("escape_pod.png"), 0, 0, PIXEL_WIDTH*2, PIXEL_HEIGHT*2);
+    private static Texture aimTexture = new Texture("player/aim.png");
+    private static Texture rangeTexture = new Texture("player/range_indicator.png");
 
     // Inventory singleton
     private static Inventory _inventory;
@@ -61,10 +63,7 @@ public class Player extends TextureObject {
     private boolean isMidAir = false;
     private boolean isCrouched = false;
     private boolean hasJumped = false;
-    private float maxRange = 5f;
-    private float minRange = 1.6f;
     private Vector2 placeVector = new Vector2(0,0);
-    private Texture preview;
 
     private boolean isPodLanding = true;
     private boolean isDead = false;
@@ -146,19 +145,34 @@ public class Player extends TextureObject {
 
     private void blockPlacing(SpriteBatch batch, GameMap map, KeyboardController controller, Vector3 mousePos) {
         //Spawn blocks at the click
-        if (getInventory().getSelectedItem()!=null){
+        if (getInventory().getSelectedItem() != null) {
             placeVector.x = Math.round(mousePos.x);
             placeVector.y = Math.round(mousePos.y);
             float distance = new Vector2(placeVector).sub(body.getPosition()).len();
-            if (distance<maxRange && distance>minRange){
-                preview = getInventory().getSelectedItem().getType().getBlockTexture();
-                batch.draw(getInventory().getSelectedItem().getType().getBlockTexture(),placeVector.x-0.5f,placeVector.y-0.5f,1, 1);
-                if (controller.leftClick){
-                    if (!map.isTileOcccipied((int)placeVector.x, (int)placeVector.y)) {
+            if (MIN_RANGE < distance && distance < MAX_RANGE) {
+                if (!map.isTileOcccipied((int)placeVector.x, (int)placeVector.y)) {
+                    batch.draw(aimTexture, placeVector.x - 0.5f, placeVector.y - 0.5f, 1, 1);
+                    if (controller.leftClick){
                         placementSound.play();
                         TileType type = getInventory().getSelectedItem().getType();
                         queue.add(new Tile(world, type, placeVector));
                         getInventory().remove(getInventory().getSelectedSlot());
+                    }
+                }
+            }
+            // Show range
+            Vector2 bodyPos = body.getPosition();
+            int lowX = (int)(bodyPos.x - MAX_RANGE);
+            int highX= (int)(bodyPos.x + MAX_RANGE);
+            int lowY= (int)(bodyPos.y - MAX_RANGE);
+            int highY = (int)(bodyPos.y + MAX_RANGE);
+            for (int x = lowX; x <= highX; x++) {
+                for (int y = lowY; y <= highY; y++) {
+                    distance = new Vector2(x, y).sub(bodyPos).len();
+                    if (MIN_RANGE < distance && distance < MAX_RANGE) {
+                        if (!map.isTileOcccipied(x, y)) {
+                            batch.draw(rangeTexture, x - 0.5f, y - 0.5f, 1, 1);
+                        }
                     }
                 }
             }
@@ -206,14 +220,14 @@ public class Player extends TextureObject {
     }
 
     /** When q is pressed, collect as many nearby tiles as you can hold in your inventory. */
-    private void qCollect(KeyboardController controller){
-        if(controller.q){
+    private void qCollect(KeyboardController controller) {
+        if (controller.q) {
 
             //Get number of empty item slots
             int emptySlots = getInventory().slotsLeft();
 
             //Any free slots?
-            if(emptySlots != 0){
+            if (emptySlots != 0) {
 
                 //Create dist from player ordered list
                 Collections.sort(playerPlacedTiles, (a, b) -> {
