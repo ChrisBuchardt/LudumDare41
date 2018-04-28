@@ -83,7 +83,7 @@ public class MapLoader {
                     RenderObject spike = new Spikes(world, currentTilePos);
                     this.tilesList.add(spike);
 
-                } else if(currentTileType == TileType.PLANT || currentTileType == TileType.MULTIPLEPLANTS){
+                } else if(currentTileType == TileType.PLANT || currentTileType == TileType.MULTIPLEPLANTS || currentTileType == TileType.RANDOMDECORATION) {
 
                     this.decorationList.add(new Decoration(currentTileType, currentTilePos));
 
