@@ -78,6 +78,9 @@ public class Player extends TextureObject {
     private Sound qCollectSound;
 
 
+    private boolean onIce;
+
+
     private Body feet;
 
     public Player(World world, Vector2 pos) {
@@ -87,6 +90,8 @@ public class Player extends TextureObject {
         playerPlacedTiles = new ArrayList<>();
         queue = new ArrayList<>();
 
+
+        onIce = false;
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(FEET_WIDTH/2f, FEET_HEIGHT/2f);
 
@@ -198,13 +203,16 @@ public class Player extends TextureObject {
 
         // Movement
         int dir = controller.d ? 1 : controller.a ? -1 : 0;
-        if (!isMidAir) {
+        if (onIce && !isMidAir){
+            //Sliding on ice
+               body.applyForceToCenter(WALK_SPEED*dir,0,true);
+        }else if (!onIce && !isMidAir){
             // Grounded
-            vel.x = WALK_SPEED * dir;
-        } else {
-            // Mid air
-            vel.add(AIR_WALK_FORCE * dir, 0);
-        }
+                vel.x = WALK_SPEED * dir;
+            } else  {
+                // Mid air
+                vel.add(AIR_WALK_FORCE * dir, 0);
+            }
 
         isCrouched = controller.s;
 
@@ -339,5 +347,13 @@ public class Player extends TextureObject {
         bodyDef.fixedRotation = true;
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         return bodyDef;
+    }
+    public void slide(boolean b){
+        onIce = b;
+    }
+
+    public void bounce(Body other){
+        if (Math.round(other.getPosition().x)==Math.round(body.getPosition().x) && body.getLinearVelocity().y<0)
+        body.setLinearVelocity(body.getLinearVelocity().x,-body.getLinearVelocity().y);
     }
 }
