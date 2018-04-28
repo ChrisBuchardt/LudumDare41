@@ -13,7 +13,7 @@ public class MainGame extends Game {
 
 	@Override
 	public void create () {
-		song1 = Gdx.audio.newMusic(Gdx.files.internal("Sounds/Temp_Space_Music.wav"));
+		song1 = Gdx.audio.newMusic(Gdx.files.internal("Sounds/Space_Music.wav"));
 		song1.setLooping(true);
 		song1.play();
 		gameScreen = new GameScreen(this);

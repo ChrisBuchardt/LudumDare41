@@ -11,6 +11,9 @@ import java.util.Random;
 
 public class Decoration {
 
+    private static final int PLANT_NUMBER_TEXTURES = 3;
+    private static final int RANDOMDECORATION_NUMBER_TEXTURES = 7;
+
     private TileType tileType;
     private TextureRegion texture;
     private Vector2 pos;
@@ -21,17 +24,27 @@ public class Decoration {
     public Decoration(TileType tileType, Vector2 pos) {
         this.tileType = tileType;
 
-        //Get texture
+        //Get texture //TODO MIKKEL WILL FIX THIS GARBAGE CODE
         TextureRegion[][] textureSheet;
-        if(tileType == TileType.MULTIPLEPLANTS)
-            textureSheet = TextureRegion.split(tileType.getBlockTexture(), GameInfo.TILE_SIZE * 2, GameInfo.TILE_SIZE);
-        else
+        if(tileType == TileType.MULTIPLEPLANTS || tileType == TileType.PLANT){
+            if(tileType == TileType.MULTIPLEPLANTS)
+                textureSheet = TextureRegion.split(tileType.getBlockTexture(), GameInfo.TILE_SIZE * 2, GameInfo.TILE_SIZE);
+            else
+                textureSheet = TextureRegion.split(tileType.getBlockTexture(), GameInfo.TILE_SIZE, GameInfo.TILE_SIZE);
+
+            Random random = new Random();
+            int ranNum = random.nextInt(PLANT_NUMBER_TEXTURES);
+            this.texture = textureSheet[0][ranNum];
+
+        }else if(tileType == TileType.RANDOMDECORATION){
             textureSheet = TextureRegion.split(tileType.getBlockTexture(), GameInfo.TILE_SIZE, GameInfo.TILE_SIZE);
 
-        Random random = new Random();
-        int ranNum = random.nextInt(3);
+            Random random = new Random();
+            int ranNum = random.nextInt(RANDOMDECORATION_NUMBER_TEXTURES);
+            this.texture = textureSheet[0][ranNum];
+        }
 
-        this.texture = textureSheet[0][ranNum];
+
 
 
         this.pos = pos;
