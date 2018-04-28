@@ -1,6 +1,5 @@
 package com.minichri.inventory;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,7 +11,8 @@ public class Inventory {
     private int itemCount = 0;
     private int nextEmpty = 0;
     private int selectedSlot = 0;
-    private int gatheredResouces = 0;
+    private int gatheredResources = 0;
+    public int totalResources =0;
     private List<InventoryListener> listeners;
 
     public Inventory() {
@@ -118,10 +118,14 @@ public class Inventory {
         listeners.add(listener);
     }
 
-    public int getGatheredResouces(){
-        return gatheredResouces;
+    public int getRemainingResources(){
+        return totalResources-gatheredResources;
     }
-    public  void addResouce(){
-        gatheredResouces++;
+    public  void addResource(){
+        gatheredResources++;
     }
+    public void setTotalResources(int i){
+        totalResources = i;
+    }
+
 }

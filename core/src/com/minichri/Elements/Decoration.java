@@ -17,20 +17,22 @@ public class Decoration {
     private float width;
     private float height;
 
+
     public Decoration(TileType tileType, Vector2 pos) {
         this.tileType = tileType;
 
-        if(tileType == TileType.PLANT){ //Texture contains 3 plants - split the texture in 3 and choose randomly!
-            TextureRegion[][] textureSheet = TextureRegion.split(tileType.getBlockTexture(), GameInfo.TILE_SIZE, GameInfo.TILE_SIZE);
+        //Get texture
+        TextureRegion[][] textureSheet;
+        if(tileType == TileType.MULTIPLEPLANTS)
+            textureSheet = TextureRegion.split(tileType.getBlockTexture(), GameInfo.TILE_SIZE * 2, GameInfo.TILE_SIZE);
+        else
+            textureSheet = TextureRegion.split(tileType.getBlockTexture(), GameInfo.TILE_SIZE, GameInfo.TILE_SIZE);
 
-            Random random = new Random();
-            int ranNum = random.nextInt(3);
+        Random random = new Random();
+        int ranNum = random.nextInt(3);
 
-            System.out.println(ranNum);
+        this.texture = textureSheet[0][ranNum];
 
-            this.texture = textureSheet[0][ranNum];
-        }else
-            this.texture =  new TextureRegion(tileType.getBlockTexture());
 
         this.pos = pos;
         this.width = texture.getRegionWidth() * GameInfo.PPM;

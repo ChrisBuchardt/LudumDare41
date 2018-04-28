@@ -52,11 +52,10 @@ public class IngameStage extends Stage {
         objectiveTable.top();
         Skin skin = new Skin(Gdx.files.internal("ui/skin/pixthulhu-ui.json"));
         objectiveTable.setSkin(skin);
-        Label laben = objectiveTable.add("Collect all the scattered resources " + 10 + " remaining").getActor();
+        Label laben = objectiveTable.add("Collect all the scattered resources " + Player.getInventory().getRemainingResources() + " remaining").getActor();
         Player.getInventory().addListener((i) -> {
-            int rr = 10-Player.getInventory().getGatheredResouces();
-            laben.setText("Collect all the scattered resources " + rr + " remaining");
-            //objectiveTable.add("Collect all the scattered resouces " + rr + " remaining");
+            int rr = Player.getInventory().getRemainingResources();
+            laben.setText("Collect all the scattered platforms: " + rr + " remaining");
         });
         addActor(objectiveTable);
     }

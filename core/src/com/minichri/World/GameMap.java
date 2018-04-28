@@ -9,7 +9,6 @@ import com.minichri.Elements.Decoration;
 import com.minichri.Elements.Resource;
 import com.minichri.Elements.Tile;
 import com.minichri.KeyboardController;
-import com.minichri.entity.GameObject;
 import com.minichri.entity.Player;
 import com.minichri.entity.RenderObject;
 import com.minichri.screens.GameScreen;
@@ -53,6 +52,9 @@ public class GameMap {
     public void render(World world, Vector3 mousePos, KeyboardController controller, SpriteBatch spriteBatch, float delta){
 
         processRemoveQueue();
+
+        if(isPlayerOutOfBounds())
+            player.kill();
 
         for(RenderObject renderableObject : gameObjects)
             renderableObject.render(spriteBatch, delta);
@@ -103,6 +105,16 @@ public class GameMap {
         return this.player;
     }
 
+    /** Checks player has gone into the void = kill (Out of bounds) */
+    public boolean isPlayerOutOfBounds(){
+
+        int playerTilePosX = Math.round(player.getBody().getPosition().x);
+        int playerTilePosY = Math.round(player.getBody().getPosition().y);
+
+        //Check game map bounds
+        return playerTilePosX < 0 || playerTilePosX > this.mapTileSizeX - 1 || playerTilePosY < 0 || playerTilePosY > this.mapTileSizeY - 1;
+    }
+
     /** Takes a set of tile coordinates and check if the tile is occupied */
     public boolean isTileOcccipied(int x, int y){
 
@@ -150,6 +162,8 @@ public class GameMap {
         //this.tilesArray[x][y] = tile;
         //this.gameObjects.add(tile);
     }
+
+
 
     public Vector2 getMapTileSize() {
         return new Vector2(mapTileSizeX, mapTileSizeY);
