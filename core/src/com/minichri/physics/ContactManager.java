@@ -1,6 +1,7 @@
 package com.minichri.physics;
 
 import com.badlogic.gdx.physics.box2d.*;
+import com.minichri.Elements.CollectedPlatform;
 import com.minichri.Elements.Resource;
 import com.minichri.Elements.Spikes;
 import com.minichri.World.GameMap;
@@ -53,6 +54,12 @@ public class ContactManager implements ContactListener {
             // Collision with spikes
             if (other instanceof Spikes) {
                 player.kill();
+            }
+
+            // Collision with CollectableObject
+            if(other instanceof CollectedPlatform){
+                if(!((CollectedPlatform) other).isMarkedAsDeleted())
+                    gameMap.addToCollecableRemoveQueue((CollectedPlatform) other);
             }
         }
     }
