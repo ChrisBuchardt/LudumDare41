@@ -1,5 +1,9 @@
 package com.minichri.entity;
 
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -69,6 +73,11 @@ public class Player extends TextureObject {
     private Vector2 podPosition;
     private Vector2 spawnPosition;
 
+    private Sound placementSound;
+    private Sound deathSound;
+    private Sound walkingSound;
+
+
     private Body feet;
 
     public Player(World world, Vector2 pos) {
@@ -79,6 +88,8 @@ public class Player extends TextureObject {
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(FEET_WIDTH/2f, FEET_HEIGHT/2f);
+
+        placementSound = Gdx.audio.newSound(Gdx.files.internal("sounds/Temp_placeblock_Sound.wav"));
 
         this.world = world;
         FixtureDef feetDef = new FixtureDef();
@@ -144,6 +155,7 @@ public class Player extends TextureObject {
                 batch.draw(getInventory().getSelectedItem().getType().getBlockTexture(),placeVector.x-0.5f,placeVector.y-0.5f,1, 1);
                 if (controller.leftClick){
                     if (!map.isTileOcccipied((int)placeVector.x, (int)placeVector.y)) {
+                        placementSound.play();
                         TileType type = getInventory().getSelectedItem().getType();
                         queue.add(new Tile(world, type, placeVector));
                         getInventory().remove(getInventory().getSelectedSlot());

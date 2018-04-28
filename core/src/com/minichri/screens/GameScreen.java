@@ -36,6 +36,8 @@ public class GameScreen implements Screen {
 
     public GameScreen(MainGame game) {
 
+
+
         mousePos = new Vector3 (0,0,0);
         this.inputProcessor = new KeyboardController();
         this.game = game;
