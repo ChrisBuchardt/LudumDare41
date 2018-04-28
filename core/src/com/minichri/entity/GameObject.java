@@ -10,9 +10,9 @@ public class GameObject {
     /** The FixtureDef used for something like tiles */
     public static FixtureDef DEFAULT_STATIC_FIXTUREDEF = createDefaultStaticFixtureDef();
     /** The FixtureDef used for something like a player     */
-    public static FixtureDef DEFAULT_DYNAMIC_FIXTUREDEF = createDefaultDynamicFixtureDef();
+    public static FixtureDef PLAYER__FIXTUREDEF = createPlayerFixtureDef();
     /** The BodyDef used for something like a player     */
-    public static BodyDef DEFAULT_DYNAMIC_BODYDEF = createDefaultDynamicBodyDef();
+    public static BodyDef PLAYER_BODYDEF = createPlayerBodyDef();
 
     protected final Body body;
 
@@ -48,9 +48,20 @@ public class GameObject {
     }
 
     /** The default fixturedef for players */
-    private static FixtureDef createDefaultDynamicFixtureDef(){
+    private static FixtureDef createPlayerFixtureDef(){
+        float cornerSize = 0.043f;
+        float width = Player.WIDTH/2f;
+        float widthShort = Player.WIDTH/2f - cornerSize;
+        float height = Player.HEIGHT/2f;
+        float heightShort = Player.HEIGHT/2f - cornerSize;
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(Player.WIDTH/2f, Player.HEIGHT/2f);
+        shape.set(new Vector2[] {
+                new Vector2(-width, height),
+                new Vector2(width, height),
+                new Vector2(width, -heightShort),
+                new Vector2(0, -height),
+                new Vector2(-width, -heightShort),
+        });
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
@@ -64,7 +75,7 @@ public class GameObject {
 
 
     /** The BodyDef used for something like players */
-    private static BodyDef createDefaultDynamicBodyDef() {
+    private static BodyDef createPlayerBodyDef() {
         BodyDef bodyDef = new BodyDef();
         bodyDef.fixedRotation = true;
         bodyDef.type = BodyDef.BodyType.DynamicBody;
