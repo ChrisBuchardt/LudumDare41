@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public enum TileType {
-    
+
     PLAYER("0026FFFF", null, null, null, false, false),
     WHITE_SPACE("FFFFFFFF", null, null, null, false, false),
     GROUND("000000FF", "tiles/ground_tiles.png", null, null, true, false),

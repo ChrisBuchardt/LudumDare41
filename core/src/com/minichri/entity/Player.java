@@ -1,6 +1,7 @@
 package com.minichri.entity;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -262,7 +263,7 @@ public class Player extends TextureObject {
 
     /** When q is pressed, collect as many nearby tiles as you can hold in your inventory. */
     private void qCollect(KeyboardController controller, GameMap map){
-        if(controller.q){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.Q)){
 
             //Get number of empty item slots
             int emptySlots = getInventory().slotsLeft();
