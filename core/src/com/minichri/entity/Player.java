@@ -80,6 +80,7 @@ public class Player extends TextureObject {
     private Sound deathSound;
     private Sound walkingSound;
     private Sound qCollectSound;
+    private Sound pickupSound;
 
 
     private boolean onIce;
@@ -101,6 +102,7 @@ public class Player extends TextureObject {
 
         placementSound = Gdx.audio.newSound(Gdx.files.internal("sounds/Temp_placeblock_Sound.wav"));
         qCollectSound = Gdx.audio.newSound(Gdx.files.internal("sounds/qSound.wav"));
+        pickupSound = Gdx.audio.newSound(Gdx.files.internal("Sounds/pickup dak.wav"));
 
         this.world = world;
         FixtureDef feetDef = new FixtureDef();
@@ -378,5 +380,9 @@ public class Player extends TextureObject {
             if (Math.round(other.getPosition().x) == Math.round(body.getPosition().x) && body.getLinearVelocity().y < 0)
                 body.setLinearVelocity(body.getLinearVelocity().x, -body.getLinearVelocity().y);
         }
+    }
+
+    public void playPickupSound() {
+        pickupSound.play();
     }
 }

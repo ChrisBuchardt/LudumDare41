@@ -26,7 +26,9 @@ public class CollectedPlatform extends TextureObject{
     public void render(SpriteBatch batch, float delta, Vector2 playerPos) {
         //super.render(batch, delta);
 
-        this.body.setLinearVelocity(new Vector2(playerPos).sub(this.body.getPosition()).scl(6));
+        Vector2 diff = new Vector2(playerPos).sub(this.body.getPosition());
+        Vector2 vel = new Vector2(diff).scl(3).add(new Vector2(diff).nor().scl(8));
+        this.body.setLinearVelocity(vel);
 
         Vector2 pos = body.getPosition();
         float width = texture.getRegionWidth() * GameInfo.PPM;
