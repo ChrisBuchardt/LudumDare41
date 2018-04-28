@@ -4,6 +4,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.minichri.Elements.CollectedPlatform;
 import com.minichri.Elements.Resource;
 import com.minichri.Elements.Spikes;
+import com.minichri.Elements.Tile;
 import com.minichri.World.GameMap;
 import com.minichri.entity.Player;
 import com.minichri.helpers.TileType;
@@ -55,7 +56,23 @@ public class ContactManager implements ContactListener {
             if (other instanceof Spikes) {
                 player.kill();
             }
-
+            if (other instanceof Tile) {
+                switch (((Tile) other).getTileType()) {
+                    case GROUND:
+                        player.slide(false);
+                        break;
+                    case PLATFORM_BLUE:
+                        player.slide(true);
+                        break;
+                    case PLATFORM_GREEN:
+                        player.slide(false);
+                        break;
+                    case PLATFORM_PURPLE:
+                        player.slide(false);
+                        player.bounce(((Tile) other).getBody());
+                        break;
+                }
+            }
             // Collision with CollectableObject
             if(other instanceof CollectedPlatform){
                 if(!((CollectedPlatform) other).isMarkedAsDeleted())
