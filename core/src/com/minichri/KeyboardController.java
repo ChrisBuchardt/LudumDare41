@@ -1,5 +1,6 @@
 package com.minichri;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.minichri.entity.Player;
@@ -88,23 +89,17 @@ public class KeyboardController implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         boolean clickProcessed = false;
-        if(button == 0){
-            leftClick = true;
-            clickProcessed = true;
-        }else if(button == 1){
-            rightClick = true;
-            clickProcessed = true;
+            if (button == Input.Buttons.LEFT) {
+                leftClick = true;
+                clickProcessed = true;
+            }
+            return clickProcessed;
         }
-        return clickProcessed;
-    }
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         boolean clickProcessed = false;
-        if(button == 0){
+        if(button == Input.Buttons.LEFT){
             leftClick = false;
-            clickProcessed = true;
-        }else if(button == 1){
-            rightClick = false;
             clickProcessed = true;
         }
         return clickProcessed;
@@ -125,5 +120,6 @@ public class KeyboardController implements InputProcessor {
         Player.getInventory().moveSelectedBy(amount);
         return true;
     }
+
 
 }

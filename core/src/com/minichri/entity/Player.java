@@ -10,7 +10,6 @@ import com.minichri.Elements.Resource;
 import com.minichri.Elements.Tile;
 import com.minichri.KeyboardController;
 import com.minichri.World.GameMap;
-import com.minichri.helpers.GameInfo;
 import com.minichri.helpers.TileType;
 import com.minichri.inventory.Inventory;
 import com.minichri.inventory.Item;
@@ -37,11 +36,15 @@ public class Player extends TextureObject {
     private static final float WALK_SPEED = 6f;
     private static final float AIR_WALK_FORCE = 0.3f;
 
+
     private ArrayList<Tile> playerPlacedTiles;
     private ArrayList<Tile> queue;
 
+    private static final float SPAWN_TIMER = 2f;
+
     private static TextureRegion playerTexLeft = new TextureRegion(new Texture("player/player_left.png"), 0, 0, PIXEL_WIDTH, PIXEL_HEIGHT);
     private static TextureRegion playerTexRight = new TextureRegion(new Texture("player/player_right.png"), 0, 0, PIXEL_WIDTH, PIXEL_HEIGHT);
+    private static TextureRegion playerShip = new TextureRegion(new Texture("escape_pod.png"), 0, 0, PIXEL_WIDTH*2, PIXEL_HEIGHT*2);
 
     // Inventory singleton
     private static Inventory _inventory;
@@ -58,9 +61,13 @@ public class Player extends TextureObject {
     private float minRange = 1.6f;
     private Vector2 placeVector = new Vector2(0,0);
     private Texture preview;
-    private boolean spawning;
+
+    private boolean isPodLanding = true;
     private boolean isDead = false;
     private float deathTimer = 0;
+    private float timePassed = 0;
+    private Vector2 podPosition;
+    private Vector2 spawnPosition;
 
     private Body feet;
 
@@ -85,6 +92,8 @@ public class Player extends TextureObject {
         feet.setGravityScale(0);
         body.setLinearDamping(0);
         body.setUserData(this);
+
+        podPosition = new Vector2(pos);
     }
 
     public void render(GameMap map, World world, Vector3 mousePos, KeyboardController controller, SpriteBatch batch, float delta) {
@@ -96,14 +105,32 @@ public class Player extends TextureObject {
         for(RenderableObject renderableObject : playerPlacedTiles)
                 renderableObject.render(batch, delta);
 
-        if (!isDead) {
-            movement(map, controller, batch, delta);
-            blockPlacing(batch, map, controller, mousePos);
-        } else {
-            resolveDeath(batch, delta);
-        }
+        timePassed += delta;
 
-        super.render(batch, delta);
+        //Draws player Ship. Needs to be here to be drawn in the right layer
+        batch.draw(playerShip, podPosition.x, podPosition.y, 4, 4);
+
+        if (isPodLanding) {
+            spacePodLanding(delta);
+        } else {
+            if (!isDead) {
+                movement(map, controller, batch, delta);
+                blockPlacing(batch, map, controller, mousePos);
+            } else {
+                resolveDeath(batch, delta);
+            }
+
+            super.render(batch, delta);
+        }
+    }
+
+    private void spacePodLanding(float delta) {
+        if (timePassed < SPAWN_TIMER) {
+            podPosition = new Vector2(body.getPosition().x - 2f, body.getPosition().y - 2f);
+        } else {
+            isPodLanding = false;
+            spawnPosition = new Vector2(body.getPosition());
+        }
     }
 
     private void blockPlacing(SpriteBatch batch, GameMap map, KeyboardController controller, Vector3 mousePos) {
@@ -131,8 +158,9 @@ public class Player extends TextureObject {
 
         isMidAir = !(ContactManager.feetCollisions > 0 && Math.abs(vel.y) <= 1e-2);
 
+        // Jump
         if (!isMidAir) hasJumped = false;
-        if (!hasJumped && (controller.w  || controller.space)) {
+        if (!hasJumped && (controller.w || controller.space)) {
             vel.y = isMidAir ? JUMP_FORCE_IN_AIR : JUMP_FORCE;
             isMidAir = true;
             hasJumped = true;
@@ -197,8 +225,7 @@ public class Player extends TextureObject {
         isCrouched = controller.s;
 
         // Restrict vel x
-        float restrictVelX = Math.min(Math.max(-MAX_X_VEL, vel.x), MAX_X_VEL);
-        vel.x = restrictVelX;
+        vel.x = Math.min(Math.max(-MAX_X_VEL, vel.x), MAX_X_VEL);
 
         // Apply new vel
         body.setLinearVelocity(vel);
@@ -219,16 +246,20 @@ public class Player extends TextureObject {
 
     public void resolveDeath(SpriteBatch batch, float delta) {
         deathTimer += delta;
-        if (deathTimer < 0.5f) batch.setColor(1, 0, 0, 1);
-        else if (delta < 1f) batch.setColor(0, 0, 0, 1);
+        if (deathTimer < 0.23f) batch.setColor(1, 0, 0, 1);
+        else if (deathTimer < 1f) batch.setColor(0, 0, 0, 1);
         else {
+            body.setTransform(spawnPosition, 0);
             isDead = false;
+            batch.setColor(1, 1, 1, 1);
         }
     }
 
     public void kill() {
-        isDead = true;
-        deathTimer = 0;
+        if (!isDead) {
+            isDead = true;
+            deathTimer = 0;
+        }
     }
 
     public Vector2 getBodyPos(){
