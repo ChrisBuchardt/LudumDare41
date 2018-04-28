@@ -133,8 +133,10 @@ public class Player extends TextureObject {
         deathCounter=0;
     }
 
-    public void render(GameMap map, World world, Vector3 mousePos, KeyboardController controller, SpriteBatch batch, float delta) {
+    public void render(GameMap map, Vector3 mousePos, KeyboardController controller, SpriteBatch batch, float delta) {
         this.map = map;
+        batch.draw(playerShip, podPosition.x, podPosition.y, 4, 4);
+
 
         //adds Player spawned tiles to the array
         if (queue.size()>0) playerPlacedTiles.addAll(queue);
@@ -145,11 +147,9 @@ public class Player extends TextureObject {
 
         timePassed += delta;
 
-        //Draws player Ship. Needs to be here to be drawn in the right layer
-        batch.draw(playerShip, podPosition.x, podPosition.y, 4, 4);
 
         if (isPodLanding) {
-            spacePodLanding(delta);
+            spacePodLanding();
         } else {
             if (!isDead) {
                 movement(map, controller, batch, delta);
@@ -163,7 +163,7 @@ public class Player extends TextureObject {
         }
     }
 
-    private void spacePodLanding(float delta) {
+    private void spacePodLanding() {
         if (timePassed < SPAWN_TIMER) {
             podPosition = new Vector2(body.getPosition().x - 2f, body.getPosition().y - 2f);
         } else {
@@ -185,7 +185,8 @@ public class Player extends TextureObject {
                     TileType type = getInventory().getSelectedItem().getType();
                     batch.draw(type.getAimTexture(), placeVector.x - 0.5f, placeVector.y - 0.5f, 1, 1);
                     if (controller.leftClick){
-                        placementSound.play();
+                        placementSound.setVolume(placementSound.play(), 0.4f);
+                        //placementSound.play();
                         queue.add(new Tile(world, type, placeVector));
                         getInventory().remove(getInventory().getSelectedSlot());
                         getInventory().focus();
@@ -414,5 +415,9 @@ public class Player extends TextureObject {
 
     public int getDeathCounter() {
         return deathCounter;
+    }
+
+    public boolean isDead() {
+        return isDead;
     }
 }
