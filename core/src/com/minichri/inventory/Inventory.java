@@ -40,6 +40,25 @@ public class Inventory {
         return true;
     }
 
+    /** This method will make the inventory select the next filled slot. Does nothing if inventory is empty.
+     * Returns true if anything was focused. */
+    public boolean focus() {
+        if (itemCount == 0) return false;
+        for (int i = selectedSlot; i < SIZE; i++) {
+            if (get(i) != null) {
+                setSelectedSlot(i);
+                return true;
+            }
+        }
+        for (int i = selectedSlot; i >= 0; i--) {
+            if (get(i) != null) {
+                setSelectedSlot(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
     /** @return true if successful. */
     public boolean remove(int i) {
         boolean canRemoved = items[i] != null;

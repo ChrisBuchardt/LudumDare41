@@ -172,6 +172,7 @@ public class Player extends TextureObject {
                         TileType type = getInventory().getSelectedItem().getType();
                         queue.add(new Tile(world, type, placeVector));
                         getInventory().remove(getInventory().getSelectedSlot());
+                        getInventory().focus();
                         showLaser(batch, placeVector.x - 0.5f, placeVector.y - 0.5f);
                     }
                 }
