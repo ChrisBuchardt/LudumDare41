@@ -13,6 +13,7 @@ import com.minichri.Elements.Resource;
 import com.minichri.Elements.Tile;
 import com.minichri.KeyboardController;
 import com.minichri.World.GameMap;
+import com.minichri.helpers.GameInfo;
 import com.minichri.helpers.PlayerAnimationController;
 import com.minichri.helpers.TileType;
 import com.minichri.inventory.Inventory;
@@ -39,6 +40,7 @@ public class Player extends TextureObject {
 
     private static final float MAX_RANGE = 5f;
     private static final float MIN_RANGE = 1.6f;
+    private static final float GUN_X_OFFSET = 0.53f;
     private static final float SPAWN_TIMER = 2f;
     private static final float DEATH_TIMER_RED = 0.24f;
     private static final float RESPAWN_TIMER = 2.2f;
@@ -50,6 +52,7 @@ public class Player extends TextureObject {
     private static TextureRegion playerShip = new TextureRegion(new Texture("escape_pod.png"), 0, 0, 32, 42);
     private static Texture aimTexture = new Texture("player/aim.png");
     private static Texture rangeTexture = new Texture("player/range_indicator.png");
+    private static Texture laserTexture = new Texture("player/laser.png");
 
     // Inventory singleton
     private static Inventory _inventory;
@@ -59,11 +62,13 @@ public class Player extends TextureObject {
     }
 
     private World world;
+    private int lookingDir = 1;
     private boolean isMidAir = false;
     private boolean isCrouched = false;
     private boolean hasJumped = false;
     private PlayerAnimationController animController;
     private Vector2 placeVector = new Vector2(0,0);
+    private Vector2 gunPosition = new Vector2(0, 0);
 
     private boolean isPodLanding = true;
     private boolean isDead = false;
@@ -159,13 +164,16 @@ public class Player extends TextureObject {
             placeVector.y = Math.round(mousePos.y);
             float distance = new Vector2(placeVector).sub(body.getPosition()).len();
             if (MIN_RANGE < distance && distance < MAX_RANGE) {
-                if (!map.isTileOcccipied((int)placeVector.x, (int)placeVector.y)) {
+                int x = (int)placeVector.x;
+                int y = (int)placeVector.y;
+                if (!map.isTileOcccipied(x, y)) {
                     batch.draw(aimTexture, placeVector.x - 0.5f, placeVector.y - 0.5f, 1, 1);
                     if (controller.leftClick){
                         placementSound.play();
                         TileType type = getInventory().getSelectedItem().getType();
                         queue.add(new Tile(world, type, placeVector));
                         getInventory().remove(getInventory().getSelectedSlot());
+                        showLaser(batch, placeVector.x - 0.5f, placeVector.y - 0.5f);
                     }
                 }
             }
@@ -188,6 +196,12 @@ public class Player extends TextureObject {
         }
     }
 
+    private void showLaser(SpriteBatch batch, float x, float y) {
+        Vector2 diff = new Vector2(gunPosition).sub(x, y);
+        Vector2 middle = new Vector2(gunPosition).add(new Vector2(diff).scl(-0.5f));
+        batch.draw(new TextureRegion(laserTexture), middle.x, middle.y, 8f * GameInfo.PPM, 8f * GameInfo.PPM, 16f * GameInfo.PPM, 16f * GameInfo.PPM, diff.len(), 0.2f, diff.angle());
+    }
+
     private void movement(GameMap map, KeyboardController controller, SpriteBatch batch, float delta) {
         Vector2 vel = body.getLinearVelocity();
 
@@ -203,6 +217,7 @@ public class Player extends TextureObject {
 
         // Movement
         int dir = controller.d ? 1 : controller.a ? -1 : 0;
+        lookingDir = dir == 0 ? lookingDir : dir;
         if (onIce && !isMidAir){
             //Sliding on ice
                body.applyForceToCenter(WALK_SPEED*dir,0,true);
@@ -225,6 +240,7 @@ public class Player extends TextureObject {
         // Move feet
         feet.setTransform(new Vector2(body.getPosition()).add(0, FEET_Y_OFFSET), 0);
         feet.setLinearVelocity(vel);
+        gunPosition.set(body.getPosition()).add(lookingDir * GUN_X_OFFSET, 0).add(-0.45f, -0.65f);
 
         texture = animController.getTexture(dir, isMidAir, delta);
     }
