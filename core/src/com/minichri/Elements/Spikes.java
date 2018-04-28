@@ -30,7 +30,7 @@ public class Spikes extends TextureObject {
     /** The FixtureDef used for something like tiles */
     private static FixtureDef createFixtureDef() {
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(0.48f, 0.25f);
+        shape.setAsBox(0.42f, 0.23f);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;

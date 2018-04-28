@@ -10,16 +10,17 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
+import com.minichri.Elements.Resource;
 import com.minichri.Elements.Tile;
 import com.minichri.KeyboardController;
 import com.minichri.World.GameMap;
-import com.minichri.helpers.GameInfo;
 import com.minichri.helpers.TileType;
 import com.minichri.inventory.Inventory;
+import com.minichri.inventory.Item;
 import com.minichri.physics.ContactManager;
-import com.minichri.screens.GameScreen;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class Player extends TextureObject {
@@ -39,8 +40,12 @@ public class Player extends TextureObject {
     private static final float WALK_SPEED = 6f;
     private static final float AIR_WALK_FORCE = 0.3f;
 
-    private ArrayList<RenderableObject> playerTiles;
-    private ArrayList<RenderableObject> queue;
+    private static final float SPAWN_TIMER = 2f;
+    private static final float DEATH_TIMER_RED = 0.24f;
+    private static final float RESPAWN_TIMER = 2.2f;
+
+    private ArrayList<Tile> playerPlacedTiles;
+    private ArrayList<Tile> queue;
 
     private static TextureRegion playerTexLeft = new TextureRegion(new Texture("player/player_left.png"), 0, 0, PIXEL_WIDTH, PIXEL_HEIGHT);
     private static TextureRegion playerTexRight = new TextureRegion(new Texture("player/player_right.png"), 0, 0, PIXEL_WIDTH, PIXEL_HEIGHT);
@@ -62,13 +67,12 @@ public class Player extends TextureObject {
     private Vector2 placeVector = new Vector2(0,0);
     private Texture preview;
 
-    private boolean spawning;
+    private boolean isPodLanding = true;
     private boolean isDead = false;
     private float deathTimer = 0;
-    //Spawning timer
-    private float timeSeconds;
-    private float spawntimer =2;
-    private Vector2 startPosition = new Vector2(0,0);
+    private float timePassed = 0;
+    private Vector2 podPosition;
+    private Vector2 spawnPosition;
 
     private Sound placementSound;
     private Sound deathSound;
@@ -80,16 +84,13 @@ public class Player extends TextureObject {
     public Player(World world, Vector2 pos) {
         super(world, pos, GameObject.DEFAULT_DYNAMIC_BODYDEF, GameObject.DEFAULT_DYNAMIC_FIXTUREDEF, playerTexLeft);
 
-        playerTiles = new ArrayList<>();
+        playerPlacedTiles = new ArrayList<>();
         queue = new ArrayList<>();
-        spawning = true;
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(FEET_WIDTH/2f, FEET_HEIGHT/2f);
 
-
-        placementSound = Gdx.audio.newSound(Gdx.files.internal("sound/Temp_placeblock_Sound.wav"));
-        deathSound = Gdx.audio.newSound(Gdx.files.internal("sounds/very_Temp_Death_sound.wav"));
+        placementSound = Gdx.audio.newSound(Gdx.files.internal("sounds/Temp_placeblock_Sound.wav"));
 
         this.world = world;
         FixtureDef feetDef = new FixtureDef();
@@ -103,27 +104,27 @@ public class Player extends TextureObject {
         feet.setGravityScale(0);
         body.setLinearDamping(0);
         body.setUserData(this);
+
+        podPosition = new Vector2(pos);
     }
 
     public void render(GameMap map, World world, Vector3 mousePos, KeyboardController controller, SpriteBatch batch, float delta) {
 
-
         //adds Player spawned tiles to the array
-        if (queue.size()>0)playerTiles.addAll(queue);
-            queue.removeAll(queue);
+        if (queue.size()>0) playerPlacedTiles.addAll(queue);
+        queue.removeAll(queue);
 
-        for(RenderableObject renderableObject : playerTiles)
+        for(RenderableObject renderableObject : playerPlacedTiles)
                 renderableObject.render(batch, delta);
 
-        timeSeconds+=delta;
+        timePassed += delta;
 
-        if (timeSeconds<spawntimer) {
-            startPosition = new Vector2(body.getPosition().x - 2f, body.getPosition().y - 2f);
-        }
-         //Draws player Ship. Needs to be here to be drawn in the right layer
-            batch.draw(playerShip, startPosition.x, startPosition.y, 4, 4);
+        //Draws player Ship. Needs to be here to be drawn in the right layer
+        batch.draw(playerShip, podPosition.x, podPosition.y, 4, 4);
 
-        if (timeSeconds>spawntimer) {
+        if (isPodLanding) {
+            spacePodLanding(delta);
+        } else {
             if (!isDead) {
                 movement(map, controller, batch, delta);
                 blockPlacing(batch, map, controller, mousePos);
@@ -133,7 +134,15 @@ public class Player extends TextureObject {
 
             super.render(batch, delta);
         }
+    }
 
+    private void spacePodLanding(float delta) {
+        if (timePassed < SPAWN_TIMER) {
+            podPosition = new Vector2(body.getPosition().x - 2f, body.getPosition().y - 2f);
+        } else {
+            isPodLanding = false;
+            spawnPosition = new Vector2(body.getPosition());
+        }
     }
 
     private void blockPlacing(SpriteBatch batch, GameMap map, KeyboardController controller, Vector3 mousePos) {
@@ -149,7 +158,6 @@ public class Player extends TextureObject {
                     if (!map.isTileOcccipied((int)placeVector.x, (int)placeVector.y)) {
                         placementSound.play();
                         TileType type = getInventory().getSelectedItem().getType();
-                        map.setTile(type, placeVector);
                         queue.add(new Tile(world, type, placeVector));
                         getInventory().remove(getInventory().getSelectedSlot());
                     }
@@ -162,8 +170,8 @@ public class Player extends TextureObject {
         Vector2 vel = body.getLinearVelocity();
 
         isMidAir = !(ContactManager.feetCollisions > 0 && Math.abs(vel.y) <= 1e-2);
-     //avoid those things
 
+        // Jump
         if (!isMidAir) hasJumped = false;
         if (!hasJumped && (controller.w || controller.space)) {
             vel.y = isMidAir ? JUMP_FORCE_IN_AIR : JUMP_FORCE;
@@ -181,12 +189,13 @@ public class Player extends TextureObject {
             vel.add(AIR_WALK_FORCE * dir, 0);
         }
 
-        if (controller.s) isCrouched = true;
-        else isCrouched = false;
+        // Q-collect
+        qCollect(controller);
+
+        isCrouched = controller.s;
 
         // Restrict vel x
-        float restrictVelX = Math.min(Math.max(-MAX_X_VEL, vel.x), MAX_X_VEL);
-        vel.x = restrictVelX;
+        vel.x = Math.min(Math.max(-MAX_X_VEL, vel.x), MAX_X_VEL);
 
         // Apply new vel
         body.setLinearVelocity(vel);
@@ -195,8 +204,54 @@ public class Player extends TextureObject {
         feet.setTransform(new Vector2(body.getPosition()).add(0, FEET_Y_OFFSET), 0);
 
         updateTexture(dir);
-        super.render(batch, delta);
+    }
 
+    /** When q is pressed, collect as many nearby tiles as you can hold in your inventory. */
+    private void qCollect(KeyboardController controller){
+        if(controller.q){
+
+            //Get number of empty item slots
+            int emptySlots = getInventory().slotsLeft();
+
+            //Any free slots?
+            if(emptySlots != 0){
+
+                //Create dist from player ordered list
+                Collections.sort(playerPlacedTiles, (a, b) -> {
+
+                    Vector2 vectorA = ((GameObject)a).body.getPosition();
+                    Vector2 vectorB = ((GameObject)b).body.getPosition();
+
+                    float distToA = Vector2.dst(vectorA.x, vectorA.y, getBodyPos().x, getBodyPos().y);
+                    float distToB = Vector2.dst(vectorB.x, vectorB.y, getBodyPos().x, getBodyPos().y);
+
+                    float comparison = distToA - distToB;
+
+                    if(comparison > 0)
+                        return 1;
+                    else if(comparison < 0)
+                        return -1;
+                    else
+                        return 0;
+                });
+
+                ArrayList<Tile> playerPlacedCopy = new ArrayList(playerPlacedTiles);
+
+                //Remove till the found number of elements and add them to inv
+                int collectCount = Math.min(getPlayerPlacedTiles().size(), emptySlots);
+                for(int i = 0; i < collectCount; i ++){
+
+                    Tile involvedTile = playerPlacedCopy.get(i);
+
+                    //Add element to inventory
+                    getInventory().add(new Item(involvedTile.getTileType()));
+
+                    //Remove and destroy from world
+                    world.destroyBody(playerPlacedTiles.get(playerPlacedTiles.indexOf(playerPlacedCopy.get(i))).getBody());
+                    getPlayerPlacedTiles().remove(playerPlacedTiles.indexOf(playerPlacedCopy.get(i)));
+                }
+            }
+        }
     }
 
     private void updateTexture(int moveDirection) {
@@ -209,22 +264,31 @@ public class Player extends TextureObject {
 
     public void resolveDeath(SpriteBatch batch, float delta) {
         deathTimer += delta;
-        if (deathTimer < 0.5f) batch.setColor(1, 0, 0, 1);
-        else if (delta < 1f) batch.setColor(0, 0, 0, 1);
+        if (deathTimer < DEATH_TIMER_RED) batch.setColor(1, 0, 0, 1);
+        else if (deathTimer < RESPAWN_TIMER) batch.setColor(0, 0, 0, 1);
         else {
+            body.setTransform(spawnPosition, 0);
             isDead = false;
+            batch.setColor(1, 1, 1, 1);
         }
     }
 
     public void kill() {
-        deathSound.setPitch(1,0.5f);
-        deathSound.play();
-
-        isDead = true;
-        deathTimer = 0;
+        if (!isDead) {
+            isDead = true;
+            deathTimer = 0;
+        }
     }
 
     public Vector2 getBodyPos(){
          return body.getPosition();
+    }
+
+    public ArrayList<Tile> getPlayerPlacedTiles() {
+        return playerPlacedTiles;
+    }
+
+    public ArrayList<Tile> getQueue() {
+        return queue;
     }
 }
