@@ -77,6 +77,7 @@ public class Player extends TextureObject {
     private float timePassed = 0;
     private Vector2 podPosition;
     private Vector2 spawnPosition;
+    private GameMap map;
 
     private Sound placementSound;
     private Sound deathSound;
@@ -85,6 +86,7 @@ public class Player extends TextureObject {
     private Music walkingOnIce;
     private Sound walkingSound;
     private Sound pickupSound;
+    private Sound voidSound;
 
 
     private boolean onIce;
@@ -104,12 +106,13 @@ public class Player extends TextureObject {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(FEET_WIDTH/2f, FEET_HEIGHT/2f);
 
-        placementSound = Gdx.audio.newSound(Gdx.files.internal("sounds/Temp_placeblock_Sound.wav"));
+        placementSound = Gdx.audio.newSound(Gdx.files.internal("sounds/placeBlockSound.wav"));
         qCollectSound = Gdx.audio.newSound(Gdx.files.internal("sounds/qSound.wav"));
         walkingSound = Gdx.audio.newSound(Gdx.files.internal("sounds/running_Sound.wav"));
         walkingOnIce = Gdx.audio.newMusic(Gdx.files.internal("sounds/ice_Sound.wav"));
         bounceSound  = Gdx.audio.newSound(Gdx.files.internal("sounds/bounce_sound.mp3"));
-
+        voidSound = Gdx.audio.newSound(Gdx.files.internal("sounds/wilhelm.wav"));
+        deathSound = Gdx.audio.newSound(Gdx.files.internal("sounds/death_Sound.mp3"));
         pickupSound = Gdx.audio.newSound(Gdx.files.internal("Sounds/pickup dak.wav"));
 
         this.world = world;
@@ -129,6 +132,7 @@ public class Player extends TextureObject {
     }
 
     public void render(GameMap map, World world, Vector3 mousePos, KeyboardController controller, SpriteBatch batch, float delta) {
+        this.map = map;
 
         //adds Player spawned tiles to the array
         if (queue.size()>0) playerPlacedTiles.addAll(queue);
@@ -236,10 +240,7 @@ public class Player extends TextureObject {
             // Grounded
 
             vel.x = WALK_SPEED * dir;
-            if (vel.x!=0){
-               // walkingSound.play();
 
-            }
         } else  {
             // Mid air
             vel.add(AIR_WALK_FORCE * dir, 0);
@@ -330,6 +331,12 @@ public class Player extends TextureObject {
 
     public void kill() {
         if (!isDead) {
+            if (map.isPlayerOutOfBounds()){
+                voidSound.play();
+            }else {
+                deathSound.play();
+            }
+
             isDead = true;
             deathTimer = 0;
         }
