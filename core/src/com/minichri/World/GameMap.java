@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
+import com.minichri.Elements.CollectedPlatform;
 import com.minichri.Elements.Resource;
 import com.minichri.Elements.Tile;
 import com.minichri.KeyboardController;
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 
 public class GameMap {
 
+    private ArrayList<CollectedPlatform> collectedObjects;
+    private ArrayList<CollectedPlatform> collectedObjectsRemoveQueue;
     private ArrayList<RenderObject> gameObjects;
     private Tile[][] tilesArray;
     private int mapTileSizeX;
@@ -28,6 +31,8 @@ public class GameMap {
     public GameMap(GameScreen screen){
 
         this.world = screen.world;
+        this.collectedObjects = new ArrayList<>();
+        this.collectedObjectsRemoveQueue = new ArrayList<>();
 
         //Load the map
         MapLoader ml = new MapLoader();
@@ -41,18 +46,23 @@ public class GameMap {
     }
 
     /** Renders objects from the game map. */
-    public void render(World world,Vector3 mousePos, KeyboardController controller, SpriteBatch spriteBatch, float delta){
+    public void render(World world, Vector3 mousePos, KeyboardController controller, SpriteBatch spriteBatch, float delta){
 
         processRemoveQueue();
 
         for(RenderObject renderableObject : gameObjects)
             renderableObject.render(spriteBatch, delta);
 
+        for(CollectedPlatform collectedPlatform : collectedObjects)
+            collectedPlatform.render(spriteBatch, delta, player.getBodyPos());
+
         getPlayer().render(this,world,mousePos,controller, spriteBatch, delta);
     }
 
     /** Removes the objects listed in the removequeue from the gameObjects list */
     private void processRemoveQueue(){
+
+        //Game objects
         if(removeQueue.size() != 0){
             for(RenderObject removeQueueObject : new ArrayList<>(removeQueue)){
                 gameObjects.remove(removeQueueObject);
@@ -60,9 +70,18 @@ public class GameMap {
                 removeQueue.remove(removeQueueObject);
             }
         }
+
+        //Collected platforms
+        if(collectedObjectsRemoveQueue.size() != 0){
+            for(CollectedPlatform collectedPlatform : new ArrayList<>(collectedObjectsRemoveQueue)){
+                collectedObjects.remove(collectedPlatform);
+                world.destroyBody(collectedPlatform.getBody());
+                collectedObjectsRemoveQueue.remove(collectedPlatform);
+            }
+        }
     }
 
-    /** Adds an object to the removeQueue*/
+    /** Adds an Resource object to the removeQueue*/
     public void addToRemoveResource(Resource resource){
 
         //Find the resource in the map
@@ -105,19 +124,25 @@ public class GameMap {
         return false;
     }
 
-    /** Places a block in the world (both arrays).
-     *  @param tileType the type if the tile you want to set.
-     *  @param pos the position of the tile. */
-    /*public void setTile(TileType tileType, Vector2 pos){
+    public void addCollectedObject(CollectedPlatform collectedPlatform){
+        collectedObjects.add(collectedPlatform);
+    }
 
-        Tile tile = new Tile(this.world, tileType, pos);
+    /** Adds collectable object to remove queue*/
+    public void addToCollecableRemoveQueue(CollectedPlatform collectedPlatform){
 
-        int x = (int)(pos.x / GameInfo.TILE_SIZE);
-        int y = (int)(pos.y / GameInfo.TILE_SIZE);
+        //Mark the platform as dead
+        collectedPlatform.markedAsDeleted();
 
+        //Find the resource in the list
+        for(CollectedPlatform currentCollectedPlatform : collectedObjects){
+            if(currentCollectedPlatform == collectedPlatform){
+                this.collectedObjectsRemoveQueue.add(collectedPlatform); //Add to remove queue
+            }
+        }
         //this.tilesArray[x][y] = tile;
         //this.gameObjects.add(tile);
-    }*/
+    }
 
     public Vector2 getMapTileSize() {
         return new Vector2(mapTileSizeX, mapTileSizeY);

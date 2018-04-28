@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
+import com.minichri.Elements.CollectedPlatform;
+import com.minichri.Elements.Resource;
 import com.minichri.Elements.Tile;
 import com.minichri.KeyboardController;
 import com.minichri.World.GameMap;
@@ -203,7 +205,7 @@ public class Player extends TextureObject {
         }
 
         // Q-collect
-        qCollect(controller);
+        qCollect(controller, map);
 
         isCrouched = controller.s;
 
@@ -221,8 +223,8 @@ public class Player extends TextureObject {
     }
 
     /** When q is pressed, collect as many nearby tiles as you can hold in your inventory. */
-    private void qCollect(KeyboardController controller) {
-        if (controller.q) {
+    private void qCollect(KeyboardController controller, GameMap map){
+        if(controller.q){
 
             //Get number of empty item slots
             int emptySlots = getInventory().slotsLeft();
@@ -256,6 +258,9 @@ public class Player extends TextureObject {
                 for(int i = 0; i < collectCount; i ++){
 
                     Tile involvedTile = playerPlacedCopy.get(i);
+
+                    //Create collectedPlatform for collection animation
+                    map.addCollectedObject(new CollectedPlatform(world, involvedTile.getBody().getPosition(), involvedTile.getTileType()));
 
                     //Add element to inventory
                     getInventory().add(new Item(involvedTile.getTileType()));
