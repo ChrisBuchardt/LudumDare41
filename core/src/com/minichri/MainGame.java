@@ -15,6 +15,7 @@ public class MainGame extends Game {
 	public void create () {
 		song1 = Gdx.audio.newMusic(Gdx.files.internal("Sounds/Space_Music.wav"));
 		song1.setLooping(true);
+		song1.setVolume(0.5f);
 		song1.play();
 		gameScreen = new GameScreen(this);
 		this.setScreen(gameScreen);

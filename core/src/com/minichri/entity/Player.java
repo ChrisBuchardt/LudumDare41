@@ -185,7 +185,8 @@ public class Player extends TextureObject {
                     TileType type = getInventory().getSelectedItem().getType();
                     batch.draw(type.getAimTexture(), placeVector.x - 0.5f, placeVector.y - 0.5f, 1, 1);
                     if (controller.leftClick){
-                        placementSound.play();
+                        placementSound.setVolume(placementSound.play(), 0.4f);
+                        //placementSound.play();
                         queue.add(new Tile(world, type, placeVector));
                         getInventory().remove(getInventory().getSelectedSlot());
                         getInventory().focus();
@@ -414,5 +415,9 @@ public class Player extends TextureObject {
 
     public int getDeathCounter() {
         return deathCounter;
+    }
+
+    public boolean isDead() {
+        return isDead;
     }
 }
