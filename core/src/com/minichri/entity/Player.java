@@ -3,6 +3,7 @@ package com.minichri.entity;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -69,6 +70,10 @@ public class Player extends TextureObject {
     private float spawntimer =2;
     private Vector2 startPosition = new Vector2(0,0);
 
+    private Sound placementSound;
+    private Sound deathSound;
+    private Sound walkingSound;
+
 
     private Body feet;
 
@@ -81,6 +86,10 @@ public class Player extends TextureObject {
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(FEET_WIDTH/2f, FEET_HEIGHT/2f);
+
+
+        placementSound = Gdx.audio.newSound(Gdx.files.internal("sound/Temp_placeblock_Sound.wav"));
+        deathSound = Gdx.audio.newSound(Gdx.files.internal("sounds/very_Temp_Death_sound.wav"));
 
         this.world = world;
         FixtureDef feetDef = new FixtureDef();
@@ -111,8 +120,9 @@ public class Player extends TextureObject {
         if (timeSeconds<spawntimer) {
             startPosition = new Vector2(body.getPosition().x - 2f, body.getPosition().y - 2f);
         }
-         //Draws player Ship. Needs to be here to be drawn in the right layerqqq
+         //Draws player Ship. Needs to be here to be drawn in the right layer
             batch.draw(playerShip, startPosition.x, startPosition.y, 4, 4);
+
         if (timeSeconds>spawntimer) {
             if (!isDead) {
                 movement(map, controller, batch, delta);
@@ -137,6 +147,7 @@ public class Player extends TextureObject {
                 batch.draw(getInventory().getSelectedItem().getType().getBlockTexture(),placeVector.x-0.5f,placeVector.y-0.5f,1, 1);
                 if (controller.leftClick){
                     if (!map.isTileOcccipied((int)placeVector.x, (int)placeVector.y)) {
+                        placementSound.play();
                         TileType type = getInventory().getSelectedItem().getType();
                         map.setTile(type, placeVector);
                         queue.add(new Tile(world, type, placeVector));
@@ -206,6 +217,9 @@ public class Player extends TextureObject {
     }
 
     public void kill() {
+        deathSound.setPitch(1,0.5f);
+        deathSound.play();
+
         isDead = true;
         deathTimer = 0;
     }
