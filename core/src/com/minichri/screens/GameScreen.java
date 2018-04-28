@@ -52,6 +52,8 @@ public class GameScreen implements Screen {
         this.camera = new OrthographicCamera(GameInfo.SCREEN_WIDTH, GameInfo.SCREEN_HEIGHT);
         this.camera.zoom = GameInfo.ZOOM;
         this.camera.update();
+        camera.position.x = gameMap.getPlayer().getBodyPos().x;
+        camera.position.y = gameMap.getPlayer().getBodyPos().y;
 
         stage = new IngameStage(new FitViewport(GameInfo.SCREEN_WIDTH, GameInfo.SCREEN_HEIGHT));
 
@@ -70,8 +72,10 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
 
-        camera.position.x = gameMap.getPlayer().getBody().getPosition().x;
-        camera.position.y = gameMap.getPlayer().getBody().getPosition().y;
+        Vector2 playerBodyPos = gameMap.getPlayer().getBody().getPosition();
+        Vector2 diff = new Vector2(playerBodyPos.x - camera.position.x, playerBodyPos.y - camera.position.y).scl(0.1f);
+        camera.position.x += diff.x;
+        camera.position.y += diff.y;
 
         //Translats the mouse screen position to the world position.
         mousePos.x = Gdx.input.getX();

@@ -9,10 +9,10 @@ public class GameObject {
     public static BodyDef DEFAULT_STATIC_BODYDEF = createDefaultStaticBodyDef();
     /** The FixtureDef used for something like tiles */
     public static FixtureDef DEFAULT_STATIC_FIXTUREDEF = createDefaultStaticFixtureDef();
-    /** The FixtureDef used for something like a player     */
-    public static FixtureDef PLAYER__FIXTUREDEF = createPlayerFixtureDef();
-    /** The BodyDef used for something like a player     */
-    public static BodyDef PLAYER_BODYDEF = createPlayerBodyDef();
+    /** The BodyDef used for something like tiles */
+    public static BodyDef DEFAULT_DYNAMIC_BODYDEF = createDefaultDynamicBodyDef();
+    /** The FixtureDef used for something like tiles */
+    public static FixtureDef DEFAULT_DYNAMIC_FIXTUREDEF = createDefaultDynamicFixtureDef();
 
     protected final Body body;
 
@@ -47,41 +47,27 @@ public class GameObject {
         return fixtureDef;
     }
 
-    /** The default fixturedef for players */
-    private static FixtureDef createPlayerFixtureDef(){
-        float cornerSize = 0.043f;
-        float width = Player.WIDTH/2f;
-        float widthShort = Player.WIDTH/2f - cornerSize;
-        float height = Player.HEIGHT/2f;
-        float heightShort = Player.HEIGHT/2f - cornerSize;
-        PolygonShape shape = new PolygonShape();
-        shape.set(new Vector2[] {
-                new Vector2(-width, height),
-                new Vector2(width, height),
-                new Vector2(width, -heightShort),
-                new Vector2(0, -height),
-                new Vector2(-width, -heightShort),
-        });
-
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        fixtureDef.density = 1f;
-        fixtureDef.friction = 0f;
-        fixtureDef.restitution = 0;
-
-        return fixtureDef;
-
-    }
-
-
-    /** The BodyDef used for something like players */
-    private static BodyDef createPlayerBodyDef() {
+    /** The BodyDef used for something like tiles */
+    private static BodyDef createDefaultDynamicBodyDef() {
         BodyDef bodyDef = new BodyDef();
         bodyDef.fixedRotation = true;
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         return bodyDef;
     }
 
+    /** The FixtureDef used for something like tiles */
+    private static FixtureDef createDefaultDynamicFixtureDef() {
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(0.5f, 0.5f);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 0;
+        fixtureDef.friction = 0;
+        fixtureDef.restitution = 0;
+
+        return fixtureDef;
+    }
 
     public Body getBody() {
         return body;

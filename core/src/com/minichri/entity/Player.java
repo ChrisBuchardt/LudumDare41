@@ -82,7 +82,7 @@ public class Player extends TextureObject {
     private Body feet;
 
     public Player(World world, Vector2 pos) {
-        super(world, pos, GameObject.PLAYER_BODYDEF, GameObject.PLAYER__FIXTUREDEF, playerTexLeft);
+        super(world, pos, createPlayerBodyDef(), createPlayerFixtureDef(), playerTexLeft);
 
         playerPlacedTiles = new ArrayList<>();
         queue = new ArrayList<>();
@@ -99,7 +99,7 @@ public class Player extends TextureObject {
         feetDef.friction = 1;
         feetDef.restitution = 0;
         feetDef.isSensor = false;
-        feet = new GameObject(world, new Vector2(pos.x, pos.y + FEET_Y_OFFSET), GameObject.PLAYER_BODYDEF,feetDef).getBody();
+        feet = new GameObject(world, new Vector2(pos.x, pos.y + FEET_Y_OFFSET), createPlayerBodyDef(), feetDef).getBody();
         feet.setUserData(ContactManager.FEET);
         feet.setGravityScale(0);
         body.setLinearDamping(0);
@@ -309,5 +309,39 @@ public class Player extends TextureObject {
 
     public ArrayList<Tile> getQueue() {
         return queue;
+    }
+
+    /** The default fixturedef for players */
+    private static FixtureDef createPlayerFixtureDef(){
+        float cornerSize = 0.043f;
+        float width = Player.WIDTH/2f;
+        float widthShort = Player.WIDTH/2f - cornerSize;
+        float height = Player.HEIGHT/2f;
+        float heightShort = Player.HEIGHT/2f - cornerSize;
+        PolygonShape shape = new PolygonShape();
+        shape.set(new Vector2[] {
+                new Vector2(-width, height),
+                new Vector2(width, height),
+                new Vector2(width, -heightShort),
+                new Vector2(0, -height),
+                new Vector2(-width, -heightShort),
+        });
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1f;
+        fixtureDef.friction = 0f;
+        fixtureDef.restitution = 0;
+
+        return fixtureDef;
+
+    }
+
+    /** The BodyDef used for something like players */
+    private static BodyDef createPlayerBodyDef() {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.fixedRotation = true;
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        return bodyDef;
     }
 }

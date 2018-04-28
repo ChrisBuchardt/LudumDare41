@@ -3,6 +3,7 @@ package com.minichri.Elements;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.minichri.entity.TextureObject;
 import com.minichri.helpers.GameInfo;
@@ -14,7 +15,7 @@ public class CollectedPlatform extends TextureObject{
     private boolean markedAsDeleted;
 
     public CollectedPlatform(World world, Vector2 pos, TileType tileType) {
-        super(world, pos, DEFAULT_DYNAMIC_BODYDEF, DEFAULT_STATIC_FIXTUREDEF, new TextureRegion(tileType.getItemTexture()));
+        super(world, pos, DEFAULT_DYNAMIC_BODYDEF, DEFAULT_DYNAMIC_FIXTUREDEF, new TextureRegion(tileType.getItemTexture()));
 
         this.tileType = tileType;
         body.getFixtureList().get(0).setSensor(true);
