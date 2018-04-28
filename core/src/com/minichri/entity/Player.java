@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
-import com.minichri.Elements.Resource;
 import com.minichri.Elements.Tile;
 import com.minichri.KeyboardController;
 import com.minichri.World.GameMap;
@@ -103,7 +102,7 @@ public class Player extends TextureObject {
         if (queue.size()>0) playerPlacedTiles.addAll(queue);
         queue.removeAll(queue);
 
-        for(RenderableObject renderableObject : playerPlacedTiles)
+        for(RenderObject renderableObject : playerPlacedTiles)
                 renderableObject.render(batch, delta);
 
         timePassed += delta;
@@ -207,8 +206,8 @@ public class Player extends TextureObject {
                 //Create dist from player ordered list
                 Collections.sort(playerPlacedTiles, (a, b) -> {
 
-                    Vector2 vectorA = ((GameObject)a).body.getPosition();
-                    Vector2 vectorB = ((GameObject)b).body.getPosition();
+                    Vector2 vectorA = a.body.getPosition();
+                    Vector2 vectorB = b.body.getPosition();
 
                     float distToA = Vector2.dst(vectorA.x, vectorA.y, getBodyPos().x, getBodyPos().y);
                     float distToB = Vector2.dst(vectorB.x, vectorB.y, getBodyPos().x, getBodyPos().y);

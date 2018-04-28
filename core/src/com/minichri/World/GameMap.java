@@ -1,7 +1,6 @@
 package com.minichri.World;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
 import com.minichri.Elements.Resource;
@@ -9,20 +8,18 @@ import com.minichri.Elements.Tile;
 import com.minichri.KeyboardController;
 import com.minichri.entity.GameObject;
 import com.minichri.entity.Player;
-import com.minichri.entity.RenderableObject;
-import com.minichri.helpers.GameInfo;
-import com.minichri.helpers.TileType;
+import com.minichri.entity.RenderObject;
 import com.minichri.screens.GameScreen;
 
 import java.util.ArrayList;
 
 public class GameMap {
 
-    private ArrayList<RenderableObject> gameObjects;
+    private ArrayList<RenderObject> gameObjects;
     private Tile[][] tilesArray;
     private int mapTileSizeX;
     private int mapTileSizeY;
-    private ArrayList<RenderableObject> removeQueue = new ArrayList<>();
+    private ArrayList<RenderObject> removeQueue = new ArrayList<>();
     private Player player;
     private World world;
 
@@ -47,7 +44,7 @@ public class GameMap {
 
         processRemoveQueue();
 
-        for(RenderableObject renderableObject : gameObjects)
+        for(RenderObject renderableObject : gameObjects)
             renderableObject.render(spriteBatch, delta);
 
         getPlayer().render(this,world,mousePos,controller, spriteBatch, delta);
@@ -56,9 +53,9 @@ public class GameMap {
     /** Removes the objects listed in the removequeue from the gameObjects list */
     private void processRemoveQueue(){
         if(removeQueue.size() != 0){
-            for(RenderableObject removeQueueObject : new ArrayList<>(removeQueue)){
+            for(RenderObject removeQueueObject : new ArrayList<>(removeQueue)){
                 gameObjects.remove(removeQueueObject);
-                world.destroyBody(((GameObject) removeQueueObject).getBody());
+                world.destroyBody(removeQueueObject.getBody());
                 removeQueue.remove(removeQueueObject);
             }
         }
@@ -68,7 +65,7 @@ public class GameMap {
     public void addToRemoveResource(Resource resource){
 
         //Find the resource in the map
-        for(RenderableObject renderableObject : gameObjects){
+        for(RenderObject renderableObject : gameObjects){
             if(renderableObject == resource){
                 this.removeQueue.add(renderableObject); //Add to remove queue
             }

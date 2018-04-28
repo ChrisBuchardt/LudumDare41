@@ -11,7 +11,7 @@ import com.minichri.Elements.Resource;
 import com.minichri.Elements.Spikes;
 import com.minichri.Elements.Tile;
 import com.minichri.entity.Player;
-import com.minichri.entity.RenderableObject;
+import com.minichri.entity.RenderObject;
 import com.minichri.helpers.TileType;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class MapLoader {
 
     private Tile[][] tileArray;
-    private ArrayList<RenderableObject> tilesList;
+    private ArrayList<RenderObject> tilesList;
     private Player player;
     private World world;
     private int mapTileSizeX;
@@ -79,7 +79,7 @@ public class MapLoader {
 
                 } else if (currentTileType == TileType.SPIKES) {
 
-                    RenderableObject spike = new Spikes(world, currentTilePos);
+                    RenderObject spike = new Spikes(world, currentTilePos);
                     this.tilesList.add(spike);
 
                 } else { //Add tile based on tileType
@@ -143,7 +143,7 @@ public class MapLoader {
         }
     }
 
-    public ArrayList<RenderableObject> getTilesList() {
+    public ArrayList<RenderObject> getTilesList() {
         return tilesList;
     }
 
