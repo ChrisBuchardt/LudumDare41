@@ -50,6 +50,8 @@ public class ContactManager implements ContactListener {
             if(other instanceof Resource) {
                 gameMap.addToRemoveResource((Resource)other);
                 Player.getInventory().add(new Item(TileType.convertFromResourceToPlatform(((Resource) other).getTileType())));
+                Player.getInventory().addResouce();
+
             }
 
             // Collision with spikes

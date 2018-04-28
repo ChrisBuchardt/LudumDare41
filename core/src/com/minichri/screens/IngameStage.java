@@ -1,12 +1,19 @@
 package com.minichri.screens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.minichri.entity.Player;
+import com.minichri.helpers.GameInfo;
 import com.minichri.inventory.Inventory;
+import com.minichri.inventory.InventoryListener;
 import com.minichri.inventory.InventorySlotUI;
 
 import static com.minichri.helpers.GameInfo.UI_SCALE;
@@ -38,6 +45,20 @@ public class IngameStage extends Stage {
             InventorySlotUI slot = new InventorySlotUI(i, slotTexture, slotTextureSelected, images[i]);
             hotbarTable.add(slot).size(width, height).fill();
         }
+
+        Table objectiveTable = new Table();
+        objectiveTable.setFillParent(true);
+        objectiveTable.setDebug(true);
+        objectiveTable.top();
+        Skin skin = new Skin(Gdx.files.internal("ui/skin/pixthulhu-ui.json"));
+        objectiveTable.setSkin(skin);
+        Label laben = objectiveTable.add("Collect all the scattered resources " + 10 + " remaining").getActor();
+        Player.getInventory().addListener((i) -> {
+            int rr = 10-Player.getInventory().getGatheredResouces();
+            laben.setText("Collect all the scattered resources " + rr + " remaining");
+            //objectiveTable.add("Collect all the scattered resouces " + rr + " remaining");
+        });
+        addActor(objectiveTable);
     }
 
     @Override

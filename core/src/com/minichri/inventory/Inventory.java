@@ -12,6 +12,7 @@ public class Inventory {
     private int itemCount = 0;
     private int nextEmpty = 0;
     private int selectedSlot = 0;
+    private int gatheredResouces = 0;
     private List<InventoryListener> listeners;
 
     public Inventory() {
@@ -96,5 +97,12 @@ public class Inventory {
     /** Listeners are called with anything changes in the inventory. */
     public void addListener(InventoryListener listener) {
         listeners.add(listener);
+    }
+
+    public int getGatheredResouces(){
+        return gatheredResouces;
+    }
+    public  void addResouce(){
+        gatheredResouces++;
     }
 }
