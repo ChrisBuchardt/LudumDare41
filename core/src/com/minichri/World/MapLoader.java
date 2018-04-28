@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class MapLoader {
 
-    private Tile[][] tileArray;
+    private Object[][] tileArray;
     private ArrayList<RenderObject> tilesList;
     private ArrayList<Decoration> decorationList;
     private Player player;
@@ -44,7 +44,7 @@ public class MapLoader {
         this.mapTileSizeY = levelPixmap.getHeight();
 
         //Init tile array
-        this.tileArray = new Tile[mapTileSizeX][mapTileSizeY];
+        this.tileArray = new Object[mapTileSizeX][mapTileSizeY];
 
         //Coordinates
         Vector2 currentTilePos;
@@ -89,27 +89,37 @@ public class MapLoader {
 
                 } else { //Add tile based on tileType
 
-                    Tile tile;
+
+                    Decoration decoration = null;
 
                     if (!currentTileType.isDirectionalTile()) {
-                        tile = new Tile(world, currentTileType, currentTilePos);
+                        Tile tile = new Tile(world, currentTileType, currentTilePos);
+                        this.tilesList.add(tile);
+                        tileArray[x][this.mapTileSizeY - (y + 1)] = tile;
 
                     } else { //Is the tile directional?
 
                         //Get tiletypes of surrounding tiles
-                        Color.rgba8888ToColor(color, levelPixmap.getPixel(x, y-1));
+                        Color.rgba8888ToColor(color, levelPixmap.getPixel(x, y - 1));
                         TileType aboveTileType = TileType.getTypeFromColor(color);
-                        Color.rgba8888ToColor(color, levelPixmap.getPixel(x-1, y));
+                        Color.rgba8888ToColor(color, levelPixmap.getPixel(x - 1, y));
                         TileType leftTileType = TileType.getTypeFromColor(color);
-                        Color.rgba8888ToColor(color, levelPixmap.getPixel(x+1, y));
+                        Color.rgba8888ToColor(color, levelPixmap.getPixel(x + 1, y));
                         TileType rightTileType = TileType.getTypeFromColor(color);
+                        Color.rgba8888ToColor(color, levelPixmap.getPixel(x, y + 1));
+                        TileType underTileType = TileType.getTypeFromColor(color);
 
-                        TileType.TextureDirection direction = createDirectionalTile(currentTileType, aboveTileType, leftTileType, rightTileType);
-                        tile = new DirectionalTile(world, direction, currentTileType, currentTilePos);
+                        if (currentTileType == aboveTileType && currentTileType == leftTileType && currentTileType == rightTileType && currentTileType == underTileType){
+                            decoration = new Decoration(TileType.DIRTDUMMY, currentTilePos);
+                            this.decorationList.add(decoration);
+                            tileArray[x][this.mapTileSizeY - (y + 1)] = decoration;
+                        }else{
+                            TileType.TextureDirection direction = createDirectionalTile(currentTileType, aboveTileType, leftTileType, rightTileType);
+                            Tile tile = new DirectionalTile(world, direction, currentTileType, currentTilePos);
+                            this.tilesList.add(tile);
+                            tileArray[x][this.mapTileSizeY - (y + 1)] = tile;
+                        }
                     }
-
-                    this.tilesList.add(tile);
-                    tileArray[x][this.mapTileSizeY - (y + 1)] = tile;
                 }
             }
         }
@@ -157,7 +167,7 @@ public class MapLoader {
         return decorationList;
     }
 
-    public Tile[][] getTileArray() {
+    public Object[][] getTileArray() {
         return tileArray;
     }
 

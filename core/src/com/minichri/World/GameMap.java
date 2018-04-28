@@ -21,7 +21,7 @@ public class GameMap {
     private ArrayList<CollectedPlatform> collectedObjectsRemoveQueue;
     private ArrayList<RenderObject> gameObjects;
     private ArrayList<Decoration> decorationList;
-    private Tile[][] tilesArray;
+    private Object[][] tilesArray;
     private int mapTileSizeX;
     private int mapTileSizeY;
     private ArrayList<RenderObject> removeQueue = new ArrayList<>();

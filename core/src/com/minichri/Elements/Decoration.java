@@ -42,10 +42,9 @@ public class Decoration {
             Random random = new Random();
             int ranNum = random.nextInt(RANDOMDECORATION_NUMBER_TEXTURES);
             this.texture = textureSheet[0][ranNum];
+        }else{
+            this.texture = new TextureRegion(tileType.getBlockTexture());
         }
-
-
-
 
         this.pos = pos;
         this.width = texture.getRegionWidth() * GameInfo.PPM;

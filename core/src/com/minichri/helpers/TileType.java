@@ -18,7 +18,8 @@ public enum TileType {
     SPIKES("FF0000FF", null, null, null, false, false),
     PLANT("FFD800FF", "decorations/singleplants.png", null, null, false, false),
     MULTIPLEPLANTS("FF6A00FF", "decorations/multipleplants.png", null, null, false, false),
-    RANDOMDECORATION("4C6900FF","decorations/random_decoration.png", null, null, false, false)
+    RANDOMDECORATION("4C6900FF","decorations/random_decoration.png", null, null, false, false),
+    DIRTDUMMY("000000FF", "tiles/dirt.png", null, null, false, false)
     ;
 
     private Color color;
