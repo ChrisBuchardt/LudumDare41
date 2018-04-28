@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.minichri.KeyboardController;
 import com.minichri.MainGame;
 import com.minichri.World.GameMap;
+import com.minichri.entity.Player;
 import com.minichri.helpers.GameInfo;
 import com.minichri.physics.ContactManager;
 
@@ -28,7 +30,7 @@ public class GameScreen implements Screen {
     private Stage stage;
     private GameMap gameMap;
     private Box2DDebugRenderer debugRenderer;
-    //TODO CHRIS make either getters or smooth this out.
+    private BitmapFont font;
     public Vector3 mousePos;
     public KeyboardController inputProcessor;
     public World world;
@@ -56,7 +58,8 @@ public class GameScreen implements Screen {
         camera.position.y = gameMap.getPlayer().getBodyPos().y;
 
         stage = new IngameStage(new FitViewport(GameInfo.SCREEN_WIDTH, GameInfo.SCREEN_HEIGHT));
-
+        font = new BitmapFont();
+        font.getData().setScale(2,2);
         spriteBatch.setProjectionMatrix(camera.combined);
         background = new Texture("background.png");
 
@@ -103,6 +106,10 @@ public class GameScreen implements Screen {
         stage.getCamera().update();
         stage.act(delta);
         stage.draw();
+
+        if (Player.getInventory().getRemainingResources()==0){
+            font.draw(spriteBatch,"Congratulations you have gathered all the platforms!\n"+"You completed the game with "+ gameMap.getPlayer().getDeathCounter() + " deaths.",camera.position.x+GameInfo.SCREEN_HEIGHT/3,camera.position.y+GameInfo.SCREEN_HEIGHT/2);
+        }
         spriteBatch.end();
 
 

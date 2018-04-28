@@ -75,6 +75,7 @@ public class Player extends TextureObject {
     private boolean isDead = false;
     private float deathTimer = 0;
     private float timePassed = 0;
+    private int deathCounter;
     private Vector2 podPosition;
     private Vector2 spawnPosition;
     private GameMap map;
@@ -129,6 +130,7 @@ public class Player extends TextureObject {
         body.setUserData(this);
 
         podPosition = new Vector2(pos);
+        deathCounter=0;
     }
 
     public void render(GameMap map, World world, Vector3 mousePos, KeyboardController controller, SpriteBatch batch, float delta) {
@@ -331,6 +333,7 @@ public class Player extends TextureObject {
 
     public void kill() {
         if (!isDead) {
+            deathCounter++;
             if (map.isPlayerOutOfBounds()){
                 voidSound.play();
             }else {
@@ -407,5 +410,9 @@ public class Player extends TextureObject {
 
     public void playPickupSound() {
         pickupSound.play();
+    }
+
+    public int getDeathCounter() {
+        return deathCounter;
     }
 }
