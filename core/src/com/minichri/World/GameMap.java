@@ -53,6 +53,9 @@ public class GameMap {
 
         processRemoveQueue();
 
+        if(isPlayerOutOfBounds())
+            player.kill();
+
         for(RenderObject renderableObject : gameObjects)
             renderableObject.render(spriteBatch, delta);
 
@@ -100,6 +103,16 @@ public class GameMap {
 
     public Player getPlayer(){
         return this.player;
+    }
+
+    /** Checks player has gone into the void = kill (Out of bounds) */
+    public boolean isPlayerOutOfBounds(){
+
+        int playerTilePosX = Math.round(player.getBody().getPosition().x);
+        int playerTilePosY = Math.round(player.getBody().getPosition().y);
+
+        //Check game map bounds
+        return playerTilePosX < 0 || playerTilePosX > this.mapTileSizeX - 1 || playerTilePosY < 0 || playerTilePosY > this.mapTileSizeY - 1;
     }
 
     /** Takes a set of tile coordinates and check if the tile is occupied */
