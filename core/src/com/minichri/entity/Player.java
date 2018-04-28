@@ -13,6 +13,7 @@ import com.minichri.Elements.Resource;
 import com.minichri.Elements.Tile;
 import com.minichri.KeyboardController;
 import com.minichri.World.GameMap;
+import com.minichri.helpers.PlayerAnimationController;
 import com.minichri.helpers.TileType;
 import com.minichri.inventory.Inventory;
 import com.minichri.inventory.Item;
@@ -23,9 +24,6 @@ import java.util.Collections;
 
 
 public class Player extends TextureObject {
-
-    private static final int PIXEL_WIDTH = 16;
-    private static final int PIXEL_HEIGHT = 21;
 
     public static final float WIDTH = 0.56f;
     public static final float HEIGHT = 1.35f;
@@ -48,9 +46,8 @@ public class Player extends TextureObject {
     private ArrayList<Tile> playerPlacedTiles;
     private ArrayList<Tile> queue;
 
-    private static TextureRegion playerTexLeft = new TextureRegion(new Texture("player/player_left.png"), 0, 0, PIXEL_WIDTH, PIXEL_HEIGHT);
-    private static TextureRegion playerTexRight = new TextureRegion(new Texture("player/player_right.png"), 0, 0, PIXEL_WIDTH, PIXEL_HEIGHT);
-    private static TextureRegion playerShip = new TextureRegion(new Texture("escape_pod.png"), 0, 0, PIXEL_WIDTH*2, PIXEL_HEIGHT*2);
+    private static Texture playerTexture = new Texture("player/player.png");
+    private static TextureRegion playerShip = new TextureRegion(new Texture("escape_pod.png"), 0, 0, 32, 42);
     private static Texture aimTexture = new Texture("player/aim.png");
     private static Texture rangeTexture = new Texture("player/range_indicator.png");
 
@@ -65,6 +62,7 @@ public class Player extends TextureObject {
     private boolean isMidAir = false;
     private boolean isCrouched = false;
     private boolean hasJumped = false;
+    private PlayerAnimationController animController;
     private Vector2 placeVector = new Vector2(0,0);
 
     private boolean isPodLanding = true;
@@ -83,7 +81,8 @@ public class Player extends TextureObject {
     private Body feet;
 
     public Player(World world, Vector2 pos) {
-        super(world, pos, createPlayerBodyDef(), createPlayerFixtureDef(), playerTexLeft);
+        super(world, pos, createPlayerBodyDef(), createPlayerFixtureDef(), null);
+        animController = new PlayerAnimationController(this, playerTexture);
 
         playerPlacedTiles = new ArrayList<>();
         queue = new ArrayList<>();
@@ -129,6 +128,7 @@ public class Player extends TextureObject {
         } else {
             if (!isDead) {
                 movement(map, controller, batch, delta);
+                qCollect(controller, map);
                 blockPlacing(batch, map, controller, mousePos);
             } else {
                 resolveDeath(batch, delta);
@@ -206,9 +206,6 @@ public class Player extends TextureObject {
             vel.add(AIR_WALK_FORCE * dir, 0);
         }
 
-        // Q-collect
-        qCollect(controller, map);
-
         isCrouched = controller.s;
 
         // Restrict vel x
@@ -221,7 +218,7 @@ public class Player extends TextureObject {
         feet.setTransform(new Vector2(body.getPosition()).add(0, FEET_Y_OFFSET), 0);
         feet.setLinearVelocity(vel);
 
-        updateTexture(dir);
+        texture = animController.getTexture(dir, isMidAir, delta);
     }
 
     /** When q is pressed, collect as many nearby tiles as you can hold in your inventory. */
@@ -278,14 +275,6 @@ public class Player extends TextureObject {
                 }
             }
         }
-    }
-
-    private void updateTexture(int moveDirection) {
-        // Changes the player texture based on movement
-        if (moveDirection < 0)
-            texture = playerTexLeft;
-        else if (moveDirection > 0)
-            texture = playerTexRight;
     }
 
     public void resolveDeath(SpriteBatch batch, float delta) {
