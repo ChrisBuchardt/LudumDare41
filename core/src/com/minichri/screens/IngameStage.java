@@ -30,7 +30,6 @@ public class IngameStage extends Stage {
 
         Table hotbarTable = new Table();
         hotbarTable.setFillParent(true);
-        hotbarTable.setDebug(true);
         hotbarTable.bottom();
         addActor(hotbarTable);
         float width = slotTexture.getWidth() * UI_SCALE;
@@ -48,7 +47,6 @@ public class IngameStage extends Stage {
 
         Table objectiveTable = new Table();
         objectiveTable.setFillParent(true);
-        objectiveTable.setDebug(true);
         objectiveTable.top();
         Skin skin = new Skin(Gdx.files.internal("ui/skin/pixthulhu-ui.json"));
         objectiveTable.setSkin(skin);
