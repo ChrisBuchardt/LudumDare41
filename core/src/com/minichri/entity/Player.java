@@ -206,13 +206,13 @@ public class Player extends TextureObject {
         if (onIce && !isMidAir){
             //Sliding on ice
                body.applyForceToCenter(WALK_SPEED*dir,0,true);
-        }else if (!onIce && !isMidAir){
+        }else if (!onIce && !isMidAir) {
             // Grounded
-                vel.x = WALK_SPEED * dir;
-            } else  {
-                // Mid air
-                vel.add(AIR_WALK_FORCE * dir, 0);
-            }
+            vel.x = WALK_SPEED * dir;
+        } else  {
+            // Mid air
+            vel.add(AIR_WALK_FORCE * dir, 0);
+        }
 
         isCrouched = controller.s;
 
@@ -348,12 +348,19 @@ public class Player extends TextureObject {
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         return bodyDef;
     }
-    public void slide(boolean b){
+
+    public void slide(boolean b) {
         onIce = b;
     }
 
-    public void bounce(Body other){
-        if (Math.round(other.getPosition().x)==Math.round(body.getPosition().x) && body.getLinearVelocity().y<0)
-        body.setLinearVelocity(body.getLinearVelocity().x,-body.getLinearVelocity().y);
+    public boolean isCrouched() {
+        return isCrouched;
+    }
+
+    public void bounce(Body other) {
+        if (!isCrouched) {
+            if (Math.round(other.getPosition().x) == Math.round(body.getPosition().x) && body.getLinearVelocity().y < 0)
+                body.setLinearVelocity(body.getLinearVelocity().x, -body.getLinearVelocity().y);
+        }
     }
 }
