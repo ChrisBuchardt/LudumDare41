@@ -33,11 +33,13 @@ public class Player extends TextureObject {
     private static final float FEET_WIDTH = WIDTH - 0.05f;
     private static final float FEET_HEIGHT = 0.23f;
     private static final float FEET_Y_OFFSET = -.85f;
-    private static final float MAX_X_VEL = 6f;
     private static final float JUMP_FORCE = 11.4f;
     private static final float JUMP_FORCE_IN_AIR = 9f;
-    private static final float WALK_SPEED = 6f;
-    private static final float AIR_WALK_FORCE = 0.3f;
+    private static final float MAX_X_VEL = 6f;
+    private static final float WALK_FORCE = 0.37f;
+    private static final float WALK_DECELERATION = 0.37f;
+    private static final float AIR_WALK_FORCE = 0.37f;
+    private static final float WALK_ICE_DECELERATION = 0.05f;
 
     private static final float MAX_RANGE = 5f;
     private static final float MIN_RANGE = 1.6f;
@@ -235,24 +237,31 @@ public class Player extends TextureObject {
         // Movement
         int dir = controller.d ? 1 : controller.a ? -1 : 0;
         lookingDir = dir == 0 ? lookingDir : dir;
-        if (onIce && !isMidAir){
-            //Sliding on ice
-            if (!walkingOnIce.isPlaying())walkingOnIce.play();
-               body.applyForceToCenter(WALK_SPEED*dir,0,true);
-        }else if (!onIce && !isMidAir) {
+        if (!isMidAir) {
             // Grounded
+            float deceleration = onIce ? WALK_ICE_DECELERATION : WALK_DECELERATION;
 
-            vel.x = WALK_SPEED * dir;
+            if (onIce) {
+                if (!walkingOnIce.isPlaying()) walkingOnIce.play();
+            }
+
+            if (dir != 0) {
+                vel.x += WALK_FORCE * dir;
+            } else if (vel.x > 0) {
+                vel.x -= Math.min(vel.x, deceleration);
+            } else {
+                vel.x += Math.min(-vel.x, deceleration);
+            }
 
         } else  {
             // Mid air
             vel.add(AIR_WALK_FORCE * dir, 0);
         }
 
-        isCrouched = controller.s;
-
-        // Restrict vel x
+        // Global restrict vel x
         vel.x = Math.min(Math.max(-MAX_X_VEL, vel.x), MAX_X_VEL);
+
+        isCrouched = controller.s;
 
         // Apply new vel
         body.setLinearVelocity(vel);
