@@ -369,9 +369,10 @@ public class Player extends TextureObject {
 
     /** The default fixturedef for players */
     private static FixtureDef createPlayerFixtureDef(){
-        float cornerSize = 0.043f;
+        float cornerSize = 0.013f;
+        float cornerWidth = 0.123f;
         float width = Player.WIDTH/2f;
-        float widthShort = Player.WIDTH/2f - cornerSize;
+        float widthShort = Player.WIDTH/2f - cornerWidth;
         float height = Player.HEIGHT/2f;
         float heightShort = Player.HEIGHT/2f - cornerSize;
         PolygonShape shape = new PolygonShape();
@@ -379,7 +380,8 @@ public class Player extends TextureObject {
                 new Vector2(-width, height),
                 new Vector2(width, height),
                 new Vector2(width, -heightShort),
-                new Vector2(0, -height),
+                new Vector2(widthShort, -height),
+                new Vector2(-widthShort, -height),
                 new Vector2(-width, -heightShort),
         });
 

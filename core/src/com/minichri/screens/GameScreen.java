@@ -62,7 +62,7 @@ public class GameScreen implements Screen {
         font.getData().setScale(2,2);
         spriteBatch.setProjectionMatrix(camera.combined);
         background = new Texture("background.png");
-
+        debugRenderer = new Box2DDebugRenderer(true, true, true, true, true, true);
 
     }
 
@@ -116,10 +116,9 @@ public class GameScreen implements Screen {
         }
         spriteBatch.end();
 
-
-
         spriteBatch.setProjectionMatrix(camera.combined);
 
+        debugRenderer.render(world, camera.combined);
     }
 
     @Override
