@@ -303,10 +303,10 @@ public class Player extends TextureObject {
                         return 0;
                 });
 
-                ArrayList<Tile> playerPlacedCopy = new ArrayList(playerPlacedTiles);
+                ArrayList<Tile> playerPlacedCopy = new ArrayList<>(playerPlacedTiles);
 
                 //Remove till the found number of elements and add them to inv
-                int collectCount = Math.min(getPlayerPlacedTiles().size(), emptySlots);
+                int collectCount = Math.min(playerPlacedTiles.size(), emptySlots);
                 for(int i = 0; i < collectCount; i ++){
 
                     Tile involvedTile = playerPlacedCopy.get(i);
@@ -318,8 +318,8 @@ public class Player extends TextureObject {
                     getInventory().add(new Item(involvedTile.getTileType()));
 
                     //Remove and destroy from world
-                    world.destroyBody(playerPlacedTiles.get(playerPlacedTiles.indexOf(playerPlacedCopy.get(i))).getBody());
-                    getPlayerPlacedTiles().remove(playerPlacedTiles.indexOf(playerPlacedCopy.get(i)));
+                    world.destroyBody(involvedTile.getBody());
+                    playerPlacedTiles.remove(involvedTile);
 
                     //Play sound
                     //qCollectSound.play();

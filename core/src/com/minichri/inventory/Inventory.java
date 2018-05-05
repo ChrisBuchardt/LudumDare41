@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Inventory {
 
-    public static final int SIZE = 5;
+    public static final int SIZE = 8;
 
     private Item[] items;
     private int itemCount = 0;
@@ -27,6 +27,7 @@ public class Inventory {
     /** @return true if the item was added */
     public boolean add(Item item) {
         if (isFull()) return false;
+        if (item == null) return false;
 
         items[nextEmpty] = item;
         itemCount++;

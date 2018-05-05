@@ -48,7 +48,7 @@ public class ContactManager implements ContactListener {
 
             //Collision with resource
             if(other instanceof Resource) {
-                if(!player.isDead()){
+                if(!player.isDead() && !Player.getInventory().isFull()){
                     gameMap.addToRemoveResource((Resource)other);
                     Player.getInventory().add(new Item(TileType.convertFromResourceToPlatform(((Resource) other).getTileType())));
                     Player.getInventory().addResource();
